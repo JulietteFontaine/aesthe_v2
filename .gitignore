@@ -2,8 +2,9 @@
 /wp-admin
 
 wp-content/*
-!wp-content/plugins/
-!wp-content/themes/aesthe
+!wp-content/plugins
+**/themes/*
+!**/themes/aesthe
 
 .DS_Store
 node_modules
@@ -13,7 +14,6 @@ node_modules
 index.php
 robots.txt
 .htaccess
-
 
 xmlrpc.php
 wp-activate.php
