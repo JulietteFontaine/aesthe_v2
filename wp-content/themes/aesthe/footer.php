@@ -128,7 +128,7 @@
 
 </footer>
 
- <!-- A ENLEVER  -->
+
 <div class="form-thx">
 
     <?php
@@ -165,6 +165,7 @@
 </div>
 
 
+
 <div class="grid">
     <ul>
         <li></li>
@@ -184,7 +185,11 @@
 
 <?php wp_footer(); ?>
 
-<!-- rgpd tarteaucitron-->
+
+
+
+
+<!-- rgpd -->
 <script type="text/javascript" src="<?= get_template_directory_uri(); ?>/assets/js/tarteaucitron/tarteaucitron.js"></script>
 
 <script type="text/javascript">
@@ -231,7 +236,15 @@
         /* Show a message about mandatory cookies */
     });
 </script>
-<!-- End rgpd tarteaucitron-->
+
+<!-- ANALYTICS -->
+<script type="text/javascript">
+    tarteaucitron.user.gajsUa = 'G-JL4CCQQTG4';
+    tarteaucitron.user.gajsMore = function() {
+        /* add here your optionnal _ga.push() */
+    };
+    (tarteaucitron.job = tarteaucitron.job || []).push('gajs');
+</script>
 
 <!-- Meta Pixel Code -->
 <script>
@@ -251,6 +264,52 @@ src="https://www.facebook.com/tr?id=807331923271916&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 
+<!-- GOOGLE TAG MANAGER -->
+<!-- <script type="text/javascript">
+    tarteaucitron.user.googletagmanagerId = 'GTM-5V3M2D8';
+    (tarteaucitron.job = tarteaucitron.job || []).push('googletagmanager');
+</script> -->
+
+<!-- SKAZE -->
+<script async="async" src="//events.sk.ht/aesthe/lib.js"></script>
+<script>
+    var skaze = skaze || {};
+    skaze.cmd = skaze.cmd || [];
+    skaze.cmd.push(function() {
+        skaze.init({
+            siteIdentifier: "aesthe"
+        });
+        skaze.pushEvent({
+            name: "aesthe - All Page",
+            properties: {}
+        });
+    });
+</script>
+
+
+<!-- GA Universel -->
+<!--<script type="text/javascript">-->
+<!--    tarteaucitron.user.analyticsUa = 'UA-207934763-1';-->
+<!--    tarteaucitron.user.analyticsMore = function () { /* optionnal ga.push() */ };-->
+<!--    tarteaucitron.user.analyticsUaCreate = { /* optionnal create configuration */ };-->
+<!--    tarteaucitron.user.analyticsAnonymizeIp = true;-->
+<!--    tarteaucitron.user.analyticsPageView = { /* optionnal pageview configuration */ };-->
+<!--    tarteaucitron.user.analyticsMore = function () { /* optionnal ga.push() */ };-->
+<!--    (tarteaucitron.job = tarteaucitron.job || []).push('analytics');-->
+<!--</script>-->
+
+<!-- end rgpd -->
+
+<!-- Start of aesthe Zendesk Widget script -->
+<!-- <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=f2540ec4-431b-4a2f-8b5b-396d1ff466d8"> </script> -->
+<!-- End of aesthe Zendesk Widget script -->
+
+<!-- ACTIVECAMPAIGN : Géré plus bas sans tarte au citron -->
+<!-- <script type="text/javascript">
+    tarteaucitron.user.actid = '225286553';
+    (tarteaucitron.job = tarteaucitron.job || []).push('activecampaign');
+</script> -->
+
 <!-- activecampaign -->
 <script type="text/javascript">
     (function(e, t, o, n, p, r, i) {
@@ -269,14 +328,13 @@ src="https://www.facebook.com/tr?id=807331923271916&ev=PageView&noscript=1"
     vgo('setTrackByDefault', true);
     vgo('process');
 </script>
-<!-- End activecampaign -->
 
 <?php if (is_page('contact')) : ?><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><?php endif; ?>
-
 <script src="<?= get_template_directory_uri(); ?>/assets/js/code-nitropack-exclude-min.js"></script>
 <script src="<?= get_template_directory_uri(); ?>/assets/js/code-min.js"></script>
 <script>
     jQuery('p:empty').remove();
 </script>
 </body>
+
 </html>

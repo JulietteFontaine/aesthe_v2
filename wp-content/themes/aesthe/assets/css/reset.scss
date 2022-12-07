@@ -1,0 +1,188 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, button {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+	background: none;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section { display: block }
+body { line-height: 1 }
+blockquote, q { quotes: none }
+blockquote:before, blockquote:after,
+q:before, q:after { content: ''; content: none }
+table { border-collapse: collapse; border-spacing: 0 }
+
+/* PAM */
+html {
+	scrollbar-width : none;
+}
+
+input, textarea { outline: 0 }
+* {
+
+	text-rendering: optimizeLegibility;
+	box-sizing: border-box;
+	/* appearance: none; -moz-appearance: none; -webkit-appearance:none; */
+	outline: 0;
+    -webkit-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    transform-origin: 0 0;
+    position: relative;
+}
+
+::selection { color: #fff; background: #000 }
+
+html, body { min-height: 100vh; }
+html { background: #000 }
+body { background: #fff;
+	overflow-x: hidden; 
+}
+body { font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.5; font-weight: 400; margin: 0; border-radius: 0; }
+b,strong { font-weight: 700 }
+a { cursor: pointer; color: currentColor; text-decoration: none; }
+h1,h2,h3,h4,h5,h6 { font-weight: 700 }
+p { margin-block-start: 0; margin-block-end: 0;}
+img { display: block; /* max-width: 100% */ }
+.clear { position: relative; display: block; clear: both }
+input, textarea, select, button { all: unset; font-family: inherit; font-size: inherit; position: relative; box-sizing: border-box }
+button { cursor: pointer }
+
+@media (pointer:  coarse) { a, button { touch-action: manipulation } }
+
+.wrapper { position: relative; margin: 0 auto; width: var(--wrapper) }
+
+// .none { opacity: 0; pointer-events: none }
+
+// ::-webkit-input-placeholder { color: currentColor }
+// ::-moz-placeholder { color: currentColor }
+// :-ms-input-placeholder { color: currentColor }
+// :-moz-placeholder { color: currentColor }
+
+
+/* touch device */
+@media (pointer: coarse) {} /* touch */
+@media (pointer: fine) {} /* mouse */
+
+/* IE */
+@media all and (-ms-high-contrast:none) {}
+
+/* Edge */
+@supports (-ms-ime-align:auto) {}
+
+// .burger { display: none }
+
+// img { width: 100%; height: 100%; object-fit: cover; }
+
+html.widthFixedScrollbar { width: calc(100vw - 0px); overflow-x: hidden }
+
+/*--------- Couleurs ---------*/
+$nude01 : #FFF5ED;
+$nude02 : #E9CCB7;
+$coffee : #9E8174;
+$brown : #5E311A; 
+
+$purple : #5D23D0;
+$orange : #FF8040;
+$red: #C53E23;
+
+$grey01 : #8E8D8D;
+$grey02 : #707070;
+
+/*--------- Styles de texte ---------*/
+// h1,
+// .h1 {
+//   font-family: Fleya;
+//   font-weight: 400;
+//   font-size: 300%;
+//   line-height: 1.1;
+//   color: $blue;
+//   letter-spacing: -1px;
+//   margin: 0.5em 0;
+//   text-transform: initial;
+// }
+
+// h2,
+// .h2 {
+//   font-family: inherit;
+//   font-weight: 300;
+//   font-size: 200%;
+//   line-height: 1.1;
+//   color: $blue;
+//   text-transform: uppercase;
+//   margin: 0 0 0.5em;
+// }
+// h3,
+// .h3 {
+//   font-weight: 500;
+//   font-size: 150%;
+//   line-height: 1.3;
+// }
+// h4,
+// .h4 {
+//   font-weight: 400;
+//   font-size: 150%;
+//   line-height: 1.3;
+//   color: $blue;
+// }
+
+.quote {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+p + p {
+  margin-top: 10px;
+}
+
+// .link {
+//   text-decoration: underline;
+// }
+// .link:hover {
+//   text-decoration: none;
+//   color: $orange;
+// }
+
+// @media (max-width: 1400px) {
+//   // body { font-size: 14px; }
+//   h1,
+//   .h1 {
+//     font-size: 250%;
+//   }
+//   h2,
+//   .h2 {
+//     font-size: 180%;
+//     letter-spacing: 3px;
+//   }
+// }
+
+// @media (max-width: 600px) {
+//   body {
+//     font-size: 14px;
+//   }
+//   h1,
+//   .h1 {
+//     font-size: 200%;
+//   }
+//   h2,
+//   .h2 {
+//     font-size: 150%;
+//     letter-spacing: 2px;
+//   }
+// }

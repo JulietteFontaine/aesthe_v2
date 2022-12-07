@@ -1,4 +1,6 @@
-<?php get_header(); ?>
+<?php
+// get_header();
+?>
 
 <div class="circle circle--left"></div>
 <section class="blogTop wrapper">
