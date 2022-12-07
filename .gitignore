@@ -3,8 +3,7 @@
 
 wp-content/*
 !wp-content/plugins
-**/themes/*
-!**/themes/aesthe
+!wp-content/themes
 
 .DS_Store
 node_modules
