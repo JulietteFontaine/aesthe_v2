@@ -185,10 +185,6 @@
 
 <?php wp_footer(); ?>
 
-
-
-
-
 <!-- rgpd -->
 <script type="text/javascript" src="<?= get_template_directory_uri(); ?>/assets/js/tarteaucitron/tarteaucitron.js"></script>
 
@@ -330,8 +326,6 @@ src="https://www.facebook.com/tr?id=807331923271916&ev=PageView&noscript=1"
 </script>
 
 <?php if (is_page('contact')) : ?><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><?php endif; ?>
-<script src="<?= get_template_directory_uri(); ?>/assets/js/code-nitropack-exclude-min.js"></script>
-<script src="<?= get_template_directory_uri(); ?>/assets/js/code-min.js"></script>
 <script>
     jQuery('p:empty').remove();
 </script>

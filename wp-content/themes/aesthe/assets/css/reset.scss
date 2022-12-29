@@ -14,10 +14,13 @@ time, mark, audio, video, button {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
 	background: none;
+}
+
+ul, li {
+	list-style-type: none;
 }
 
 /* HTML5 display-role reset for older browsers */
@@ -29,7 +32,6 @@ blockquote:before, blockquote:after,
 q:before, q:after { content: ''; content: none }
 table { border-collapse: collapse; border-spacing: 0 }
 
-/* PAM */
 html {
 	scrollbar-width : none;
 }
@@ -51,8 +53,8 @@ input, textarea { outline: 0 }
 
 html, body { min-height: 100vh; }
 html { background: #000 }
-body { background: #fff;
-	overflow-x: hidden; 
+body { background: red;
+	overflow-x: hidden;
 }
 body { font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.5; font-weight: 400; margin: 0; border-radius: 0; }
 b,strong { font-weight: 700 }
@@ -86,8 +88,6 @@ button { cursor: pointer }
 /* Edge */
 @supports (-ms-ime-align:auto) {}
 
-// .burger { display: none }
-
 // img { width: 100%; height: 100%; object-fit: cover; }
 
 html.widthFixedScrollbar { width: calc(100vw - 0px); overflow-x: hidden }
@@ -104,6 +104,14 @@ $red: #C53E23;
 
 $grey01 : #8E8D8D;
 $grey02 : #707070;
+
+/*--------- Position des sections Guttenberg ---------*/
+// .gutenbergSection.wrapper {
+// 	@media (min-width: 1000px) {
+// 	position: relative;
+// 	top: -200px;
+// 	}
+//   }
 
 /*--------- Styles de texte ---------*/
 // h1,
@@ -186,3 +194,4 @@ p + p {
 //     letter-spacing: 2px;
 //   }
 // }
+

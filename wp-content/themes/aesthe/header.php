@@ -65,13 +65,16 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
     </link>
+    
     <link href="<?= get_template_directory_uri(); ?>/style.css" rel="stylesheet">
-    <!-- <link href="<?= get_template_directory_uri(); ?>/assets/js/code-min.js" rel="preload" as="script"> -->
+    <script src="<?= get_template_directory_uri(); ?>/assets/js/code-min.js"></script>
 
     <script>
         // ie css vars — https://github.com/nuxodin/ie11CustomProperties
         window.MSInputMethodContext && document.documentMode && document.write('<script src="https://cdn.jsdelivr.net/gh/nuxodin/ie11CustomProperties@4.1.0/ie11CustomProperties.min.js"><\/script>');
     </script>
+
+
     <?php wp_head(); ?>
 
 </head>
@@ -82,11 +85,13 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5V3M2D8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <!-- MenuHeader -->
     <header class="siteHeader  wrapper">
-
-        <div class="siteHeader__nav__container">
-            <?php wp_nav_menu(); ?>
+        <div class="menu-full-header-container ">
+            <?php wp_nav_menu(array('theme_location' => 'left-menu')) ?>
+            <a class="logoWeb" href="<?php bloginfo('url'); ?>/" aria-label="aesthé, médecine esthétique"><?php include('assets/img/logoN.svg'); ?></a>
+            <button class="burger"><span></span><span></span><span></span></button>
+            <?php wp_nav_menu(array('theme_location' => 'right-menu')) ?>
         </div>
-
+    </div>
+    <?php wp_nav_menu(array('theme_location' => 'mobile-menu')) ?>
     </header>
