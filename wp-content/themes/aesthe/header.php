@@ -1,6 +1,4 @@
-<?php $local = strpos($_SERVER['DOCUMENT_ROOT'], "C:/web/") !== false;
-// $preprod = strpos($_SERVER['DOCUMENT_ROOT'], "make.thisispam") !== false;
-?>
+<?php $local = strpos($_SERVER['DOCUMENT_ROOT'], "C:/web/") !== false; ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 
@@ -11,14 +9,12 @@
     if (get_field('meta_title', get_the_ID())) $titre = get_field('meta_title');
     ?>
 
-    <?php
-    // $iPhone = stripos($_SERVER['HTTP_USER_AGENT'], "iPhone");
-    // $our_website = get_the_permalink();
-    // if ($iPhone > -1 && !isset($_COOKIE['trust_pabau'])) {
-    //     setcookie("trust_pabau", "1");
-    //     header('Location: https://connect.pabau.com/safari_approve.php?ref=' . urlencode($our_website));
-    // }
-    ?>
+    <!-- $iPhone = stripos($_SERVER['HTTP_USER_AGENT'], "iPhone");
+    $our_website = get_the_permalink();
+    if ($iPhone > -1 && !isset($_COOKIE['trust_pabau'])) {
+        setcookie("trust_pabau", "1");
+        header('Location: https://connect.pabau.com/safari_approve.php?ref=' . urlencode($our_website));
+    } -->
 
     <title><?= $titre; ?></title>
 
@@ -78,7 +74,7 @@
 
 </head>
 
-<body <?php body_class('slug-' . basename(get_permalink())); ?> <?= ($local || $preprod) ? 'local' : '' ?>>
+<body <?php body_class('slug-' . basename(get_permalink())); ?>>
 
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5V3M2D8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

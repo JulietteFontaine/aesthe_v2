@@ -330,6 +330,31 @@ function register_acf_blocks()
 
 }
 
+// AJOUTER UNE PAGE D'OPTION
+if( function_exists('acf_add_options_page') ) {
+    
+  acf_add_options_page(array(
+    'page_title'  => 'Options du thème',
+    'menu_title'  => 'Options du thème',
+    'menu_slug'   => 'theme-general-settings',
+    'capability'  => 'edit_posts',
+    'redirect'    => false
+  ));
+
+  // acf_add_options_sub_page(array(
+  //   'page_title'  => 'Option du Header',
+  //   'menu_title'  => 'Header',
+  //   'parent_slug' => 'theme-general-settings',
+  // ));
+
+  acf_add_options_sub_page(array(
+    'page_title'  => 'Footer',
+    'menu_title'  => 'Footer',
+    'parent_slug' => 'theme-general-settings',
+  ));
+  
+}
+
 // Check if function exists and hook into setup.
 if (function_exists('acf_register_block')) {
   add_action('acf/init', 'register_acf_blocks');
