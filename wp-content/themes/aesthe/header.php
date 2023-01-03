@@ -12,12 +12,12 @@
     ?>
 
     <?php
-    $iPhone = stripos($_SERVER['HTTP_USER_AGENT'], "iPhone");
-    $our_website = get_the_permalink();
-    if ($iPhone > -1 && !isset($_COOKIE['trust_pabau'])) {
-        setcookie("trust_pabau", "1");
-        header('Location: https://connect.pabau.com/safari_approve.php?ref=' . urlencode($our_website));
-    }
+    // $iPhone = stripos($_SERVER['HTTP_USER_AGENT'], "iPhone");
+    // $our_website = get_the_permalink();
+    // if ($iPhone > -1 && !isset($_COOKIE['trust_pabau'])) {
+    //     setcookie("trust_pabau", "1");
+    //     header('Location: https://connect.pabau.com/safari_approve.php?ref=' . urlencode($our_website));
+    // }
     ?>
 
     <title><?= $titre; ?></title>
