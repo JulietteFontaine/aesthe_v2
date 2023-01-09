@@ -1,32 +1,8 @@
-/*--------- Bandeau fil d'ariane / Top Banner ---------*/
-.breadcrumb {
-  font-size: 16px;
-  font-family: "Fleya";
-  padding: 15px 0px;
-  flex: 0 0 auto;
-  @media (max-width: 1000px) {
-    display: none;
-  }
-  a {
-    padding: 0 10px;
-    padding-left: 0 !important;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-@media (max-width: 600px) {
-  .breadcrumb {
-    display: none;
-  }
-}
-
 /*-----------------   tns nav   -------------------*/
 
 .tns-nav {
   display: flex;
-  margin: 0 0 30px;
+  margin: 0;
   justify-content: center;
 }
 .tns-nav button {

@@ -22,6 +22,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta name="facebook-domain-verification" content="yl47nsx11nhdeyzjau5tei2tjqsird" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+    
     <!-- Google Tag Manager -->
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -63,13 +65,15 @@
     </link>
     
     <link href="<?= get_template_directory_uri(); ?>/style.css" rel="stylesheet">
-    <script src="<?= get_template_directory_uri(); ?>/assets/js/code-min.js"></script>
 
     <script>
         // ie css vars — https://github.com/nuxodin/ie11CustomProperties
         window.MSInputMethodContext && document.documentMode && document.write('<script src="https://cdn.jsdelivr.net/gh/nuxodin/ie11CustomProperties@4.1.0/ie11CustomProperties.min.js"><\/script>');
     </script>
 
+    <script src="<?= get_template_directory_uri(); ?>/assets/js/code-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"></script>
+    
     <?php wp_head(); ?>
 
 </head>

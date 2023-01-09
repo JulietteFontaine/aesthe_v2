@@ -1,0 +1,138 @@
+{
+    "key": "group_63b69dece7867",
+    "title": "Prestation",
+    "fields": [
+        {
+            "key": "field_63b69df2bb542",
+            "label": "Intitulé",
+            "name": "entitled",
+            "type": "text",
+            "instructions": "Intitulé de la prestation",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_63b69f5fbb543",
+            "label": "Prix",
+            "name": "price",
+            "type": "text",
+            "instructions": "Attention à ajouter la devise si besoin (\"EUR\", \"€\"...)",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_63b69fd34d765",
+            "label": "Description",
+            "name": "description",
+            "type": "wysiwyg",
+            "instructions": "330 caractères maximum",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "visual",
+            "toolbar": "full",
+            "media_upload": 0,
+            "delay": 1
+        },
+        {
+            "key": "field_63b6a0634d766",
+            "label": "Note",
+            "name": "rate",
+            "type": "number",
+            "instructions": "Note de la prestation si elle existe, arrondie au 0,5eme",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "min": 0,
+            "max": 5,
+            "step": "0.5"
+        },
+        {
+            "key": "field_63b6a0f54d767",
+            "label": "Nombre d'avis",
+            "name": "number_reviews",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "min": "",
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_63b6a1304d768",
+            "label": "Lien RDV",
+            "name": "rdv_link",
+            "type": "link",
+            "instructions": "Lien vers la page de prise de rendez-vous",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "prestas"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "acf_after_title",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1673271283
+}

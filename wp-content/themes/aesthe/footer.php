@@ -148,7 +148,6 @@
         /* Open the panel with this hashtag */
         "cookieName": "tarteaucitron",
         /* Cookie name */
-
         "orientation": "middle",
         /* Banner position (top - bottom - middle - popup) */
 
@@ -236,34 +235,6 @@
     (tarteaucitron.job = tarteaucitron.job || []).push('googletagmanager');
 </script> -->
 
-<!-- SKAZE -->
-<script async="async" src="//events.sk.ht/aesthe/lib.js"></script>
-<script>
-    var skaze = skaze || {};
-    skaze.cmd = skaze.cmd || [];
-    skaze.cmd.push(function() {
-        skaze.init({
-            siteIdentifier: "aesthe"
-        });
-        skaze.pushEvent({
-            name: "aesthe - All Page",
-            properties: {}
-        });
-    });
-</script>
-
-
-<!-- GA Universel -->
-<!--<script type="text/javascript">-->
-<!--    tarteaucitron.user.analyticsUa = 'UA-207934763-1';-->
-<!--    tarteaucitron.user.analyticsMore = function () { /* optionnal ga.push() */ };-->
-<!--    tarteaucitron.user.analyticsUaCreate = { /* optionnal create configuration */ };-->
-<!--    tarteaucitron.user.analyticsAnonymizeIp = true;-->
-<!--    tarteaucitron.user.analyticsPageView = { /* optionnal pageview configuration */ };-->
-<!--    tarteaucitron.user.analyticsMore = function () { /* optionnal ga.push() */ };-->
-<!--    (tarteaucitron.job = tarteaucitron.job || []).push('analytics');-->
-<!--</script>-->
-
 <!-- end rgpd -->
 
 <!-- Start of aesthe Zendesk Widget script -->
@@ -296,6 +267,7 @@
 </script>
 
 <?php if (is_page('contact')) : ?><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><?php endif; ?>
+    <!-- <script src="<?= get_template_directory_uri(); ?>/assets/js/code-min.js"></script> -->
 <script>
     jQuery('p:empty').remove();
 </script>

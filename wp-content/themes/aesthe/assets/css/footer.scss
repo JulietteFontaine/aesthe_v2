@@ -90,11 +90,11 @@ footer .cta--ghost { border: white; }
 	  }
 }
 
-
 .footer__main ul { list-style: none; line-height:  1.2 }
 .footer__main .network:hover,
 .footer__main .adress:hover { text-decoration: none !important; }
 
+.footer__main {display: flex; flex-wrap: wrap; }
 .footer__main .colonne_title { margin: 0 0 5px 0;
 	text-transform: uppercase;
 	font-weight: 600;
@@ -122,14 +122,13 @@ footer .cta--ghost { border: white; }
 }
 @media(max-width: 1000px){
 
-	.footer__main { display: flex; flex-wrap: wrap; }
+	// .footer__main { display: block; }
 	.footer__main ul a { font-size: 14px; }
 	.footer__main > div:last-of-type { width: var(--wrapper); text-align: left; margin: 2em 0 0; }
 	.footer__foot { padding:  3em 0 1em }
 }
 
 @media(max-width: 800px){
-	// .footer__main {display: block; }
 	.footer__main>div:not(:last-of-type) { width: var(--col-6); margin: 0 0 2em 0; }
 	.footer__main > div:last-of-type {margin: 1em 0 0; }
 	.footer__foot { padding:  3em 0 3em; align-items: flex-end; }
