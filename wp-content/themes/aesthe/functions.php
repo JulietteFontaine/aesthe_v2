@@ -247,11 +247,22 @@ function register_acf_blocks()
     'name'              => 'Top Offre',
     'title'             => __('Top Offre'),
     'render_template'   => '/template-parts/block/top-offre.php',
+    'icon' => 'dashicons-welcome-widgets-menus',
     'keywords'          => array('Top Offre'),
     'mode'              => 'auto',
     'category'          => 'formatting',
-    'icon' => 'dashicons-welcome-widgets-menus'
   ));
+
+  // block Avant apres
+  acf_register_block(array(
+    'name'              => 'Avant apres',
+    'title'             => __('Avant apres'),
+    'render_template'   => '/template-parts/block/before-after.php',
+    'icon' => 'dashicons-welcome-widgets-menus',
+    'mode'              => 'auto',
+    'category'          => 'formatting',
+  ));
+  
 
 }
 
