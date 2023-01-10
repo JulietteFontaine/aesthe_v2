@@ -18,24 +18,16 @@ else : ?>
             </h2>
         </div>
 
-    <div class="beforeAfter__container">
-        <figure class="slider">
+        <div class='container'>
+        <?php $image_before = get_field('image_before') ?>
+            <div class='img background-img' style="background-image: url('<?php echo esc_url($image_before['url']); ?>"></div>
 
-        <?php $image_before = get_field('image_before'); ?>
-        <div class="slider__before" style="background-image: url('<?php echo esc_url($image_before['url']); ?>"></div>
-        
-        
         <?php $image_after = get_field('image_after'); ?>
-        <div class="slider__after" style="background-image: url('<?php echo esc_url($image_after['url']);?>"></div>
+            <div class='img foreground-img' style="background-image: url('<?php echo esc_url($image_after['url']); ?>"></div>
+            <input type="range" min="1" max="100" value="50" class="slider" name='slider' id="slider">
+            <div class='slider-button'></div>
+  </div>
 
-        <!-- <div class="slider__separateur"></div> -->
-        
-        <input class="slider__range" type="range" min="0" max="100" value="50" />
-        </figure>
-
-
-    </div>
-    <!-- <p><?= the_field('legende') ?></p> -->
 </section>
 
 <?php endif; ?>

@@ -72,14 +72,14 @@ if(document.querySelector('.avantApres')){
 
     })
 }
-    // $(".beforeAfter__range").on("input change", (e) => {
-    //     const sliderPos = e.target.value;
-    //     console.log(sliderPos);
-    //     // Update the width of the foreground image
-    //     $(".after").css("width", `${sliderPos}%`);
-    //     // Update the position of the slider button
-    //     $(".beforeAfter__range__button").css("left", `calc(${sliderPos}% - 18px)`);
-    //   });
+
+$("#slider").on("input change", (e)=>{
+    const sliderPos = e.target.value;
+    // Update the width of the foreground image
+    $('.foreground-img').css('width', `${sliderPos}%`)
+    // Update the position of the slider button
+    $('.slider-button').css('left', `calc(${sliderPos}% - 18px)`)
+  });
       
 // END AVANT APRES
 

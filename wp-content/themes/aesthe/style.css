@@ -1618,9 +1618,25 @@ footer .cta--ghost {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  height: 350px;
+}
+@media (max-width: 1000px) {
+  .beforeAfter {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
 }
 .beforeAfter__title {
   color: #C53E23;
+  margin-right: var(--heightNav);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   width: 50%;
 }
 .beforeAfter__title h2 {
@@ -1628,35 +1644,133 @@ footer .cta--ghost {
   padding: 1rem 0;
   font-size: 55px;
 }
-.beforeAfter__container {
+
+.container {
   width: calc(50% + var(--leftMargin));
   left: 50%;
   position: absolute;
+  height: 350px;
 }
-
-.slider {
-  position: relative;
-  height: 0;
-  padding-bottom: 65.573%;
-  height: 300px;
-}
-.slider__after {
+.container .img {
   position: absolute;
-  z-index: 1;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-size: cover;
-  pointer-events: none;
+  background-size: 800px 100%;
 }
-.slider__before {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
+.container .background-img {
+  background-image: url("https://i.imgur.com/s08MkXC.jpg");
+}
+.container .foreground-img {
+  background-image: url("https://i.imgur.com/PfIWek4.jpg");
   width: 50%;
+}
+.container .slider {
+  position: absolute;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+       appearance: none;
+  width: 100%;
   height: 100%;
-  background-size: cover;
+  background: rgba(242, 242, 242, 0.3);
+  outline: none;
+  margin: 0;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container .slider:hover {
+  background: rgba(242, 242, 242, 0.1);
+}
+.container .slider::-webkit-slider-thumb {
+  width: 70px;
+  height: 70px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.container .slider::-moz-range-thumb {
+  width: 70px;
+  height: 70px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.container .slider:focus::-webkit-slider-thumb, .container .slider:focus::-moz-range-thumb {
+  background: rgba(255, 255, 255, 0.5);
+}
+.container .slider-button {
   pointer-events: none;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  left: calc(50% - 18px);
+  top: calc(50% - 18px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container input[type=range] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: absolute;
+  top: 50%;
+  left: -35px;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  background-color: red;
+  width: calc(100% + 70px);
+  z-index: 3;
+  opacity: 0;
+}
+.container input[type=range]:focus, .container input[type=range]:active {
+  outline: none;
+}
+.container input[type=range]::-moz-range-track {
+  -moz-appearance: none;
+  height: 15px;
+  width: 98%;
+  background-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  outline: none;
+}
+.container input[type=range]:active {
+  border: none;
+  outline: none;
+}
+.container input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 70px;
+  height: 70px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.container input[type=range]::-moz-range-thumb {
+  -moz-appearance: none;
+  width: 70px;
+  height: 70px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.container input[type=range]:focus::-webkit-slider-thumb, .container input[type=range]:focus::-moz-range-thumb {
+  background: rgba(255, 255, 255, 0.5);
 }
