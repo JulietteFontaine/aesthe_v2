@@ -11,33 +11,31 @@
 if (is_admin()) : echo "<div style=\"width: 100%; padding: 20px 20px;text-align: center;font-size: 10px;background: #eee\">Avant apres (cliquer pour modifier)</div>";
 else : ?>
 
-    <section class="beforeAfter">
-        <div class="beforeAfter">
+<section class="beforeAfter beforeAfter--<?= $block['id'] ?>">
+        <div class="beforeAfter__title">
             <h2>
                 <?php the_field('title') ?>
-
             </h2>
         </div>
-        <div class="beforeAfter__image">
 
-            <div class="beforeAfter__image__container">
-                <figure class="beforeAfter__image__before">
-                    <?php
-                    $image_before = get_field('image_before');
-                    if (!empty($image_before)) : ?>
-                        <?php echo wp_get_attachment_image($image_before['ID'], 'medium'); ?>
+    <div class="beforeAfter__container">
+        <figure class="slider">
 
-                    <?php endif;
+        <?php $image_before = get_field('image_before'); ?>
+        <div class="slider__before" style="background-image: url('<?php echo esc_url($image_before['url']); ?>"></div>
+        
+        <div class="slider__separateur"></div>
+        
+        <?php $image_after = get_field('image_after'); ?>
+        <div class="slider__after" style="background-image: url('<?php echo esc_url($image_after['url']);?>"></div>
 
-                    $image_after = get_field('image_after'); ?>
-                    <div class="beforeAfter__image__after" style="background-image: url(<?php echo esc_url($image_after['url']); ?>)">
-                    </div>
-                </figure>
-                <input type="range" min="0" max="100" value="50" id="avantApres__range">
-            </div>
+        
+    </figure>
+    
+    <input class="slider__range" type="range" min="0" max="100" value="50" />
 
-            <p><?= the_field('legende') ?></p>
-        </div>
-    </section>
+    </div>
+    <!-- <p><?= the_field('legende') ?></p> -->
+</section>
 
 <?php endif; ?>

@@ -38,7 +38,6 @@ window.addEventListener("DOMContentLoaded", function () {
 //     document.querySelector('.siteHeader__nav__container').classList.toggle('open')
 //     document.querySelector('.menu-item-has-children.open')? document.querySelector('.menu-item-has-children.open').classList.remove('open'): false ;
 })
-
 // END MENU HEADER
 
 // PRESTATIONS
@@ -55,7 +54,6 @@ if (document.querySelector('.offreTop')) {
     });
 
     document.querySelectorAll('.offreTop__controls li').forEach((item, index) => {
-        console.log(item);
         item.addEventListener('click', event => {
             if(!item.classList.contains('active')){
                 zonePrestation.goTo(index);
@@ -64,5 +62,28 @@ if (document.querySelector('.offreTop')) {
     })
 }
 // END PRESTATION
+
+// AVANT APRES
+	if(document.querySelector('.beforeAfter')){
+		var divisorAvantApres = document.querySelector(".slider__after");
+        console.log(divisorAvantApres);
+			sliderAvantApres = document.querySelector(".slider__range");
+
+			sliderAvantApres.addEventListener('input', event => {
+			divisorAvantApres.style.width = sliderAvantApres.value+"%";
+
+		})
+	}
+
+    // $(".beforeAfter__range").on("input change", (e) => {
+    //     const sliderPos = e.target.value;
+    //     console.log(sliderPos);
+    //     // Update the width of the foreground image
+    //     $(".after").css("width", `${sliderPos}%`);
+    //     // Update the position of the slider button
+    //     $(".beforeAfter__range__button").css("left", `calc(${sliderPos}% - 18px)`);
+    //   });
+      
+// END AVANT APRES
 
 })
