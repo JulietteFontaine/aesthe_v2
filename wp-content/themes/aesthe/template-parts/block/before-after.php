@@ -24,15 +24,15 @@ else : ?>
         <?php $image_before = get_field('image_before'); ?>
         <div class="slider__before" style="background-image: url('<?php echo esc_url($image_before['url']); ?>"></div>
         
-        <div class="slider__separateur"></div>
         
         <?php $image_after = get_field('image_after'); ?>
         <div class="slider__after" style="background-image: url('<?php echo esc_url($image_after['url']);?>"></div>
 
+        <!-- <div class="slider__separateur"></div> -->
         
-    </figure>
-    
-    <input class="slider__range" type="range" min="0" max="100" value="50" />
+        <input class="slider__range" type="range" min="0" max="100" value="50" />
+        </figure>
+
 
     </div>
     <!-- <p><?= the_field('legende') ?></p> -->

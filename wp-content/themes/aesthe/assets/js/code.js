@@ -64,17 +64,14 @@ if (document.querySelector('.offreTop')) {
 // END PRESTATION
 
 // AVANT APRES
-	if(document.querySelector('.beforeAfter')){
-		var divisorAvantApres = document.querySelector(".slider__after");
-        console.log(divisorAvantApres);
-			sliderAvantApres = document.querySelector(".slider__range");
+if(document.querySelector('.avantApres')){
+    var divisorAvantApres = document.querySelector(".avantApres__image__after"),
+        sliderAvantApres = document.getElementById("#avantApres__range");
+        sliderAvantApres.addEventListener('input', event => {
+        divisorAvantApres.style.width = sliderAvantApres.value+"%";
 
-			sliderAvantApres.addEventListener('input', event => {
-			divisorAvantApres.style.width = sliderAvantApres.value+"%";
-
-		})
-	}
-
+    })
+}
     // $(".beforeAfter__range").on("input change", (e) => {
     //     const sliderPos = e.target.value;
     //     console.log(sliderPos);

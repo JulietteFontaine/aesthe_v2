@@ -1638,6 +1638,7 @@ footer .cta--ghost {
   position: relative;
   height: 0;
   padding-bottom: 65.573%;
+  height: 300px;
 }
 .slider__after {
   position: absolute;
