@@ -10,12 +10,12 @@ if (is_admin()) : echo "<div style=\"width: 100%; padding: 20px 20px;text-align:
 else :
 
     global $post;
-    $bg = get_field("background");
+    $bg = get_field("background"); 
     $cp = get_field("catchphrase");
-?>
+?>      
 
     <section class="offreTop offreTop--<?= $block['id'] ?>">
-        <div class="offreTop--bg" style="background-image: url('<?php echo esc_url($bg['url']); ?>">
+        <div class="offreTop--bg" style="background-image: url(<?php echo esc_url($bg['url']); ?>)">
         <div class="offreTop__content wrapper">
             <div class="offreTop__content__left">
                 <img class="offreTop__content__catchphrase" src="<?php echo esc_url($cp['url']); ?>" alt="phrase d'accorche annimée">
@@ -25,7 +25,7 @@ else :
                 <?php $featured_posts = get_field('prestations');
                 if ($featured_posts) :
                 ?>
-                    <span>Selectionnez une prestation</span>
+                    <span class="selec">Sélectionner une prestation</span>
 
                     <div class="offreTop__controls">
                         <ul class="offreTop__controls__container">
@@ -67,17 +67,33 @@ else :
                                                                 include('wp-content/themes/aesthe/assets/img/stars/star.svg'); include('wp-content/themes/aesthe/assets/img/stars/star.svg'); include('wp-content/themes/aesthe/assets/img/stars/star.svg'); include('wp-content/themes/aesthe/assets/img/stars/star.svg'); include('wp-content/themes/aesthe/assets/img/stars/star.svg');
                                     endif;
                                 ?>
-                                <a href="#"><?php echo get_field('number_reviews', $featured_post->ID);?> avis</a></div>
-                                <!-- <div class="offreTop__informations--bg"></div> -->
+                                <a href="#moreReviews" target="_self"><?php echo get_field('number_reviews', $featured_post->ID);?> avis</a></div>
+
+                                <div class="cta-onscroll -translate-x-full">
+                                    <a class="cta" href="<?php echo get_field("rdv_link", $featured_post->ID)['url']?>">
+                                        <div class="picto-cta"><?php include('wp-content/themes/aesthe/assets/img/fleche-cta.svg'); ?></div>
+                                            <button class="cta">
+                                            <span>Je Réserve</span>
+                                            <span><?php echo get_field("rdv_link", $featured_post->ID)['title']?></span>
+                                            </button>
+                                    </a>
+                                </div>
+                                  
                                 <div class="offreTop__informations description"><?php echo get_field('description', $featured_post->ID); ?>
-                                <a href="<?php echo get_field("rdv_link", $featured_post->ID)['url']?>">
-                                    <button class="offreTop__informations button">JE RESREVE</br><?php echo get_field("rdv_link", $featured_post->ID)['title']?></button>
+                                <?php if (get_field("rdv_link", $featured_post->ID)) : ?>
+                                <a class="cta" href="<?php echo get_field("rdv_link", $featured_post->ID)['url'] ?>">
+                                <div class="picto-cta"><?php include('wp-content/themes/aesthe/assets/img/fleche-cta.svg'); ?></div>
+                                    <button class="cta">
+                                    <span>Je Réserve</span>
+                                    <span><?php echo get_field("rdv_link", $featured_post->ID)['title'] ?></span>
+                                    </button>
                                 </a>
+                                <?php endif; ?>
                                 </div>
                             </div>
+                            <!-- second cta on scroll  -->
                         <?php endforeach; ?>
-                    </div>
-
+                    </div>       
                 <?php endif; ?>
             </div>
         </div>

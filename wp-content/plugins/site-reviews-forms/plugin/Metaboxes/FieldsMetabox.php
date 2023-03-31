@@ -15,7 +15,7 @@ class FieldsMetabox implements MetaboxContract
     public function register($post)
     {
         $id = Application::POST_TYPE.'-fieldsdiv';
-        $title = _x('Form Fields', 'admin-text', 'site-reviews');
+        $title = _x('Form Fields', 'admin-text', 'site-reviews-forms');
         add_meta_box($id, $title, [$this, 'render'], Application::POST_TYPE, 'normal', 'high');
     }
 

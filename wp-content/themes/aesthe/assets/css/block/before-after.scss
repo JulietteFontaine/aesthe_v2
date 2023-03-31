@@ -1,160 +1,215 @@
-.beforeAfter {
-  display: flex;
-  @media (max-width: 1000px) {
-    flex-direction: column;
-  }
-  height: 350px;
-  &__title {
-    color: $red;
-    margin-right: var(--heightNav);
+.avantApres {
     display: flex;
-    align-items: center;
-    width: 50%;
-    h2 {
-      width: 80%;
-      padding: 1rem 0;
-      font-size: 55px;
-    }
-  }
-}
+    flex-direction: row;
 
-@mixin center() {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container {
-  width: calc(50% + var(--leftMargin));
-  left: 50%;
-  position: absolute;
-  height: 350px;
-  .img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: 800px 100%;
-  }
-  .background-img {
-    background-image: url('https://i.imgur.com/s08MkXC.jpg');
-  }
-  .foreground-img {
-    background-image: url('https://i.imgur.com/PfIWek4.jpg');
-    width: 50%;
-  }
-  
-  .slider {
-    position: absolute;
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 100%;
-    background: rgba(#f2f2f2, .3);
-    outline: none;
-    margin: 0;
-    transition: all .2s;
-    @include center;
-    &:hover {
-      background: rgba(#f2f2f2, .1);
-    }
-    &::-webkit-slider-thumb {
-      width: 70px;
-      height: 70px;
-      background: #fff;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    &::-moz-range-thumb {
-      width: 70px;
-      height: 70px;
-      background: #fff;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    
-    &:focus {
-      &::-webkit-slider-thumb,
-      &::-moz-range-thumb {
-        background: rgba(255, 255, 255, 0.5);
-      }
-    }
-  }
-  
-  .slider-button {
-    $size: 30px;
-    pointer-events: none;
-    position: absolute;
-    width: $size;
-    height: $size;
-    border-radius: 50%;
-    background-color: white;
-    left: calc(50% - 18px);
-    top: calc(50% - 18px);
-    @include center;
-    
-  }
-
-  @mixin thumb {
-    width: 70px;
-    height: 70px;
-    background: #fff;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  input[type="range"] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    position: absolute;
-    top: 50%;
-    left: -35px;
-    transform: translateY(-50%);
-    background-color: red;
-    width: calc(100% + 70px);
-    z-index: 3;
-    opacity: 0;
-    &:focus,
-    &:active {
-      outline: none;
-    }
-    &::-moz-range-track {
-      -moz-appearance: none;
-      height: 15px;
-      width: 98%;
-      background-color: rgba(255, 255, 255, 0.1);
-      position: relative;
-      outline: none;
-    }
-    &:active {
-      border: none;
-      outline: none;
+    @media (max-width: 1000px) {
+    flex-direction: column;
     }
 
-    @mixin thumb {
-      width: 70px;
-      height: 70px;
-      background: #fff;
-      border-radius: 50%;
-      cursor: pointer;
+    p {
+        color: white;
+        z-index: 3;
+        bottom: 13px;
+        left: 19px;
+        font-family: "Noto serif";
+        font-style: italic;
+        position: absolute;
+        width: 48%;
+        text-align: left;
+        bottom: 51px;
+        left: 15px;
+        max-height: 0px;
+        @media (min-width: 1000px) {
+            bottom: 53px;
+            left: 15px;
+        }
     }
 
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      @include thumb;
+    &>* {
+        @media (max-width: 800px) {
+            width: var(--wrapper);
+        }
     }
 
-    &::-moz-range-thumb {
-      -moz-appearance: none;
-      @include thumb;
+    &__title {
+        color: $red;
+        padding: 2rem 0;
+        display: flex;
+        align-items: center;
+        @media (min-width: 1000px) {
+        width: 50%;
+        height: 300px;
+        }
+
+        h2 {
+            width: 80%;
+            padding: 1rem 0;
+        }
     }
 
-    &:focus {
-      &::-webkit-slider-thumb,
-      &::-moz-range-thumb {
-        background: rgba(255, 255, 255, 0.5);
-      }
+    &__image {
+
+        width: 200vw;
+        position: relative;
+        right: var(--leftMargin);
+        
+        overflow: hidden;
+        height: 250px;
+
+        display: inline-flex;
+        align-items: center;
+        
+        @media (min-width: 1000px) {
+            width: calc(100% + (var(--leftMargin)*2));
+            height: 300px;
+            left: 50%;
+            position: absolute;
+            height: 300px;
+            display: inline-flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        &__container {
+            overflow: hidden;
+            figure {
+                position: relative;
+
+                &>img {
+                    position: relative;
+                    max-width: 100%;
+                    @media (max-width: 800px) {
+                        max-width: 60%;
+                        height: 250px;
+                    }
+                }
+
+                &>div {
+                    background-size: 59vw;
+                    background-position: center left;
+                    position: absolute;
+                    bottom: 0;
+                    height: 100%;
+                    border-right: 2px solid #fff;
+                    z-index: 2;
+                    width: 53%;
+                    @media (max-width: 800px) {
+                        background-size: 120vw;
+                    }
+                }
+            }
+
+            &:hover {
+                .avantApres__image__button {
+                    &::after {
+                        width: calc(100% + 35px);
+                        height: calc(100% + 35px);
+                        opacity: 0.2;
+                    }
+                }
+            }
+        }
+
+        &__button {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translate(50%, -50%);
+            z-index: 2;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            border-radius: 50%;
+            font-family: Fleya;
+            font-size: 13px;
+            line-height: 14px;
+            font-weight: 500;
+
+            &::before,
+            &::after {
+                content: "";
+                z-index: -1;
+                border-radius: 50%;
+                background: #fff;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            &::before {
+                width: 100%;
+                height: 100%;
+            }
+
+            &::after {
+                width: calc(100% + 15px);
+                height: calc(100% + 15px);
+                opacity: 0;
+                transition: 0.2s;
+            }
+
+            &:hover {}
+        }
     }
-  }
+
+    input[type="range"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        position: absolute;
+        top: 50%;
+        left: -35px;
+        transform: translateY(-50%);
+        background-color: red;
+        width: calc(100% + 70px);
+        z-index: 3;
+        opacity: 0;
+
+        &:focus,
+        &:active {
+            outline: none;
+        }
+
+        &::-moz-range-track {
+            -moz-appearance: none;
+            height: 15px;
+            width: 98%;
+            background-color: rgba(255, 255, 255, 0.1);
+            position: relative;
+            outline: none;
+        }
+
+        &:active {
+            border: none;
+            outline: none;
+        }
+
+        @mixin thumb {
+            width: 70px;
+            height: 70px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            @include thumb;
+        }
+
+        &::-moz-range-thumb {
+            -moz-appearance: none;
+            @include thumb;
+        }
+
+        &:focus {
+
+            &::-webkit-slider-thumb,
+            &::-moz-range-thumb {
+                background: rgba(255, 255, 255, 0.5);
+            }
+        }
+    }
 }

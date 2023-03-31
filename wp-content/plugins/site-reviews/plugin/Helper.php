@@ -28,14 +28,9 @@ class Helper
             : $className;
     }
 
-    /**
-     * @param string $name
-     * @param string $prefix
-     * @return string
-     */
-    public static function buildMethodName($name, $prefix = '')
+    public static function buildMethodName(string $name, string $prefix = '', string $suffix = ''): string
     {
-        return lcfirst(Str::camelCase($prefix.'-'.$name));
+        return lcfirst(Str::camelCase(sprintf('%s-%s-%s', $prefix, $name, $suffix)));
     }
 
     /**
@@ -160,7 +155,7 @@ class Helper
                     'post_type' => $parts[0],
                     'posts_per_page' => 1,
                 ]);
-                return Cast::toInt(Arr::get($posts, 0));
+                return Arr::getAs('int', $posts, 0);
             }
         }
         return 0;
@@ -179,7 +174,7 @@ class Helper
             $term = Cast::toInt($term);
         }
         $tt = term_exists($term, glsr()->taxonomy);
-        return Cast::toInt(Arr::get($tt, 'term_id'));
+        return Arr::getAs('int', $tt, 'term_id');
     }
 
     /**
@@ -210,11 +205,11 @@ class Helper
         }
         if (is_numeric($user)) {
             $user = get_user_by('ID', $user);
-            return Cast::toInt(Arr::get($user, 'ID'));
+            return Arr::getAs('int', $user, 'ID');
         }
         if (is_string($user)) {
             $user = get_user_by('login', $user);
-            return Cast::toInt(Arr::get($user, 'ID'));
+            return Arr::getAs('int', $user, 'ID');
         }
         return 0;
     }
@@ -336,7 +331,9 @@ class Helper
      */
     public static function remoteStatusCheck($url)
     {
-        $response = wp_safe_remote_head($url);
+        $response = wp_safe_remote_head($url, [
+            'sslverify' => !static::isLocalServer(),
+        ]);
         if (!is_wp_error($response)) {
             return $response['response']['code'];
         }

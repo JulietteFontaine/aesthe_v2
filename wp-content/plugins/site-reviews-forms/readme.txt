@@ -1,19 +1,17 @@
 === Site Reviews: Review Forms ===
 Contributors: pryley, geminilabs
-Donate link: https://www.paypal.me/pryley
+Donate link: https://ko-fi.com/pryley
 Tags: Site Reviews
-Tested up to: 6.0
-Requires at least: 5.8
-Requires PHP: 7.2
-Stable tag: 1.10.2
+Tested up to: 6.1
+Stable tag: 1.12.0
 License: GPLv3
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Create unique review forms with custom fields and review templates.
+Create review forms with custom fields and review templates.
 
 == Description ==
 
-Create unique review forms with custom fields and review templates.
+Create review forms with custom fields and review templates.
 
 = Minimum plugin requirements =
 
@@ -29,6 +27,24 @@ If your server and website does not meet these minimum requirements, the plugin 
 == Screenshots ==
 
 == Changelog ==
+
+= 1.12.0 (2023-02-21) =
+
+- Added support for [site_review] shortcode
+- Added support for Single Review block, widget, and Elementor widget
+- Fixed Category field options
+- Fixed Custom Textarea field when paragraphs are displayed as a list
+- Fixed Elementor integration
+- Fixed Email field tags to use antispambot HTML encoding
+- Fixed missing strings
+- Fixed output of fields with multi-values
+- Fixed REST API integration
+
+= 1.11.0 (2022-12-27) =
+
+- Fixed Category dropdown when optgroups are enabled and options contain a single child category
+- Fixed notice which is displayed when Site Reviews is not activated
+- Fixed rating label position in reviews (change it back using the CSS code snippet provided on the "Help & Support > Addons" page)
 
 = 1.10.2 (2022-09-15) =
 

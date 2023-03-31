@@ -80,6 +80,17 @@ function update_relevanssi_options( array $request ) {
 			update_option( 'relevanssi_show_matches_text', $value );
 		}
 		relevanssi_update_intval( $request, 'relevanssi_excerpt_length', true, 10 );
+
+		if ( isset( $request['relevanssi_excerpt_allowable_tags'] ) ) {
+			$value = $request['relevanssi_excerpt_allowable_tags'];
+			$value = str_replace( array( ' ', '/' ), '', $value );
+			$value = implode( '>', array_unique( explode( '>', $value ) ) );
+			update_option( 'relevanssi_excerpt_allowable_tags', $value );
+		}
+	}
+
+	if ( 'debugging' === $request['tab'] ) {
+		relevanssi_turn_off_options( $request, array( 'relevanssi_debugging_mode' ) );
 	}
 
 	relevanssi_process_weights_and_indexing( $request );
@@ -96,10 +107,10 @@ function update_relevanssi_options( array $request ) {
 		'relevanssi_bg_col'                 => true,
 		'relevanssi_class'                  => true,
 		'relevanssi_css'                    => true,
+		'relevanssi_debugging_mode'         => true,
 		'relevanssi_default_orderby'        => true,
 		'relevanssi_disable_or_fallback'    => true,
 		'relevanssi_exact_match_bonus'      => true,
-		'relevanssi_excerpt_allowable_tags' => true,
 		'relevanssi_excerpt_custom_fields'  => true,
 		'relevanssi_excerpt_type'           => true,
 		'relevanssi_excerpts'               => true,

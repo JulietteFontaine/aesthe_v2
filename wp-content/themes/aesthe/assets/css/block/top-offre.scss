@@ -1,3 +1,7 @@
+$ptr : 75px;
+.offreTop  {
+    z-index : 3;
+}
 .offreTop--bg {
     // position: absolute;
     background-position: center center;
@@ -14,10 +18,11 @@
 .offreTop__content {
     display: flex;
     padding-top: 8rem;
+    min-height: 100vh;
 
     @media(max-width: 1000px) {
         flex-direction: column;
-        padding-top: 85px;
+        padding-top: 120px;
     }
 
     &__left {
@@ -31,32 +36,36 @@
     }
 
     &__catchphrase {
-        width: 200px;
+        width: 150px;
         transform-origin: center center;
-        animation: anim-texte 25s infinite
+        animation: anim-texte 25s infinite;
     }
 
     &__right {
         @media(min-width: 1000px) {
             width: 50%;
-            // padding: 0px 95px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
         }
 
         h1 {
             color: white;
             @media(min-width: 1000px) {
-                // padding-left: calc(var(--gutter) * 3);
+                padding-left: $ptr;
+                padding-right: 75px;
+                font-size: 40px;
             }
         }
 
-        span {
+        .selec {
             font-family: noto;
             font-style: italic;
             color: white;
             font-size: 16px;
 
             @media(min-width: 1000px) {
-                padding-left: calc(var(--gutter) * 3);
+                padding-left: $ptr;
             }
         }
 
@@ -67,7 +76,7 @@
     padding-top: 1rem;
 
     @media(min-width: 1000px) {
-        // padding-left: calc(var(--gutter) * 3);
+        padding-left: $ptr;
     }
 
     li {
@@ -82,7 +91,6 @@
         font-size: 20px;
 
         @media(min-width: 1000px) {
-            font-size: 25px;
             width: fit-content;
         }
 
@@ -96,7 +104,7 @@
         background-color: white;
     }
 
-    li:first-of-type {
+    li:not(:last-of-type) {
         margin-bottom: 7px;
     }
 }
@@ -105,8 +113,7 @@
 
     .price {
         color: white;
-        // padding-left: calc(var(--gutter) * 3);
-        
+        padding-left: $ptr;        
         font-family: "Roboto" Light;
         font-weight: 300;
         font-size: 20px;
@@ -114,18 +121,18 @@
 
         @media(max-width:1000px) {
             padding-top: 1rem;
-            // padding-left: 0;
+            padding-left: 0;
         }
     }
 
     .rate {
         display: flex;
-        // padding-left: calc(var(--gutter) * 3);
+        padding-left: $ptr;
         padding-bottom: 1rem;
         line-height: 1;
 
         @media(max-width:1000px) {
-            // padding-left: 0;
+            padding-left: 0;
         }
 
         svg {
@@ -151,16 +158,14 @@
 
     .description {
         font-family: "roboto";
-        font-weight: 400;
         color: $coffee;
-        background-color: rgba(255, 245, 237, 0.8);
+        background-color: rgba(255, 245, 237, 0.95);
         width: 100vw;
         right: 30px;
         padding: 29px 30px;
-        font-size: 19px;
         line-height: 1.4;
         @media(min-width:1000px) {
-            padding: 67px 75px;
+            padding: 40px 75px 20px;
             width: 50vw;
             line-height: 1.2;
             font-weight: 300;
@@ -181,5 +186,29 @@
 @keyframes anim-texte {
     50% {
         transform: rotate(1turn)
+    }
+}
+
+.cta-onscroll {
+    position: fixed;
+    z-index: 3;
+    top: 9px;
+    background-color: rgba(255, 255, 255, 0.93);
+    padding-left: var(--leftMargin);
+    left: 0px;
+    padding-right: 15px;
+    border-radius: 0px 5px 5px 0px;
+
+    &.-translate-x-full {
+        transform: translateX(-120%);
+        transition: all 1s ease-in-out;
+    }
+
+    &.-translate-x-0 {
+        transform: translateX(0%);
+        transition: all 1s ease-in-out;
+    }
+    @media (min-width : 1000px) {
+        display: none;
     }
 }

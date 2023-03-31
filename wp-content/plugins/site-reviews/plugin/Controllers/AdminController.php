@@ -11,9 +11,11 @@ use GeminiLabs\SiteReviews\Commands\ToggleStatus;
 use GeminiLabs\SiteReviews\Commands\ToggleVerified;
 use GeminiLabs\SiteReviews\Database;
 use GeminiLabs\SiteReviews\Defaults\ColumnFilterbyDefaults;
+use GeminiLabs\SiteReviews\Helper;
 use GeminiLabs\SiteReviews\Helpers\Arr;
 use GeminiLabs\SiteReviews\Helpers\Str;
 use GeminiLabs\SiteReviews\Install;
+use GeminiLabs\SiteReviews\License;
 use GeminiLabs\SiteReviews\Modules\Html\Builder;
 use GeminiLabs\SiteReviews\Modules\Migrate;
 use GeminiLabs\SiteReviews\Modules\Notice;
@@ -130,6 +132,31 @@ class AdminController extends Controller
     }
 
     /**
+     * @param bool $showButton
+     * @return bool
+     * @filter screen_options_show_submit
+     */
+    public function filterScreenOptionsButton($showButton)
+    {
+        global $post_type_object, $title, $typenow;
+        if (!Str::startsWith($typenow, glsr()->post_type)) {
+            return $showButton;
+        }
+        $submit = get_submit_button(_x('Apply', 'admin-text', 'site-reviews'), 'primary', 'screen-options-apply', false);
+        $close = glsr(Builder::class)->button([
+            'aria-controls' => 'screen-options-wrap',
+            'class' => 'button button-secondary glsr-screen-meta-toggle',
+            'text' => _x('Close Panel', 'admin-text', 'site-reviews'),
+            'type' => 'button',
+        ]);
+        echo glsr(Builder::class)->p([
+            'style' => 'display:inline-flex;gap:6px;',
+            'text' => $submit.$close,
+        ]);
+        return false; // don't display the default submit button
+    }
+
+    /**
      * @param array $plugins
      * @return array
      * @filter mce_external_plugins
@@ -182,9 +209,33 @@ class AdminController extends Controller
     {
         $this->execute(new RegisterTinymcePopups([
             'site_reviews' => _x('Recent Reviews', 'admin-text', 'site-reviews'),
+            'site_review' => _x('Single Review', 'admin-text', 'site-reviews'),
             'site_reviews_form' => _x('Submit a Review', 'admin-text', 'site-reviews'),
             'site_reviews_summary' => _x('Summary of Reviews', 'admin-text', 'site-reviews'),
         ]));
+    }
+
+    /**
+     * @return void
+     * @action in_admin_header
+     */
+    public function renderPageHeader()
+    {
+        global $post_type_object, $title, $typenow;
+        if (!Str::startsWith($typenow, glsr()->post_type)) {
+            return;
+        }
+        $license = glsr(License::class)->status();
+        $screen = glsr_current_screen();
+        glsr()->render('views/partials/page-header', [
+            'hasNewButton' => in_array($screen->base, ['edit', 'post']),
+            'hasPremiumButton' => !$license['isValid'] || !$license['isSaved'],
+            'hasScreenOptions' => in_array($screen->base, ['edit', 'edit-tags']),
+            'logo' => file_get_contents(glsr()->path('assets/images/logo.svg')),
+            'newText' => Arr::get($post_type_object, 'labels.add_new'),
+            'newUrl' => admin_url('post-new.php?post_type='.$typenow),
+            'title' => esc_html($title),
+        ]);
     }
 
     /**

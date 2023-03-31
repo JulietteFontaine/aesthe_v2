@@ -1,0 +1,44 @@
+.siblings {
+  h3 {
+    color: #FF8040;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: "Montserrat";
+  }
+}
+
+.siblings {
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+    li {
+    border-radius: 5px;
+    color: white;
+    background-color: $coffee;
+    font-family: "Roboto";
+    text-align: center;
+    font-size: 20px;
+    margin: 0.5rem 0;
+    width: fit-content;
+    &:not(:last-of-type) {
+      margin-right: 1rem;
+    }
+  }
+
+  h4 {
+    padding: 10px 30px;
+    font-weight: inherit;
+  }
+
+  @media (max-width : 1000px) {
+    width: calc(100vw - var(--leftMargin));
+    right: calc(var(--leftMargin)/2);*
+    li {
+      width: 100%;
+    }
+    ul {
+      flex-direction: column;
+    }
+  }
+}

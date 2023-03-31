@@ -1,0 +1,223 @@
+.slug-univers
+{
+    background-color: $nude01;
+    .gutenbergSection {
+        padding-top: 130px;
+        h1 {
+            font-family: "Noto serif";
+            text-transform: lowercase;
+            font-size: 65px;
+            display: flex;
+            flex-direction: column;
+            // left: 24px;
+            justify-content: center;
+            text-align: center;
+            em {
+                font-style: italic;
+                font-size: 49px;
+                line-height: 0.6;
+            }
+    }
+}
+.slug-univers,
+.home {
+    //MOBILE
+    @media (max-width: 1000px) {
+        .universScrolling {
+            left: 24px;
+            &__title { 
+                // width: fit-content;
+            }
+            &__text {
+                font-size: 2.5rem;
+            }
+            padding: 50px 0;
+            &--left {
+                transform: translateX(-65%);
+                }
+            &--right {
+                transform: translateX(155%);
+            }
+    }
+}
+
+    //WEB
+    @media (min-width: 1000px) {
+        .universScrolling {
+            &__text {
+                font-size: 4.5rem;
+            }
+            // padding: 50px 0;
+            &--left {
+                transform: translateX(-40%);
+                }
+            &--right {
+                transform: translateX(155%);
+            }
+    }
+}
+
+    .universScrolling {
+    &__number {
+        font-family: "Roboto";
+        font-size: 1.5rem;
+        line-height: 1;
+        bottom: -7px;
+    }
+    &__text{
+        font-family: "Montserrat";
+        align-items: center;
+        text-transform: lowercase;
+        font-weight: 700;
+        line-height: 1;
+        display: flex;
+        align-items: end;
+    }
+    &--left {
+        color: $red;
+        .universScrolling {
+
+        &__content {
+            color: $red;
+        }
+
+        &__text {
+       
+            &::after {
+                content: "";
+                background-image: url("assets/img/pointe-rouge.svg");
+                display: block;
+                width: 20px;
+                height: 12px;
+                position: inherit;
+                top: -9px;
+                left: 7px;
+            }
+        }
+    }
+    }
+    &--right {
+        color: $purple;
+        .universScrolling {
+
+        &__content {
+        color: $purple;
+        width: 50%;
+        }
+
+        &__text {
+       
+            &::before {
+                content: "";
+                background-image: url("assets/img/pointe-violet.svg");
+                display: block;
+                width: 20px;
+                height: 12px;
+                position: absolute;
+                bottom: 8px;
+                left: -26px;
+            }
+        }
+    }
+    }
+    &__content  {
+        max-height: 0px;
+        overflow: hidden;
+        width: 80%;
+        img {
+            width: 100%;
+        }
+    }
+}
+}
+}
+
+
+$timing : 0.6s;
+
+.universScrolling__content.close {
+animation-direction: normal; 
+animation : closed ease-in-out $timing forwards;
+}
+
+.universScrolling__content.on {
+animation-direction: normal;
+animation : opened ease-in-out $timing forwards;
+}
+
+@keyframes opened {
+0% {
+max-height: 0px;
+opacity: 0;
+}
+
+100% {
+  max-height: 2000px;
+  opacity: 1;
+}
+}
+
+@keyframes closed {
+0% {
+    max-height: 500px;
+    opacity: 1;
+}
+
+100% {
+    max-height: 0px;
+    opacity: 0;
+}
+}
+
+
+// univers horizontal scroll 
+.universHorScroll {
+
+    font-family: "Roboto";
+    color: $orange;
+    font-size: 5rem;
+
+    overflow: hidden;
+    width: 100vw;
+    right: var(--leftMargin);
+    display: flex;
+
+    svg {
+        width: 10px;
+        margin: 0 2rem;
+    }
+
+    .text {
+            white-space: nowrap; 
+            animation: defilement 10s linear infinite;
+            cursor: pointer;
+            text-transform: lowercase;
+    }
+  }
+
+  @keyframes defilement {
+    0% {
+      transform: translate(-100%, 0);
+    }
+    100% {
+      transform: translate(0%, 0);
+    }
+  }
+
+// univers image parallax
+.universImgPara {
+    @media (min-width: 1000px) {
+        width: 50%;
+    }
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+    font-size: 16px;
+
+  .img-parallax {
+    position: absolute;
+    top: 0;
+    transform: translate(-50%,0);
+    pointer-events: none
+  }
+}

@@ -6,12 +6,12 @@ use GeminiLabs\SiteReviews\Addons\Addon;
 
 final class Application extends Addon
 {
-    const ID = 'site-reviews-forms';
-    const LICENSED = true;
-    const NAME = 'Review Forms';
-    const POST_TYPE = 'site-review-form';
-    const SLUG = 'forms';
-    const UPDATE_URL = 'https://niftyplugins.com';
+    public const ID = 'site-reviews-forms';
+    public const LICENSED = true;
+    public const NAME = 'Review Forms';
+    public const POST_TYPE = 'site-review-form';
+    public const SLUG = 'forms';
+    public const UPDATE_URL = 'https://niftyplugins.com';
 
     /**
      * @param string $placeholder

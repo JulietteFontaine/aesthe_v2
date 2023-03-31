@@ -9,6 +9,7 @@ use GeminiLabs\SiteReviews\Controllers\ListTableColumns\ColumnFilterAuthor;
 use GeminiLabs\SiteReviews\Helper;
 use GeminiLabs\SiteReviews\Helpers\Str;
 use GeminiLabs\SiteReviews\Modules\Rating;
+use GeminiLabs\SiteReviews\Shortcodes\SiteReviewShortcode;
 use GeminiLabs\SiteReviews\Shortcodes\SiteReviewsFormShortcode;
 use GeminiLabs\SiteReviews\Shortcodes\SiteReviewsShortcode;
 use GeminiLabs\SiteReviews\Shortcodes\SiteReviewsSummaryShortcode;
@@ -75,7 +76,6 @@ class EnqueueAdminAssets implements Contract
      */
     public function inlineScript()
     {
-        $licenses = array_filter(glsr_get_option('licenses', [], 'array'));
         $variables = [
             'action' => glsr()->prefix.'action',
             'addons' => [],
@@ -99,11 +99,11 @@ class EnqueueAdminAssets implements Contract
                 ],
             ],
             'hideoptions' => [
+                'site_review' => glsr(SiteReviewShortcode::class)->getHideOptions(),
                 'site_reviews' => glsr(SiteReviewsShortcode::class)->getHideOptions(),
                 'site_reviews_form' => glsr(SiteReviewsFormShortcode::class)->getHideOptions(),
                 'site_reviews_summary' => glsr(SiteReviewsSummaryShortcode::class)->getHideOptions(),
             ],
-            'isLicensed' => Helper::ifTrue(empty($licenses), 'no', 'yes'),
             'maxrating' => glsr()->constant('MAX_RATING', Rating::class),
             'minrating' => glsr()->constant('MIN_RATING', Rating::class),
             'nameprefix' => glsr()->id,
@@ -125,10 +125,8 @@ class EnqueueAdminAssets implements Contract
                 'toggle-verified' => wp_create_nonce('toggle-verified'),
             ],
             'pointers' => $this->pointers,
-            'premiumurl' => 'https://niftyplugins.com/plugins/site-reviews-premium/',
             'shortcodes' => [],
             'text' => [
-                'premium' => _x('Try Premium', 'admin-text', 'site-reviews'),
                 'rollback_error' => _x('Rollback failed', 'admin-text', 'site-reviews'),
                 'searching' => _x('Searching...', 'admin-text', 'site-reviews'),
             ],

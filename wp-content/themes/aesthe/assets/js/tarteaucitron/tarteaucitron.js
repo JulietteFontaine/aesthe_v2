@@ -217,7 +217,7 @@ var tarteaucitron = {
                 "AcceptAllCta" : true,
                 "moreInfoLink": true,
                 "privacyUrl": "",
-                "useExternalCss": false,
+                "useExternalCss": true,
                 "useExternalJs": false,
                 "mandatory": true,
                 "closePopup": false,

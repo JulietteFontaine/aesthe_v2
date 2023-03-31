@@ -142,13 +142,28 @@ final class Application extends Container
         }
         // If this is a new major version, copy over the previous version settings
         if (empty(get_option(OptionManager::databaseKey()))) {
-            update_option(OptionManager::databaseKey(), $this->make(OptionManager::class)->previous());
+            if ($settings = $this->make(OptionManager::class)->previous()) {
+                update_option(OptionManager::databaseKey(), $settings);
+            }
         }
         // Force an immediate plugin migration on database version upgrades
         if (static::DB_VERSION !== get_option(static::PREFIX.'db_version')) {
-            $this->make(Migrate::class)->run();
+            $migrate = $this->make(Migrate::class);
+            add_action('plugins_loaded', [$migrate, 'run'], 1); // use plugins_loaded!
         }
         $this->make(Hooks::class)->run();
+    }
+
+    /**
+     * The setting defaults (these are not the saved settings!).
+     * @return void
+     */
+    public function initDefaults()
+    {
+        if (empty($this->defaults)) {
+            $defaults = $this->make(DefaultsManager::class)->get();
+            $this->defaults = $this->filterArray('get/defaults', $defaults);
+        }
     }
 
     /**
@@ -197,14 +212,22 @@ final class Application extends Container
      */
     public function register($addon)
     {
+        $retired = [ // @compat these addons have been retired
+            'site-reviews-gamipress',
+            'site-reviews-woocommerce',
+        ];
         try {
             $reflection = new \ReflectionClass($addon); // make sure that the class exists
             $addon = $reflection->getName();
-            $this->addons[$addon::ID] = $addon;
-            $this->singleton($addon); // this goes first!
-            $this->alias($addon::ID, $this->make($addon)); // @todo for some reason we have to link an alias to an instantiated class
-            $instance = $this->make($addon)->init();
-            $this->append('addons', $instance->version, $instance->id);
+            if (in_array($addon::ID, $retired)) {
+                $this->append('retired', $addon);
+            } else {
+                $this->addons[$addon::ID] = $addon;
+                $this->singleton($addon); // this goes first!
+                $this->alias($addon::ID, $this->make($addon)); // @todo for some reason we have to link an alias to an instantiated class
+                $instance = $this->make($addon)->init();
+                $this->append('addons', $instance->version, $instance->id);
+            }
         } catch (\ReflectionException $e) {
             glsr_log()->error('Attempted to register an invalid addon.');
         }
@@ -224,21 +247,6 @@ final class Application extends Container
             $this->settings = $settings;
         }
         return $this->settings;
-    }
-
-    /**
-     * The setting defaults (these are not the saved settings!).
-     * @return void
-     */
-    public function storeDefaults()
-    {
-        if (empty($this->defaults)) {
-            $defaults = $this->make(DefaultsManager::class)->get();
-            $this->defaults = $this->filterArray('get/defaults', $defaults);
-        }
-        if (empty(get_option(OptionManager::databaseKey()))) {
-            update_option(OptionManager::databaseKey(), $this->defaults);
-        }
     }
 
     /**

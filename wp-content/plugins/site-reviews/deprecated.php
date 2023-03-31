@@ -23,6 +23,43 @@ add_filter('site-reviews/build/template/review', function ($template) {
 });
 
 add_action('plugins_loaded', function () {
+    if (!glsr()->filterBool('support/deprecated/v6', true)) {
+        return;
+    }
+
+    /**
+     * @since 6.5.0
+     */
+    add_filter('site-reviews/rest-api/reviews/schema/properties', function ($properties) {
+        if (has_filter('site-reviews/rest-api/reviews/properties')) {
+            $message = 'The "site-reviews/rest-api/reviews/properties" hook has been deprecated. Please use the "site-reviews/rest-api/reviews/schema/properties" hook instead.';
+            glsr()->append('deprecated', $message);
+            return apply_filters('site-reviews/rest-api/reviews/properties', $properties);
+        }
+        return $properties;
+    }, 9);
+
+    /**
+     * @since 6.5.0
+     */
+    add_filter('site-reviews/rest-api/summary/schema/properties', function ($properties) {
+        if (has_filter('site-reviews/rest-api/summary/properties')) {
+            $message = 'The "site-reviews/rest-api/summary/properties" hook has been deprecated. Please use the "site-reviews/rest-api/summary/schema/properties" hook instead.';
+            glsr()->append('deprecated', $message);
+            return apply_filters('site-reviews/rest-api/summary/properties', $properties);
+        }
+        return $properties;
+    }, 9);
+
+    /**
+     * @since 6.5.0
+     */
+    add_filter('site-reviews/reviews/html/style', function ($value, $html) {
+        return glsr_get($html->reviews->attributes(), 'class'); // @todo show a deprecation notice in v7.0!
+    }, 10, 2);
+});
+
+add_action('plugins_loaded', function () {
     if (!glsr()->filterBool('support/deprecated/v5', true)) {
         return;
     }

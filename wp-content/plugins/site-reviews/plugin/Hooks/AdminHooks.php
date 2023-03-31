@@ -6,10 +6,7 @@ use GeminiLabs\SiteReviews\Controllers\AdminController;
 
 class AdminHooks extends AbstractHooks
 {
-    /**
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
         $this->hook(AdminController::class, [
             ['enqueueAssets', 'admin_enqueue_scripts'],
@@ -17,11 +14,13 @@ class AdminHooks extends AbstractHooks
             ['filterCapabilities', 'map_meta_cap', 10, 4],
             ['filterDashboardGlanceItems', 'dashboard_glance_items'],
             ['filterExportArgs', 'export_args', 11],
+            ['filterScreenOptionsButton', 'screen_options_show_submit', 20],
             ['filterTinymcePlugins', 'mce_external_plugins', 15],
             ['onActivation', 'admin_init'],
             ['onImportEnd', 'import_end'],
             ['printInlineStyle', 'admin_head'],
             ['registerTinymcePopups', 'admin_init'],
+            ['renderPageHeader', 'in_admin_header'],
             ['renderTinymceButton', 'media_buttons', 11],
             ['scheduleMigration', 'admin_init'],
             ['searchAssignedPostsAjax', 'site-reviews/route/ajax/filter-assigned_post'],

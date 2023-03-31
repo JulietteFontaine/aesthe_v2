@@ -1,7 +1,7 @@
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
+del, dfn, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
 b, u, i, center,
 dl, dt, dd, ol, ul, li,
@@ -21,6 +21,11 @@ time, mark, audio, video, button {
 
 ul, li {
 	list-style-type: none;
+}
+
+.wp-block-column ul,
+.wp-block-column li {
+	list-style-type: initial;
 }
 
 /* HTML5 display-role reset for older browsers */
@@ -52,9 +57,13 @@ input, textarea { outline: 0 }
 ::selection { color: #fff; background: #000 }
 
 html, body { min-height: 100vh; }
-html { background: #000 }
+html { background: #000; overflow-x: hidden; }
 body { background: white;
 	overflow-x: hidden;
+	overscroll-behavior: none;
+}
+body.modal-open {
+    overflow: hidden;
 }
 body { font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.4; font-weight: 400; margin: 0; border-radius: 0; }
 b,strong { font-weight: 700 }
@@ -69,14 +78,6 @@ button { cursor: pointer }
 @media (pointer:  coarse) { a, button { touch-action: manipulation } }
 
 .wrapper { position: relative; margin: 0 auto; width: var(--wrapper) }
-
-// .none { opacity: 0; pointer-events: none }
-
-// ::-webkit-input-placeholder { color: currentColor }
-// ::-moz-placeholder { color: currentColor }
-// :-ms-input-placeholder { color: currentColor }
-// :-moz-placeholder { color: currentColor }
-
 
 /* touch device */
 @media (pointer: coarse) {} /* touch */
@@ -105,47 +106,77 @@ $red: #C53E23;
 $grey01 : #8E8D8D;
 $grey02 : #707070;
 
-/*--------- Position des sections Guttenberg ---------*/
-// .gutenbergSection.wrapper {
-// 	@media (min-width: 1000px) {
-// 	position: relative;
-// 	top: -200px;
-// 	}
-//   }
-
+  
 /*--------- Styles de texte ---------*/
-p, a, span {
-	font-family: "Roboto" Light;
-	font-weight: 300;
-	font-size: 20px;
+p:not([class]), span:not([class]) {
+	font-family: "Roboto";
+	// font-weight: 300;
+	// font-size: 20px;
 	line-height: 1.2;
+	
 
-	@media(max-width: 1000px) {
-		font-weight: 400;
+	@media(min-width: 800px) {
+
+	}
+
+	@media(min-width: 1000px) {
+		// font-size: 16px;
 	  }
 }
+p:not([class]).justify {
+	text-align: justify;
+}
+p:not([class]):empty{
+	height: 0;
+	margin: 0;
+	padding: 0;
+}
 
-h1,
-.h1 {
-  font-family: "Montserrat";
-  font-weight: bold;
-  font-size: 45px;
+h1:not([class]),
+.h1{
+//   font-family: "Montserrat";
+//   font-weight: bold;
+//   font-size: 4rem;
   line-height: 1;
-  text-transform: uppercase;
+//   text-transform: uppercase;
   @media(max-width: 1000px) {
 	font-size: 35px;
   }
 }
 
-h2,
-.h2 {
+.title-uppercase {
 	font-family: "Montserrat";
-	font-weight: bold;
-	font-size: 45px;
-	line-height: 1;
 	text-transform: uppercase;
+	color: $red;
+	font-size: 2.5rem;
+	line-height: 1;
 	@media(max-width: 1000px) {
-	  font-size: 35px;
+		font-size: 2.5rem;
+	}
+}
+
+.title-capitalize {
+	font-family: "Montserrat";
+	// text-transform: capitalize;
+	color: $coffee;
+	font-weight: 700;
+	font-size: 2rem;
+	line-height: 1;
+	@media(max-width: 1000px) {
+		font-size: 2rem;
+	}
+}
+
+h3:not([class]),
+.h3 {
+	// font-family: "Roboto";
+	// text-transform: lowercase;
+	// font-size: 25px;
+	line-height: 1;
+	// font-weight: 400;
+	@media (max-width:1000px) {
+		line-height: 1.2;
+		font-weight: 500;
 	}
 }
 
@@ -154,9 +185,55 @@ h2,
   letter-spacing: 2px;
 }
 
-p + p {
-  margin-top: 10px;
-}
+
+/*--------- Position des sections Guttenberg ---------*/
+
+// .wp-block-columns {
+// 	display: flex;
+// 	@media (max-width:1000px) {
+// 		flex-direction: column-reverse;
+// 		&:first-of-type {
+// 			padding-top: 149px;
+// 		}
+// 	}
+// 	&:first-of-type {
+// 		padding-top: 100px;
+// 	}
+// }
+
+// .wp-block-column {
+// 	h2 {
+// 		font-family: "Montserrat";
+// 		text-transform: uppercase;
+// 		font-size: 35px;
+// 		line-height: 1;
+// 		font-weight: 800;
+// 		color: $purple;
+// 		@media (min-width:1000px) {
+// 			padding-left: 2rem;
+// 		}
+// 	}
+
+// 	p {
+// 		@media (min-width:1000px) {
+// 			padding-left: 2rem;
+// 		}
+// 		color: $grey01;
+// 		&:first-of-type {
+// 			padding-top: 1rem;
+// 		}
+// 		&:last-of-type {
+// 			padding-bottom: 1rem;
+// 		}
+// 	}
+
+// }
+// .gutenbergSection.wrapper {
+// 	@media (min-width: 1000px) {
+// 	position: relative;
+// 	top: -200px;
+// 	}
+//   }
 
 // .link {
 //   text-decoration: underline;

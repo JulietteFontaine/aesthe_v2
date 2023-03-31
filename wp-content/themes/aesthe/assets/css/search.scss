@@ -1,0 +1,114 @@
+.searchPage {
+    padding-top: 150px;
+    padding-bottom: 1rem;
+    @media (max-width : 1000px) {
+      padding-top: 100px;  
+    }
+    h2 {
+      padding-bottom: 4px !important;
+    }
+    .h3 {
+        font-size: 3rem;
+        color: $red;
+        font-family: "Montserrat";
+        font-weight: 700;
+        width: fit-content;
+        border-bottom: solid 4px $red;
+    }
+    &__cardConsult {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom: solid 1px $grey02;
+        border-top: solid 1px $grey02;
+        @media (max-width : 1000px) {
+          flex-direction: column-reverse;
+          margin: 1rem 0;
+        }
+        .card {
+            padding-bottom: 1rem;
+        }
+    }
+}
+
+.texteExplicatif {
+    width: 30%;
+    margin: 3rem;
+    color: #686868;
+    @media (max-width : 1000px) {
+        width: calc(100vw - var(--leftMargin));
+        margin: 0;
+        margin-top: 1rem;
+    }
+}
+
+// page resultat recheche :  block articles et pages
+.searchPage {
+  &__articlesResult {
+      padding-top: 1rem ;
+      display: flex;
+      padding-bottom: 1rem;
+      @media (max-width: 1000px) {
+        flex-direction: column;
+      }
+    :not(:last-of-type) {
+      margin-right: 4rem;
+      }
+  }
+  .searchPost{
+    display: flex;
+    flex-direction: column;
+    color: $grey02;
+    width: 25%;
+    @media (max-width: 1000px) {
+      width: 100%;
+      padding-top: 1rem;
+    }
+    h3 {
+      text-transform: uppercase;
+      font-weight: 500;
+      font-size: 1.3rem;
+      padding-top: 0.5rem;
+    }
+
+    p {
+      font-weight: 300;
+    }
+
+    &__excerpt {
+      font-family: "Noto Serif";
+      font-style: italic;
+    }
+
+    &__thumb {
+      height: 200px;
+      background-size: cover;
+    }
+  }
+
+  &__pagesResult {
+    padding-top: 1rem ;
+    color: $grey02;
+    @media (min-width: 1000px) {
+      width: 75%;
+      padding-right: 3rem;
+    }
+    p {
+      font-weight: 300;
+    }
+    h3 {
+      font-weight: 500;
+      font-size: 2rem;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  h2.pagesResult,
+  h2.articlesResult {
+    @media (max-width: 1000px) {
+      right: calc(var(--leftMargin) / 2);
+    }
+  }
+}

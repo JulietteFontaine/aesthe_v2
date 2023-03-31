@@ -2,6 +2,7 @@
 
 namespace GeminiLabs\SiteReviews\Controllers;
 
+use GeminiLabs\SiteReviews\Commands\RegisterPostMeta;
 use GeminiLabs\SiteReviews\Commands\RegisterPostType;
 use GeminiLabs\SiteReviews\Commands\RegisterShortcodes;
 use GeminiLabs\SiteReviews\Commands\RegisterTaxonomy;
@@ -45,13 +46,13 @@ class MainController extends Controller
     }
 
     /**
+     * This cannot be done before plugins_loaded as it uses the gettext functions.
      * @return void
      * @action init
      */
     public function initDefaults()
     {
-        // This cannot be done before plugins_loaded as it uses the gettext functions
-        glsr()->storeDefaults();
+        glsr()->initDefaults();
     }
 
     /**
@@ -87,13 +88,22 @@ class MainController extends Controller
 
     /**
      * @return void
-     * @action plugins_loaded
+     * @action init
      */
     public function registerLanguages()
     {
         load_plugin_textdomain(glsr()->id, false,
             trailingslashit(plugin_basename(glsr()->path()).'/'.glsr()->languages)
         );
+    }
+
+    /**
+     * @return void
+     * @action init
+     */
+    public function registerPostMeta()
+    {
+        $this->execute(new RegisterPostMeta());
     }
 
     /**
@@ -125,6 +135,7 @@ class MainController extends Controller
     public function registerShortcodes()
     {
         $this->execute(new RegisterShortcodes([
+            'site_review',
             'site_reviews',
             'site_reviews_form',
             'site_reviews_summary',

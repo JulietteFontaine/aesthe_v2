@@ -237,13 +237,33 @@ function relevanssi_erase_log_data( $user_id, $page ) {
  *
  * Exports the whole Relevanssi search log as a CSV file.
  *
+ * @uses relevanssi_output_exported_log
+ *
  * @since 2.2
  */
 function relevanssi_export_log() {
 	global $wpdb, $relevanssi_variables;
 
-	$now      = gmdate( 'D, d M Y H:i:s' );
-	$filename = 'relevanssi_log.csv';
+	$data = $wpdb->get_results( 'SELECT * FROM ' . $relevanssi_variables['log_table'], ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+	relevanssi_output_exported_log(
+		'relevanssi_log.csv',
+		$data,
+		__( 'No search keywords logged.', 'relevanssi' )
+	);
+}
+
+/**
+ * Prints out the log.
+ *
+ * Does the exporting work for log exports.
+ *
+ * @param string $filename The filename to use.
+ * @param array  $data     The data to export.
+ * @param string $message  The message to print if there is no data.
+ */
+function relevanssi_output_exported_log( string $filename, array $data, string $message ) {
+	$now = gmdate( 'D, d M Y H:i:s' );
 
 	header( 'Expires: Tue, 03 Jul 2001 06:00:00 GMT' );
 	header( 'Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate' );
@@ -254,11 +274,10 @@ function relevanssi_export_log() {
 	header( "Content-Disposition: attachment;filename={$filename}" );
 	header( 'Content-Transfer-Encoding: binary' );
 
-	$data = $wpdb->get_results( 'SELECT * FROM ' . $relevanssi_variables['log_table'], ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	ob_start();
 	$df = fopen( 'php://output', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	if ( empty( $data ) ) {
-		fputcsv( $df, array( __( 'No search keywords logged.', 'relevanssi' ) ) );
+		fputcsv( $df, array( $message ) );
 		die();
 	}
 	fputcsv( $df, array_keys( reset( $data ) ) );
@@ -302,4 +321,46 @@ function relevanssi_is_ok_to_log( $user = null ) : bool {
 	}
 
 	return true;
+}
+
+/**
+ * Deletes a query from log.
+ *
+ * @param string $query The query to delete.
+ */
+function relevanssi_delete_query_from_log( string $query ) {
+	global $wpdb, $relevanssi_variables;
+
+	$deleted = $wpdb->query(
+		$wpdb->prepare(
+			"DELETE FROM {$relevanssi_variables['log_table']} WHERE query = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+			stripslashes( $query )
+		)
+	);
+
+	if ( $deleted ) {
+		printf(
+			"<div id='message' class='updated fade'><p>%s</p></div>",
+			sprintf(
+				// Translators: %s is the stopword.
+				esc_html__(
+					"The query '%s' deleted from the log.",
+					'relevanssi'
+				),
+				esc_html( stripslashes( $query ) )
+			)
+		);
+	} else {
+		printf(
+			"<div id='message' class='updated fade'><p>%s</p></div>",
+			sprintf(
+				// Translators: %s is the stopword.
+				esc_html__(
+					"Couldn't remove the query '%s' from the log.",
+					'relevanssi'
+				),
+				esc_html( stripslashes( $query ) )
+			)
+		);
+	}
 }

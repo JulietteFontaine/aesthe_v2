@@ -14,7 +14,7 @@
         <!-- COLONNE 1 -->
         <div>
             <ul>
-                <li class="footer__main__tittle"><?php the_field('titre_colonne_1', 'option'); ?></li>
+                <li class="footer__main__title"><?php the_field('titre_colonne_1', 'option'); ?></li>
                 <?php if (have_rows('footer_colonne_1', 'option')) : ?>
                     <?php while (have_rows('footer_colonne_1', 'option')) : the_row();
                         $link = get_sub_field('lien');
@@ -84,8 +84,6 @@
                     <a href="<?= get_field('linkedin', 'options') ?>" aria-label="Page aesthé médecine esthétique LinkedIn" target="_blank" rel="noopener nofollow"><?php include('wp-content/themes/aesthe/assets/img/li.svg'); ?></a>
                 </li>
         </ul>
-        </div>
-
         <div class="footer__legal">
             <div class="svg_aetshe">
             <?php include('wp-content/themes/aesthe/assets/img/logoN.svg'); ?>
@@ -96,103 +94,47 @@
             <a href="<?= get_bloginfo('url') ?>/legal/">Légal</a>
             </span>
         </div>
+        
+        </div>
+
+
     </div>
 
 </footer>
-
-<div class="form-thx">
-
-    <?php
-    if (isset($_POST)) {
-
-        if (@$_POST['c_email'] != '') {
-
-            if ($_POST['c_fake'] != '') die(); // recaptcha
-
-            $nom_champ['c_nom'] = 'Nom';
-            $nom_champ['c_prenom'] = 'Prénom';
-            $nom_champ['c_email'] = 'Email';
-            $nom_champ['c_tel'] = 'Téléphone';
-            $nom_champ['c_msg'] = 'Message';
-
-            $headers = 'From: no-reply@lesite.com' . "\n";
-            $headers .= 'Reply-To: ' . $_POST['c_email'] . "\n";
-            $headers .= 'Content-Type: text/html; charset="utf-8"' . "\n";
-            $headers .= 'Content-Transfer-Encoding: 8bit';
-
-            $msg = "";
-            foreach ($_POST as $key => $value) if ($value != '') $msg .= $nom_champ[htmlspecialchars($key)] . " => " . htmlspecialchars($value) . "<br>";
-
-            $mail = 'Bonjour, un message sur lesite.com<br><br>' . $msg;
-
-            wp_mail('hello@lesite.com', 'lesite.com', $mail, $headers);
-            // wp_mail('jean@pamstudio.co', 'lesite.com', $mail, $headers);
-
-            echo "<script>alert('Nous vous remercions et revenons vers vous prochainement !');</script>";
-        }
-    }
-    ?>
-</div>
 
 <?php wp_footer(); ?>
 
 <!-- rgpd -->
 <script type="text/javascript" src="<?= get_template_directory_uri(); ?>/assets/js/tarteaucitron/tarteaucitron.js"></script>
 
-<script>
-    tarteaucitron.init({
-        "privacyUrl": "",
-        /* Privacy policy url */
-
-        "hashtag": "#tarteaucitron",
-        /* Open the panel with this hashtag */
-        "cookieName": "tarteaucitron",
-        /* Cookie name */
-        "orientation": "middle",
-        /* Banner position (top - bottom - middle - popup) */
-
-        "groupServices": false,
-        /* Group services by category */
-
-        "showAlertSmall": false,
-        /* Show the small banner on bottom right */
-        "cookieslist": false,
-        /* Show the cookie list */
-
-        "showIcon": true,
-        /* Show cookie icon to manage cookies */
-        // "iconSrc": "", /* Optionnal: URL or base64 encoded image */
-        "iconPosition": "BottomRight",
-        /* Position of the icon between BottomRight, BottomLeft, TopRight and TopLeft */
-
-        "adblocker": false,
-        /* Show a Warning if an adblocker is detected */
-
-        "DenyAllCta": true,
-        /* Show the deny all button */
-        "AcceptAllCta": true,
-        /* Show the accept all button when highPrivacy on */
-        "highPrivacy": true,
-        /* HIGHLY RECOMMANDED Disable auto consent */
-
-        "handleBrowserDNTRequest": false,
-        /* If Do Not Track == 1, disallow all */
-
-        "removeCredit": false,
-        /* Remove credit link */
-        "moreInfoLink": true,
-        /* Show more info link */
-        "useExternalCss": false,
-        /* If false, the tarteaucitron.css file will be loaded */
-
-        //"cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for subdomain website */
-
-        "readmoreLink": "",
-        /* Change the default readmore link pointing to tarteaucitron.io */
-
-        "mandatory": true /* Show a message about mandatory cookies */
-    });
+<script type="text/javascript">
+tarteaucitron.init({
+  "privacyUrl": "https://aesthe.com/confidentialite/",
+  "hashtag": "#rgpd",
+  "cookieName": "rgpd",
+  "orientation": "bottom",       
+  "groupServices": false, /* Group services by category */
+  "showAlertSmall": false, /* Show the small banner on bottom right */
+  "cookieslist": false, /* Show the cookie list */
+  "closePopup": false, /* Show a close X on the banner */
+  "showIcon": false, /* Show cookie icon to manage cookies */
+  //"iconSrc": "", /* Optionnal: URL or base64 encoded image */
+  "iconPosition": "BottomRight", /* BottomRight, BottomLeft, TopRight and TopLeft */
+  "adblocker": false, /* Show a Warning if an adblocker is detected */
+  "DenyAllCta" : true, /* Show the deny all button */
+  "AcceptAllCta" : true, /* Show the accept all button when highPrivacy on */
+  "highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
+  "handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
+  "removeCredit": false, /* Remove credit link */
+  "moreInfoLink": true, /* Show more info link */
+  "useExternalCss": true, /* If false, the tarteaucitron.css file will be loaded */
+  "useExternalJs": false, /* If false, the tarteaucitron.js file will be loaded */
+  //"cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
+  "readmoreLink": "En savoir plus", /* Change the default readmore link */
+  "mandatory": true, /* Show a message about mandatory cookies */
+});
 </script>
+
 
 <!-- ANALYTICS -->
 <script type="text/javascript">
@@ -271,6 +213,11 @@
 <script>
     jQuery('p:empty').remove();
 </script>
+
+<!-- GSAP ANIM -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+
 </body>
 
 </html>

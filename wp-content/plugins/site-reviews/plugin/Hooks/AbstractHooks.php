@@ -21,12 +21,9 @@ abstract class AbstractHooks
         $this->type = glsr()->post_type;
     }
 
-    /**
-     * @param string $classname
-     * @return void
-     */
-    public function hook($classname, array $hooks)
+    public function hook(string $classname, array $hooks): void
     {
+        glsr()->singleton($classname); // make singleton
         $controller = glsr($classname);
         foreach ($hooks as $hook) {
             if (2 > count($hook)) {
@@ -39,8 +36,5 @@ abstract class AbstractHooks
         }
     }
 
-    /**
-     * @return void
-     */
-    abstract public function run();
+    abstract public function run(): void;
 }

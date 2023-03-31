@@ -13,7 +13,7 @@ class ColumnFilterForm extends ColumnFilter
      */
     public function label()
     {
-        return _x('Filter by review form', 'admin-text', 'site-reviews');
+        return _x('Filter by review form', 'admin-text', 'site-reviews-forms');
     }
 
     /**
@@ -22,8 +22,8 @@ class ColumnFilterForm extends ColumnFilter
     public function options()
     {
         return [
-            '' => _x('Any review form', 'admin-text', 'site-reviews'),
-            0 => _x('No review form', 'admin-text', 'site-reviews'),
+            '' => _x('Any review form', 'admin-text', 'site-reviews-forms'),
+            0 => _x('No review form', 'admin-text', 'site-reviews-forms'),
         ];
     }
 

@@ -1,0 +1,39 @@
+.summary {
+    color: gray;
+    &__title {
+        font-family: "Noto Serif";
+        font-weight: inherit;
+        font-size: 2rem;
+    }
+    &__chapter {
+        color: gray;
+        font-family: "Roboto";
+        &:not(:first-child) {
+        margin-top: 0.5rem;
+    }
+    }
+    &__number {
+        font-size: 1rem;
+    }
+    &__link {
+        font-size: 1.5rem;
+        padding-left: 0.5rem;
+        line-height: 1;
+    }
+    span:not(:first-child):hover {
+        text-decoration: underline;
+    }
+    nav {
+        display: flex;
+        flex-direction: column;
+        border-left: 3px solid $grey02;
+        padding-left: 1rem;
+    }
+    @media (max-width: 1000px) {
+        display: none;
+    }
+}
+
+.anchor {
+    scroll-margin-top: 250px;
+}

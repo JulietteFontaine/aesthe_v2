@@ -2,8 +2,10 @@
 
 namespace GeminiLabs\SiteReviews\Controllers;
 
+use GeminiLabs\SiteReviews\Api;
 use GeminiLabs\SiteReviews\Database\Cache;
 use GeminiLabs\SiteReviews\Database\Tables;
+use GeminiLabs\SiteReviews\Defaults\AddonDefaults;
 use GeminiLabs\SiteReviews\Helper;
 use GeminiLabs\SiteReviews\Helpers\Arr;
 use GeminiLabs\SiteReviews\Helpers\Str;
@@ -51,8 +53,8 @@ class MenuController extends Controller
         $pages = $this->parseWithFilter('submenu/pages', [
             'settings' => _x('Settings', 'admin-text', 'site-reviews'),
             'tools' => _x('Tools', 'admin-text', 'site-reviews'),
-            'addons' => _x('Add-ons', 'admin-text', 'site-reviews'),
-            'documentation' => _x('Help', 'admin-text', 'site-reviews'),
+            'addons' => _x('Addons', 'admin-text', 'site-reviews'),
+            'documentation' => _x('Help & Support', 'admin-text', 'site-reviews'),
         ]);
         foreach ($pages as $slug => $title) {
             $method = Helper::buildMethodName('render-'.$slug.'-menu');
@@ -91,7 +93,14 @@ class MenuController extends Controller
      */
     public function renderAddonsMenu()
     {
+        $addons = [];
+        $data = glsr(Api::class)->get('addons')->data();
+        foreach ($data as $values) {
+            $context = glsr(AddonDefaults::class)->restrict($values);
+            $addons[] = array_merge($context, compact('context'));
+        }
         $this->renderPage('addons', [
+            'addons' => $addons,
             'template' => glsr(Template::class),
         ]);
     }

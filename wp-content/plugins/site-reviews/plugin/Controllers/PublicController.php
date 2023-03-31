@@ -47,10 +47,13 @@ class PublicController extends Controller
      */
     public function filterEnqueuedScriptTags($tag, $handle, $src)
     {
-        $async = [];
+        $async = [
+            glsr()->id.'/turnstile',
+        ];
         $defer = [
             glsr()->id.'/hcaptcha',
             glsr()->id.'/google-recaptcha',
+            glsr()->id.'/turnstile',
         ];
         if (in_array($handle, glsr()->filterArray('async-scripts', $async))) {
             $tag = str_replace(' src=', ' async src=', $tag);
@@ -106,7 +109,9 @@ class PublicController extends Controller
      */
     public function renderSchema()
     {
-        glsr(Schema::class)->render();
+        if (empty(glsr_get_option('schema.integration.plugin'))) {
+            glsr(Schema::class)->render();
+        }
     }
 
     /**

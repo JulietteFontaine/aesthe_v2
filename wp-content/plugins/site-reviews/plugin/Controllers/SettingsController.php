@@ -12,21 +12,34 @@ use GeminiLabs\SiteReviews\Modules\Notice;
 class SettingsController extends Controller
 {
     /**
+     * @action admin_init
+     */
+    public function registerSettings(): void
+    {
+        register_setting(glsr()->id, OptionManager::databaseKey(), [
+            'default' => glsr()->defaults,
+            'sanitize_callback' => [$this, 'sanitizeSettings'],
+            'type' => 'array',
+        ]);
+    }
+
+    /**
      * @param mixed $input
-     * @return array
      * @callback register_setting
      */
-    public function callbackRegisterSettings($input)
+    public function sanitizeSettings($input): array
     {
+        OptionManager::flushCache(); // remove settings from object cache before updating
         $settings = Arr::consolidate($input);
         if (1 === count($settings) && array_key_exists('settings', $settings)) {
             $options = array_replace_recursive(glsr(OptionManager::class)->all(), $input);
-            $options = $this->sanitizeGeneral($input, $options);
-            $options = $this->sanitizeLicenses($input, $options);
-            $options = $this->sanitizeForms($input, $options);
-            $options = $this->sanitizeStrings($input, $options);
-            $options = glsr()->filterArray('settings/callback', $options, $settings);
-            if (filter_input(INPUT_POST, 'option_page') == glsr()->id.'-settings') {
+            $options = $this->sanitizeGeneral($options, $input);
+            $options = $this->sanitizeLicenses($options, $input);
+            $options = $this->sanitizeForms($options, $input);
+            $options = $this->sanitizeStrings($options, $input);
+            $options = glsr()->filterArray('settings/sanitize', $options, $settings);
+            glsr()->action('settings/updated', $options, $settings);
+            if (filter_input(INPUT_POST, 'option_page') === glsr()->id) {
                 glsr(Notice::class)->addSuccess(_x('Settings updated.', 'admin-text', 'site-reviews'));
             }
             glsr(Notice::class)->store(); // store the notices before the page reloads
@@ -35,21 +48,7 @@ class SettingsController extends Controller
         return $input;
     }
 
-    /**
-     * @return void
-     * @action admin_init
-     */
-    public function registerSettings()
-    {
-        register_setting(glsr()->id.'-settings', OptionManager::databaseKey(), [
-            'sanitize_callback' => [$this, 'callbackRegisterSettings'],
-        ]);
-    }
-
-    /**
-     * @return array
-     */
-    protected function sanitizeForms(array $input, array $options)
+    protected function sanitizeForms(array $options, array $input): array
     {
         $key = 'settings.forms';
         $inputForm = Arr::get($input, $key);
@@ -61,14 +60,11 @@ class SettingsController extends Controller
         return $options;
     }
 
-    /**
-     * @return array
-     */
-    protected function sanitizeGeneral(array $input, array $options)
+    protected function sanitizeGeneral(array $options, array $input): array
     {
         $key = 'settings.general';
         $inputForm = Arr::get($input, $key);
-        if (!$this->hasMultilingualIntegration(Arr::get($inputForm, 'multilingual'))) {
+        if (!$this->hasMultilingualIntegration(Arr::getAs('string', $inputForm, 'multilingual'))) {
             $options = Arr::set($options, $key.'.multilingual', '');
         }
         if ('' == trim(Arr::get($inputForm, 'notification_message'))) {
@@ -80,27 +76,20 @@ class SettingsController extends Controller
         return $options;
     }
 
-    /**
-     * @return array
-     */
-    protected function sanitizeLicenses(array $input, array $options)
+    protected function sanitizeLicenses(array $options, array $input): array
     {
         $key = 'settings.licenses';
         $licenses = Arr::consolidate(Arr::get($input, $key));
         foreach ($licenses as $slug => &$license) {
-            if (empty($license)) {
-                continue;
+            if (!empty($license)) {
+                $license = $this->verifyLicense((string) $license, (string) $slug);
             }
-            $license = $this->verifyLicense($license, $slug);
         }
         $options = Arr::set($options, $key, $licenses);
         return $options;
     }
 
-    /**
-     * @return array
-     */
-    protected function sanitizeStrings(array $input, array $options)
+    protected function sanitizeStrings(array $options, array $input): array
     {
         $key = 'settings.strings';
         $inputForm = Arr::consolidate(Arr::get($input, $key));
@@ -122,13 +111,9 @@ class SettingsController extends Controller
         return $options;
     }
 
-    /**
-     * @param string $integrationSlug
-     * @return bool
-     */
-    protected function hasMultilingualIntegration($integrationSlug)
+    protected function hasMultilingualIntegration(string $option): bool
     {
-        $integration = glsr(Multilingual::class)->getIntegration($integrationSlug);
+        $integration = glsr(Multilingual::class)->getIntegration($option);
         if (!$integration) {
             return false;
         }
@@ -149,16 +134,11 @@ class SettingsController extends Controller
         return true;
     }
 
-    /**
-     * @param string $license
-     * @param string $addonId
-     * @return string
-     */
-    protected function verifyLicense($license, $addonId)
+    protected function verifyLicense(string $license, string $addonId): string
     {
         if (empty(glsr()->updated[$addonId])) {
-            glsr_log()->error('Unknown add-on: '.$addonId);
-            glsr(Notice::class)->addError(_x('A license you entered could not be verified for the selected add-on.', 'admin-text', 'site-reviews'));
+            glsr_log()->error('Unknown addon: '.$addonId);
+            glsr(Notice::class)->addError(_x('A license you entered could not be verified for the selected addon.', 'admin-text', 'site-reviews'));
             return '';
         }
         try {

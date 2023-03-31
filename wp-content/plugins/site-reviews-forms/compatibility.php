@@ -44,17 +44,17 @@ add_filter('tcb_post_types', function ($blacklist) {
  */
 add_action('members_register_caps', function () {
     $labels = [
-        'create_site-review-forms' => _x('Create Review Forms', 'admin-text', 'site-reviews'),
-        'delete_others_site-review-forms' => _x("Delete Others' Review Forms", 'admin-text', 'site-reviews'),
-        'delete_site-review-forms' => _x('Delete Review Forms', 'admin-text', 'site-reviews'),
-        'delete_private_site-review-forms' => _x('Delete Private Review Forms', 'admin-text', 'site-reviews'),
-        'delete_published_site-review-forms' => _x('Delete Published Review Forms', 'admin-text', 'site-reviews'),
-        'edit_others_site-review-forms' => _x("Edit Others' Review Forms", 'admin-text', 'site-reviews'),
-        'edit_site-review-forms' => _x('Edit Review Forms', 'admin-text', 'site-reviews'),
-        'edit_private_site-review-forms' => _x('Edit Private Review Forms', 'admin-text', 'site-reviews'),
-        'edit_published_site-review-forms' => _x('Edit Published Review Forms', 'admin-text', 'site-reviews'),
-        'publish_site-review-forms' => _x('Publish Review Forms', 'admin-text', 'site-reviews'),
-        'read_private_site-review-forms' => _x('Read Private Review Forms', 'admin-text', 'site-reviews'),
+        'create_site-review-forms' => _x('Create Review Forms', 'admin-text', 'site-reviews-forms'),
+        'delete_others_site-review-forms' => _x("Delete Others' Review Forms", 'admin-text', 'site-reviews-forms'),
+        'delete_site-review-forms' => _x('Delete Review Forms', 'admin-text', 'site-reviews-forms'),
+        'delete_private_site-review-forms' => _x('Delete Private Review Forms', 'admin-text', 'site-reviews-forms'),
+        'delete_published_site-review-forms' => _x('Delete Published Review Forms', 'admin-text', 'site-reviews-forms'),
+        'edit_others_site-review-forms' => _x("Edit Others' Review Forms", 'admin-text', 'site-reviews-forms'),
+        'edit_site-review-forms' => _x('Edit Review Forms', 'admin-text', 'site-reviews-forms'),
+        'edit_private_site-review-forms' => _x('Edit Private Review Forms', 'admin-text', 'site-reviews-forms'),
+        'edit_published_site-review-forms' => _x('Edit Published Review Forms', 'admin-text', 'site-reviews-forms'),
+        'publish_site-review-forms' => _x('Publish Review Forms', 'admin-text', 'site-reviews-forms'),
+        'read_private_site-review-forms' => _x('Read Private Review Forms', 'admin-text', 'site-reviews-forms'),
     ];
     array_walk($labels, function ($label, $capability) {
         members_register_cap($capability, ['label' => $label]);

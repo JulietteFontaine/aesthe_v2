@@ -8,7 +8,6 @@
 }
 .newsletter__main__smallTitle { color:  #fff; letter-spacing: 1px; font-weight:  700; text-transform: uppercase; font-family: Montserrat; }
 .newsletter__main p:not(.newsletter__main__smallTitle) { color: white; font-size: 250%; margin: 6px 0 0 0; font-family: Roboto; font-weight: 300;
-	line-height: 1.2;
 	@media(max-width: 800px){
 		font-size: 220%;
 	}
@@ -42,8 +41,8 @@
 }
 .newsletter__input input {
 	font-size: 250% ;
-	line-height: 1.2;
-	font-family: Roboto;
+	// text-transform: lowercase;
+	font-family: "Roboto";
 	font-weight: 300;
 	@media(max-width: 800px){
 		font-size: 220%;
@@ -75,7 +74,6 @@
 
 footer { font-family: "Roboto"; font-weight: lighter; color: $coffee; padding:  2em 0}
 footer:before { content: ''; position:  absolute; top:  0; left:  calc(50% - 50vw); width:  100vw; height:  100%; background-color: $nude01}
-footer .cta--ghost { border: white; }
 
 .footer__main{
 	align-items: flex-start;
@@ -93,9 +91,16 @@ footer .cta--ghost { border: white; }
 .footer__main ul { list-style: none; line-height:  1.2 }
 .footer__main .network:hover,
 .footer__main .adress:hover { text-decoration: none !important; }
+.footer__main .network {padding-left: 3px;}
 
-.footer__main {display: flex; flex-wrap: wrap; }
-.footer__main .colonne_title { margin: 0 0 5px 0;
+.footer__main {
+	display: flex;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+.footer__main .colonne_title {
+	margin: 0 0 5px 0;
 	text-transform: uppercase;
 	font-weight: 600;
 	font-family: "Montserrat";}
@@ -104,6 +109,8 @@ footer .cta--ghost { border: white; }
 .footer__main li:first-of-type { margin: 0 0 5px 0 ; text-transform: uppercase; font-family: Roboto; font-weight: 400;}
 .footer__main li:not(:first-of-type) {
 	line-height: 1.2;
+	// text-transform: lowercase;
+	// font-weight: 400;
 	&:hover {
 		text-decoration: underline;
 	}}
@@ -115,29 +122,30 @@ footer .cta--ghost { border: white; }
 .footer__foot > svg [stroke] { stroke: #fff }
 .footer__foot div svg { margin: 0 5px 1em; vertical-align: middle }
 
+.footer__legal {
+	top: 21px;
+  }
+
 @media (max-width: 1200px) {
-	.footer__main>div:not(:last-of-type) { width: calc(var(--col)*3.5); }
 	.footer__main>div:last-of-type { width: var(--col-3) }
-	footer { padding:  2em 0}
+	.footer { padding:  2em 0}
 }
 @media(max-width: 1000px){
-
-	// .footer__main { display: block; }
 	.footer__main ul a { font-size: 14px; }
 	.footer__main > div:last-of-type { width: var(--wrapper); text-align: left; margin: 2em 0 0; }
 	.footer__foot { padding:  3em 0 1em }
 }
 
 @media(max-width: 800px){
-	.footer__main>div:not(:last-of-type) { width: var(--col-6); margin: 0 0 2em 0; }
+	.footer__main {flex-direction: column;}
+	.footer__main>div:not(:last-of-type) {margin: 0 0 2em 0; }
 	.footer__main > div:last-of-type {margin: 1em 0 0; }
 	.footer__foot { padding:  3em 0 3em; align-items: flex-end; }
 	.footer__foot > svg { width:  130px}
 	.footer__foot div svg { margin: 0 5px 0; vertical-align: middle;
 		height: 29px;
-		//width: 29px;
 	}
-	.footer__legal {width: var(--wrapper); left: 0; right: auto; bottom: -1em; text-align: center!important;}
+	// .footer__legal {width: var(--wrapper); left: 0; right: auto; bottom: -1em; text-align: center!important;}
 }
 
 /* activecampaign form */
@@ -149,10 +157,7 @@ footer .cta--ghost { border: white; }
 .newsletter input[id="fullname"] { display: none!important}
 .newsletter [for="fullname"] + div { display: none }
 .newsletter [for="email"] { display: none}
-.newsletter ._form-content ._field-wrapper { display: flex; justify-content: space-between;
-@media(max-width: 800px) {
-	margin-left: var(--gutter);
-}}
+.newsletter ._form-content ._field-wrapper { display: flex; justify-content: space-between;}
 
 .newsletter ._form-content { display: flex }
 .newsletter ._form-content button { display: flex; border: white; }
@@ -176,3 +181,39 @@ footer .cta--ghost { border: white; }
 	.newsletter ._form-content button { margin: 5px 0 0 0}
 	.newsletter ._error._below { top: -20px; font-size: 10px}
 }
+
+// CUSTOM BUTTON JE MINSCRIS
+._form-content ._button-wrapper #_form_1_submit {
+	font-family: "Roboto";
+	border-bottom: solid 2px #5D23D0;
+	padding-bottom: 3px;
+	width: fit-content;
+	font-weight: 300;
+	color: $purple;
+	text-transform: uppercase;
+  }
+
+  ._button-wrapper {
+	&::before{
+		content: "";
+		background: url("assets/img/fleche-cta.svg");
+		width: 48px;
+		height: 13px;
+		display: inline-block;
+		position: absolute;
+		left: -50px;
+		top: 4px;
+		@media (max-width:1000px) {
+			top: 8px;
+		  }
+	  }
+  }
+
+  ._button-wrapper._inline-style {
+	position: relative;
+	top: 16px;
+
+	@media (max-width:1000px) {
+			left: 50px;
+		  }
+  }

@@ -6,16 +6,13 @@ use GeminiLabs\SiteReviews\Controllers\NoticeController;
 
 class NoticeHooks extends AbstractHooks
 {
-    /**
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
         $this->hook(NoticeController::class, [
-            ['adminNotices', 'admin_notices'],
+            ['activatePlugin', 'current_screen'],
+            ['adminNotices', 'admin_head'],
             ['dismissNotice', 'site-reviews/route/admin/dismiss-notice'],
             ['dismissNoticeAjax', 'site-reviews/route/ajax/dismiss-notice'],
-            ['renderFooterNotice', 'in_admin_footer'],
         ]);
     }
 }

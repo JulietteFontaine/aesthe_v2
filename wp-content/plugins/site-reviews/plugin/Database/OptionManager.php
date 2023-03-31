@@ -21,29 +21,36 @@ class OptionManager
         return $this->reset();
     }
 
-    /**
-     * @param int $version
-     */
     public static function databaseKey(?int $version = null): string
     {
-        if (1 === $version) {
-            return 'geminilabs_site_reviews_settings';
-        }
-        if (2 === $version) {
-            return 'geminilabs_site_reviews-v2';
-        }
+        $versions = static::settingKeys();
         if (null === $version) {
             $version = glsr()->version('major');
         }
-        return Str::snakeCase(glsr()->id.'-v'.intval($version));
+        if (array_key_exists($version, $versions)) {
+            return $versions[$version];
+        }
+        return '';
     }
 
-    /**
-     * @param string $path
-     */
-    public function delete($path): bool
+    public function delete(string $path): bool
     {
         return $this->set(Arr::remove($this->all(), $path));
+    }
+
+    public static function flushCache(): void
+    {
+        $alloptions = wp_load_alloptions(true);
+        $flushed = false;
+        foreach (static::settingKeys() as $option) {
+            if (isset($alloptions[$option])) {
+                unset($alloptions[$option]);
+                $flushed = true;
+            }
+        }
+        if ($flushed) {
+            wp_cache_set('alloptions', $alloptions, 'options');
+        }
     }
 
     /**
@@ -57,35 +64,32 @@ class OptionManager
         $option = Arr::get($this->all(), $path, $fallback);
         $path = ltrim(Str::removePrefix($path, 'settings'), '.');
         if (!empty($path)) {
-            $hook = 'option/'.str_replace('.', '/', $path);
-            $option = glsr()->filter($hook, $option);
+            $path = str_replace('.', '/', $path);
+            $option = glsr()->filter('option/'.$path, $option);
         }
         return Cast::to($cast, $option);
     }
 
     /**
      * @param string $path
-     * @param array $fallback
      */
-    public function getArray($path, $fallback = []): array
+    public function getArray($path, array $fallback = []): array
     {
         return $this->get($path, $fallback, 'array');
     }
 
     /**
      * @param string $path
-     * @param string|int|bool $fallback
      */
-    public function getBool($path, $fallback = false): bool
+    public function getBool($path, bool $fallback = false): bool
     {
         return $this->get($path, $fallback, 'bool');
     }
 
     /**
      * @param string $path
-     * @param int $fallback
      */
-    public function getInt($path, $fallback = 0): int
+    public function getInt($path, int $fallback = 0): int
     {
         return $this->get($path, $fallback, 'int');
     }
@@ -124,13 +128,13 @@ class OptionManager
     }
 
     /**
-     * Get the settings of the previous major version.
+     * Get the uncached settings of the previously saved version.
      */
     public function previous(): ?array
     {
-        $version = intval(glsr()->version('major'));
-        while (--$version) {
-            if ($settings = Arr::consolidate($this->getWP(static::databaseKey($version)))) {
+        static::flushCache();
+        foreach (static::settingKeys() as $version => $option) {
+            if ($settings = Arr::consolidate(get_option($option))) {
                 return $settings;
             }
         }
@@ -159,7 +163,7 @@ class OptionManager
     public function set($pathOrArray, $value = ''): bool
     {
         if (is_string($pathOrArray)) {
-            $pathOrArray = Arr::set($this->all(), $pathOrArray, $value);
+            $pathOrArray = Arr::set($this->reset(), $pathOrArray, $value);
         }
         if ($settings = Arr::consolidate($pathOrArray)) {
             $result = update_option(static::databaseKey(), $settings);
@@ -169,5 +173,21 @@ class OptionManager
             return true;
         }
         return false;
+    }
+
+    public static function settingKeys(): array
+    {
+        $keys = [];
+        $version = intval(glsr()->version('major')) + 1;
+        while (--$version) {
+            if (1 === $version) {
+                $keys[$version] = 'geminilabs_site_reviews_settings';
+            } elseif (2 === $version) {
+                $keys[$version] = 'geminilabs_site_reviews-v2';
+            } else {
+                $keys[$version] = Str::snakeCase(glsr()->id.'-v'.intval($version));
+            }
+        }
+        return $keys;
     }
 }

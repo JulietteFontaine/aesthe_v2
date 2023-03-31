@@ -1,5 +1,7 @@
-<form class="site-search" method="get" id="form">
-  <?php include('wp-content/themes/aesthe/assets/img/magnifying-glass.svg'); ?>
+<form class="site-search-form" method="get" id="form">
+<div class="input">
+  <?php include('wp-content/themes/aesthe/assets/img/loupe.svg'); ?> 
   <input type="text" value="<?php the_search_query() ?>" name="s" id="s" placeholder="Recherche par mots-clés">
-  <button type="submit">OK</button>
+</div>
+  <button type="submit"><?php include('wp-content/themes/aesthe/assets/img/fleche-FFFFFF.svg'); ?>OK</button>
 </form>

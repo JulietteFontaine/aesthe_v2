@@ -24,6 +24,28 @@
                         </li>
                     <# }); #>
                 </ul>
+                <div class="glsr-dp-help" style="display:none;">
+                    <div class="components-notice is-warning">
+                        <p class="components-notice__content">
+                            <?php
+                                printf(_x('Did you read the %sGetting Started%s guide?', 'admin-text', 'site-reviews'),
+                                    sprintf('<a href="%s" target="_blank">', glsr_admin_url('welcome')),
+                                    '</a>'
+                                );
+                            ?>
+                        </p>
+                    </div>
+                    <div class="components-notice is-info">
+                        <p class="components-notice__content">
+                            <?php
+                                printf(_x('Maybe one of the %saddons%s provide this feature.', 'admin-text', 'site-reviews'),
+                                    '<a href="https://niftyplugins.com/plugins/" target="_blank">',
+                                    '</a>'
+                                );
+                            ?>
+                        </p>
+                    </div>
+                </div>
                 <div class="glsr-dp-details" style="display:none;">
                     <textarea name="details" placeholder="" rows="3"></textarea>
                 </div>

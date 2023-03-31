@@ -87,6 +87,25 @@
             "prepend": "",
             "append": "",
             "maxlength": ""
+        },
+        {
+            "key": "field_63eb95886c6b1",
+            "label": "Image seule",
+            "name": "image_seule",
+            "type": "true_false",
+            "instructions": "Si l'image doit être seule sans le bloc ne prendra que l'image \"avant\"",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
         }
     ],
     "location": [
@@ -106,5 +125,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1673290483
+    "modified": 1676383854
 }

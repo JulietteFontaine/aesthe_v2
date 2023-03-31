@@ -76,8 +76,9 @@ function _relevanssi_install() {
 	add_option( 'relevanssi_class', 'relevanssi-query-term' );
 	add_option( 'relevanssi_comment_boost', $relevanssi_variables['comment_boost_default'] );
 	add_option( 'relevanssi_content_boost', $relevanssi_variables['content_boost_default'] );
-	add_option( 'relevanssi_css', 'text-decoration: underline; text-color: #ff0000' );
+	add_option( 'relevanssi_css', 'text-decoration: underline; color: #ff0000' );
 	add_option( 'relevanssi_db_version', '0' );
+	add_option( 'relevanssi_debugging_mode', 'off' );
 	add_option( 'relevanssi_default_orderby', 'relevance' );
 	add_option( 'relevanssi_disable_or_fallback', 'off' );
 	add_option( 'relevanssi_exact_match_bonus', 'on' );

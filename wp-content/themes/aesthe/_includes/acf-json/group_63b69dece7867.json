@@ -1,6 +1,6 @@
 {
     "key": "group_63b69dece7867",
-    "title": "Prestation",
+    "title": "CPT - Prestation",
     "fields": [
         {
             "key": "field_63b69df2bb542",
@@ -107,7 +107,7 @@
             "name": "rdv_link",
             "type": "link",
             "instructions": "Lien vers la page de prise de rendez-vous",
-            "required": 1,
+            "required": 0,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
@@ -134,5 +134,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1673271283
+    "modified": 1675350883
 }

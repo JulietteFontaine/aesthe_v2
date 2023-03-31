@@ -26,7 +26,7 @@ use ReflectionException;
 abstract class DefaultsAbstract implements DefaultsContract
 {
     /**
-     * The values that should be cast.
+     * The values that should be cast before sanitization is run.
      * @var array
      */
     public $casts = [];
@@ -116,7 +116,9 @@ abstract class DefaultsAbstract implements DefaultsContract
         $values = $this->mapKeys($values);
         array_unshift($args, $values);
         if (in_array($this->method, $this->callable)) { // this also means that the method exists
-            return $this->callMethod($args);
+            $values = $this->callMethod($args);
+            $values = $this->finalize($values);
+            return $values;
         }
         glsr_log()->error("Invalid method [$this->method].");
         return $args;
@@ -204,6 +206,15 @@ abstract class DefaultsAbstract implements DefaultsContract
     protected function filter(array $values = [])
     {
         return $this->merge(array_filter($values, Helper::class.'::isNotEmpty'));
+    }
+
+    /**
+     * Finalize provided values, this always runs last.
+     * @return array
+     */
+    protected function finalize(array $values = [])
+    {
+        return $values;
     }
 
     /**

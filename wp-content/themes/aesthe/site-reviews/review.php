@@ -10,7 +10,7 @@
     <div class="custom-review__bottom">
         <div class="custom-review__bottom__details">
             {{ author }}
-            &ensp; | &ensp;
+            &ensp;|&ensp;
             {{ date }}
             <!-- {{ assigned_posts }} -->
         </div>
