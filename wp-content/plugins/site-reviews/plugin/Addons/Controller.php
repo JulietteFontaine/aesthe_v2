@@ -313,12 +313,21 @@ abstract class Controller extends BaseController
 
     /**
      * @return array
+     * @filter site-reviews/addon/subsubsub
+     */
+    public function filterSubsubsub(array $subsubsub)
+    {
+        return $subsubsub;
+    }
+
+    /**
+     * @return array
      * @filter site-reviews/translation/entries
      */
     public function filterTranslationEntries(array $entries)
     {
         $potFile = $this->addon->path($this->addon->languages.'/'.$this->addon->id.'.pot');
-        return glsr(Translation::class)->extractEntriesFromPotFile($potFile, $entries);
+        return glsr(Translation::class)->extractEntriesFromPotFile($potFile, $this->addon->id, $entries);
     }
 
     /**
@@ -362,7 +371,7 @@ abstract class Controller extends BaseController
 
     /**
      * @return void
-     * @action plugins_loaded
+     * @action init
      */
     public function registerLanguages()
     {

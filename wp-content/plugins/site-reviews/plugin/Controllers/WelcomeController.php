@@ -2,6 +2,9 @@
 
 namespace GeminiLabs\SiteReviews\Controllers;
 
+use GeminiLabs\SiteReviews\Api;
+use GeminiLabs\SiteReviews\Defaults\TutorialDefaults;
+use GeminiLabs\SiteReviews\Defaults\VideoDefaults;
 use GeminiLabs\SiteReviews\Helpers\Arr;
 use GeminiLabs\SiteReviews\Modules\Html\Builder;
 use GeminiLabs\SiteReviews\Modules\Html\Template;
@@ -40,27 +43,6 @@ class WelcomeController extends Controller
     }
 
     /**
-     * @param string $plugin
-     * @param bool $isNetworkActivation
-     * @return void
-     * @action activated_plugin
-     */
-    public function redirectOnActivation($plugin, $isNetworkActivation)
-    {
-        if ($isNetworkActivation
-            || 'cli' === php_sapi_name()
-            || $plugin !== plugin_basename(glsr()->file)) {
-            return;
-        }
-        $checked = Arr::consolidate(filter_input(INPUT_POST, 'checked', FILTER_DEFAULT, FILTER_FORCE_ARRAY));
-        if (1 < count($checked) && 'activate-selected' === filter_input(INPUT_POST, 'action')) {
-            return;
-        }
-        wp_safe_redirect(glsr_admin_url('welcome'));
-        exit;
-    }
-
-    /**
      * @return void
      * @action admin_menu
      */
@@ -96,6 +78,8 @@ class WelcomeController extends Controller
      */
     public function renderPage()
     {
+        $data = glsr(Api::class)->get('tutorials')->data();
+        $data = glsr(TutorialDefaults::class)->restrict($data);
         $tabs = glsr()->filterArray('addon/welcome/tabs', [
             'getting-started' => _x('Getting Started', 'admin-text', 'site-reviews'),
             'whatsnew' => _x('What\'s New', 'admin-text', 'site-reviews'),
@@ -103,7 +87,7 @@ class WelcomeController extends Controller
             'support' => _x('Support', 'admin-text', 'site-reviews'),
         ]);
         glsr()->render('pages/welcome/index', [
-            'data' => ['context' => []],
+            'data' => $data,
             'http_referer' => (string) wp_get_referer(),
             'tabs' => $tabs,
             'template' => glsr(Template::class),

@@ -88,6 +88,7 @@ class Controller extends AddonController
     /**
      * @return array
      * @filter site-reviews/block/form/attributes
+     * @filter site-reviews/block/review/attributes
      * @filter site-reviews/block/reviews/attributes
      * @filter site-reviews-images/block/images/attributes
      */
@@ -170,7 +171,7 @@ class Controller extends AddonController
      */
     public function filterElementorWidgetControls(array $controls, $widget)
     {
-        if (!in_array($widget->get_name(), ['site_reviews', 'site_reviews_form'])) {
+        if (!in_array($widget->get_name(), ['site_review', 'site_reviews', 'site_reviews_form'])) {
             return $controls;
         }
         $option = [
@@ -185,7 +186,12 @@ class Controller extends AddonController
             $option['label'] = _x('Use a Custom Form', 'admin-text', 'site-reviews-forms');
         }
         $options = $controls['settings']['options'];
-        $options = Arr::prepend($options, $option, 'form');
+        if ('site_review' === $widget->get_name() && array_key_exists('post_id', $options)) {
+            $options['post_id']['separator'] = 'after';
+            $options = Arr::insertAfter('post_id', $options, ['form' => $option]);
+        } else {
+            $options = Arr::prepend($options, $option, 'form');
+        }
         $controls['settings']['options'] = $options;
         return $controls;
     }
@@ -248,6 +254,7 @@ class Controller extends AddonController
 
     /**
      * @return array
+     * @filter site-reviews/defaults/site-review/defaults
      * @filter site-reviews/defaults/site-reviews/defaults
      * @filter site-reviews/defaults/site-reviews-form/defaults
      * @filter site-reviews-images/defaults/site-reviews-images/defaults

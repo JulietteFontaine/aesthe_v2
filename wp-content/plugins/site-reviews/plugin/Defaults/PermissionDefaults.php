@@ -25,6 +25,14 @@ class PermissionDefaults extends Defaults
                 'shortcodes' => 'edit_posts',
                 'support' => 'edit_others_posts',
             ],
+            'notices' => [
+                'footer' => 'edit_posts',
+                'migration' => 'edit_others_posts',
+                'premium' => 'edit_others_posts',
+                'upgraded' => 'update_plugins',
+                'welcome' => 'edit_posts',
+                'write-review' => 'edit_posts',
+            ],
             'settings' => [
                 'addons' => 'manage_options',
                 'forms' => 'manage_options',

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 site-reviews-forms
+# Copyright (C) 2023 site-reviews-forms
 # This file is distributed under the same license as the site-reviews-forms package.
 msgid ""
 msgstr ""
@@ -19,72 +19,97 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: en_US\n"
 
-#: activate.php:102
+#: compatibility.php:47
 msgctxt "admin-text"
-msgid "The %s plugin was deactivated."
-msgstr "The %s plugin was deactivated."
+msgid "Create Review Forms"
+msgstr "Create Review Forms"
 
-#: activate.php:103
+#: compatibility.php:48
 msgctxt "admin-text"
-msgid "PHP version"
-msgstr "PHP version"
+msgid "Delete Others' Review Forms"
+msgstr "Delete Others' Review Forms"
 
-#: activate.php:104
+#: compatibility.php:49
 msgctxt "admin-text"
-msgid "You can use the %s plugin to restore %s to the previous version."
-msgstr "You can use the %s plugin to restore %s to the previous version."
+msgid "Delete Review Forms"
+msgstr "Delete Review Forms"
 
-#: activate.php:105
+#: compatibility.php:50
 msgctxt "admin-text"
-msgid ""
-"Please contact your hosting provider or server administrator to upgrade the "
-"version of PHP on your server (your server is running PHP version %s), or "
-"try to find an alternative plugin."
-msgstr ""
-"Please contact your hosting provider or server administrator to upgrade the "
-"version of PHP on your server (your server is running PHP version %s), or "
-"try to find an alternative plugin."
+msgid "Delete Private Review Forms"
+msgstr "Delete Private Review Forms"
 
-#: activate.php:106
+#: compatibility.php:51
 msgctxt "admin-text"
-msgid "Update WordPress"
-msgstr "Update WordPress"
+msgid "Delete Published Review Forms"
+msgstr "Delete Published Review Forms"
 
-#: activate.php:107
+#: compatibility.php:52
 msgctxt "admin-text"
-msgid "WordPress version"
-msgstr "WordPress version"
+msgid "Edit Others' Review Forms"
+msgstr "Edit Others' Review Forms"
 
-#: activate.php:108
+#: compatibility.php:53
 msgctxt "admin-text"
-msgid "This plugin requires %s or greater in order to work properly."
-msgstr "This plugin requires %s or greater in order to work properly."
+msgid "Edit Review Forms"
+msgstr "Edit Review Forms"
+
+#: compatibility.php:54
+msgctxt "admin-text"
+msgid "Edit Private Review Forms"
+msgstr "Edit Private Review Forms"
+
+#: compatibility.php:55
+msgctxt "admin-text"
+msgid "Edit Published Review Forms"
+msgstr "Edit Published Review Forms"
+
+#: compatibility.php:56
+msgctxt "admin-text"
+msgid "Publish Review Forms"
+msgstr "Publish Review Forms"
+
+#: compatibility.php:57
+msgctxt "admin-text"
+msgid "Read Private Review Forms"
+msgstr "Read Private Review Forms"
 
 #: plugin/Application.php:32
 msgctxt "admin-text"
 msgid "No title"
 msgstr "No title"
 
+#: plugin/ColumnFilterForm.php:16
+msgctxt "admin-text"
+msgid "Filter by review form"
+msgstr "Filter by review form"
+
+#: plugin/ColumnFilterForm.php:25
+msgctxt "admin-text"
+msgid "Any review form"
+msgstr "Any review form"
+
+#: plugin/ColumnFilterForm.php:26
+msgctxt "admin-text"
+msgid "No review form"
+msgstr "No review form"
+
+#: plugin/FormFields.php:109
+msgctxt "admin-text"
+msgid "Custom Form"
+msgstr "Custom Form"
+
+#: plugin/FormFields.php:111
+msgctxt "admin-text"
+msgid "Default Form"
+msgstr "Default Form"
+
 #: plugin/FormFields.php:146
 msgctxt "admin-text"
 msgid "Form ID"
 msgstr "Form ID"
 
-#: plugin/Gatekeeper.php:99
-msgctxt "admin-text"
-msgid "%s requires the latest version of"
-msgid_plural "%s requires the latest version of the following plugins:"
-msgstr[0] "%s requires the latest version of"
-msgstr[1] "%s requires the latest version of the following plugins:"
-
-#: plugin/Gatekeeper.php:115
-msgctxt "admin-text"
-msgid "%s needs an update to work with"
-msgid_plural "%s needs an update to work with the following plugins:"
-msgstr[0] "%s needs an update to work with"
-msgstr[1] "%s needs an update to work with the following plugins:"
-
-#: views/documentation.php:17
+#: views/documentation.php:32
 msgctxt "admin-text"
 msgid ""
 "If you assigning reviews to multiple Post IDs, then you probably also want "
@@ -122,6 +147,11 @@ msgstr ""
 "If you are using the Blocks or Elementor Widgets then you can use the block "
 "or widget options to select the Review Form."
 
+#: views/metabox-help.php:9
+msgctxt "admin-text"
+msgid "To display this Review Form, use the following shortcode:"
+msgstr "To display this Review Form, use the following shortcode:"
+
 #: views/metabox-help.php:10
 msgctxt "admin-text"
 msgid ""
@@ -130,6 +160,15 @@ msgid ""
 msgstr ""
 "Use the <code>form</code> option with the [site_reviews_form] shortcode to "
 "use this custom form."
+
+#: views/metabox-help.php:14
+msgctxt "admin-text"
+msgid ""
+"To display your reviews with this Review Template, use the following "
+"shortcode:"
+msgstr ""
+"To display your reviews with this Review Template, use the following "
+"shortcode:"
 
 #: views/metabox-help.php:15
 msgctxt "admin-text"
@@ -412,12 +451,12 @@ msgctxt "admin-text"
 msgid "Remove entry"
 msgstr "Remove entry"
 
-#: plugin/Controllers/Controller.php:183
+#: plugin/Controllers/Controller.php:186
 msgctxt "admin-text"
 msgid "Use a Custom Form"
 msgstr "Use a Custom Form"
 
-#: plugin/Controllers/Controller.php:181
+#: plugin/Controllers/Controller.php:184
 msgctxt "admin-text"
 msgid "Use a Custom Form Review Template"
 msgstr "Use a Custom Form Review Template"
@@ -475,6 +514,24 @@ msgstr ""
 msgctxt "admin-text"
 msgid "The %s must be unique"
 msgstr "The %s must be unique"
+
+#: plugin/Controllers/RestApiController.php:14
+msgctxt "admin-text"
+msgid ""
+"Render the review with a specific custom form (ID) review template; only "
+"works with the rendered parameter."
+msgstr ""
+"Render the review with a specific custom form (ID) review template; only "
+"works with the rendered parameter."
+
+#: plugin/Controllers/RestApiController.php:28
+msgctxt "admin-text"
+msgid ""
+"Use rating values of a custom rating field; use the custom rating Field "
+"Name as the value. "
+msgstr ""
+"Use rating values of a custom rating field; use the custom rating Field "
+"Name as the value. "
 
 #: plugin/Controllers/RestController.php:51
 msgctxt "admin-text"
@@ -611,6 +668,26 @@ msgctxt "admin-text"
 msgid "Review: Title"
 msgstr "Review: Title"
 
+#: plugin/Metaboxes/FieldsMetabox.php:18
+msgctxt "admin-text"
+msgid "Form Fields"
+msgstr "Form Fields"
+
+#: plugin/Metaboxes/HelpMetabox.php:17
+msgctxt "admin-text"
+msgid "How to Use"
+msgstr "How to Use"
+
+#: plugin/Metaboxes/TemplateMetabox.php:17
+msgctxt "admin-text"
+msgid "Review Template"
+msgstr "Review Template"
+
+#: plugin/Metaboxes/TemplateTagsMetabox.php:17
+msgctxt "admin-text"
+msgid "Reserved Tags"
+msgstr "Reserved Tags"
+
 #: config/settings.php:9
 msgctxt "setting label (admin-text)"
 msgid "Select Boxes"
@@ -631,22 +708,36 @@ msgctxt "setting option (admin-text)"
 msgid "Use Choices.js"
 msgstr "Use Choices.js"
 
-#: plugin/Controllers/Controller.php:149
+#: config/settings.php:14
+msgctxt "setting tooltip (admin-text)"
+msgid "Would you like to use a javascript library to style the Select boxes?"
+msgstr "Would you like to use a javascript library to style the Select boxes?"
+
+#: config/settings.php:23
+msgctxt "setting tooltip (admin-text)"
+msgid ""
+"Would you like to load the javascript and CSS of the selected library? If "
+"your theme is already using the library, you may want to disable this."
+msgstr ""
+"Would you like to load the javascript and CSS of the selected library? If "
+"your theme is already using the library, you may want to disable this."
+
+#: plugin/Controllers/Controller.php:152
 msgctxt "Form table columns (admin-text)"
 msgid "Fields"
 msgstr "Fields"
 
-#: plugin/Controllers/Controller.php:150
+#: plugin/Controllers/Controller.php:153
 msgctxt "Form table columns (admin-text)"
 msgid "Reviews"
 msgstr "Reviews"
 
-#: plugin/Controllers/Controller.php:151
+#: plugin/Controllers/Controller.php:154
 msgctxt "Form table columns (admin-text)"
 msgid "Shortcode"
 msgstr "Shortcode"
 
-#: plugin/Controllers/Controller.php:235
+#: plugin/Controllers/Controller.php:239
 msgctxt "The Form Post ID (admin-text)"
 msgid "<span>ID: %d</span>"
 msgstr "<span>ID: %d</span>"

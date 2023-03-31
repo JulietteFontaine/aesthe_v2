@@ -129,6 +129,51 @@ function relevanssi_close_tags( string $html ) {
 }
 
 /**
+ * Counts search term occurrances in the Relevanssi index.
+ *
+ * @param string $query The search query. Will be split at spaces.
+ * @param string $mode  Output mode. Possible values 'array' or 'string'.
+ * Default is 'array'.
+ *
+ * @return array|string An array of search term occurrances, or a string with
+ * the number of occurrances.
+ */
+function relevanssi_count_term_occurrances( string $query, string $mode = 'array' ) {
+	global $wpdb, $relevanssi_variables;
+
+	$terms  = explode( ' ', $query );
+	$counts = array();
+
+	foreach ( $terms as $term ) {
+		$term = trim( $term );
+		if ( empty( $term ) ) {
+			continue;
+		}
+		$counts[ $term ] = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT SUM(content + title + comment + tag +
+				link + author + category + excerpt + taxonomy + customfield
+				+ mysqlcolumn) AS total FROM ' .
+				$relevanssi_variables['relevanssi_table'] . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				' WHERE term = %s
+				GROUP BY term',
+				$term
+			)
+		);
+	}
+
+	if ( 'array' === $mode ) {
+		return $counts;
+	} elseif ( 'string' === $mode ) {
+		$strings = array();
+		foreach ( $counts as $term => $count ) {
+			$strings[] = "<span class='search_term'>$term</span>: <span class='count'>$count</span>";
+		}
+		return implode( ', ', $strings );
+	}
+}
+
+/**
  * Prints out debugging notices.
  *
  * If WP_CLI is available, prints out the debug notice as a WP_CLI::log(),
@@ -344,7 +389,7 @@ function relevanssi_get_an_object( $source ) {
 function relevanssi_get_attachment_suffix( $post ) : string {
 	if ( ! is_object( $post ) ) {
 		$post = relevanssi_get_post( $post );
-		if ( ! $post ) {
+		if ( is_wp_error( $post ) ) {
 			return '';
 		}
 	}
@@ -387,7 +432,8 @@ function relevanssi_get_current_language( bool $locale = true ) {
 				$current_language = pll_get_post_language( $post->ID, $locale ? 'locale' : 'slug' );
 			}
 		} elseif ( function_exists( 'pll_current_language' ) ) {
-			$current_language = pll_current_language( $locale ? 'locale' : 'slug' );
+			$pll_language     = pll_current_language( $locale ? 'locale' : 'slug' );
+			$current_language = $pll_language ? $pll_language : $current_language;
 		}
 	}
 	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
@@ -430,7 +476,6 @@ function relevanssi_get_current_language( bool $locale = true ) {
 			}
 		}
 	}
-
 	return $current_language;
 }
 
@@ -469,7 +514,8 @@ function relevanssi_get_permalink( $post = 0 ) {
  * @param int        $blog_id The blog ID, default -1. If -1, will be replaced
  * with the actual current blog ID from get_current_blog_id().
  *
- * @return object The post object.
+ * @return object|WP_Error The post object or a WP_Error object if the post
+ * doesn't exist.
  */
 function relevanssi_get_post( $post_id, int $blog_id = -1 ) {
 	if ( -1 === $blog_id ) {
@@ -489,6 +535,9 @@ function relevanssi_get_post( $post_id, int $blog_id = -1 ) {
 		$post = get_post( $post_id );
 
 		$relevanssi_post_array[ $post_id ] = $post;
+	}
+	if ( ! $post ) {
+		$post = new WP_Error( 'post_not_found', __( 'The requested post does not exist.' ) );
 	}
 	return $post;
 }
@@ -542,8 +591,9 @@ function relevanssi_get_post_meta_for_all_posts( array $post_ids, string $field 
  * @param int|string $post_id An ID, either an integer post ID or a
  * **type**id string for terms and users.
  *
- * @return WP_Post|WP_Term|WP_User An object, type of which depends on the
- * target object.
+ * @return WP_Post|WP_Term|WP_User|WP_Error An object, type of which depends on
+ * the target object. If relevanssi_get_post() doesn't find the post, this
+ * returns a WP_Error.
  */
 function relevanssi_get_post_object( $post_id ) {
 	$object = null;
@@ -633,19 +683,32 @@ function relevanssi_get_the_tags( string $before = '', string $separator = ', ',
  *
  * @param int|WP_Post $post The post ID or a post object.
  *
- * @return string The post title with highlights.
+ * @return string The post title with highlights and an empty string, if the
+ * post cannot be found.
  */
 function relevanssi_get_the_title( $post ) {
 	if ( is_numeric( $post ) ) {
 		$post = relevanssi_get_post( $post );
 	}
-	if ( ! is_object( $post ) ) {
-		return null;
+	if ( is_wp_error( $post ) ) {
+		return '';
 	}
 	if ( empty( $post->post_highlighted_title ) ) {
 		$post->post_highlighted_title = $post->post_title;
 	}
 	return $post->post_highlighted_title;
+}
+
+/**
+ * Adds a soft hyphen to a string at every five characters.
+ *
+ * @param string $string The string to hyphenate.
+ *
+ * @return string The hyphenated string.
+ */
+function relevanssi_hyphenate( $string ) {
+	$string = preg_replace( '/([^\s]{8})([^\s])/u', '$1&shy;$2', html_entity_decode( $string ) );
+	return $string;
 }
 
 /**
@@ -696,6 +759,85 @@ function relevanssi_intval( array $request, string $option ) {
 		return intval( $request[ $option ] );
 	}
 	return null;
+}
+
+/**
+ * Returns true if the search is from Relevanssi Live Ajax Search.
+ *
+ * Checks if $wp_query->query_vars['action'] is set to "relevanssi_live_search".
+ *
+ * @return bool True if the search is from Relevanssi Live Ajax Search, false
+ * otherwise.
+ */
+function relevanssi_is_live_search() {
+	global $wp_query;
+	$relevanssi_live_search = false;
+	if ( isset( $wp_query->query_vars['action'] ) && 'relevanssi_live_search' === $wp_query->query_vars['action'] ) {
+		$relevanssi_live_search = true;
+	}
+	return $relevanssi_live_search;
+}
+
+/**
+ * Checks if a string is a multiple-word phrase.
+ *
+ * Replaces hyphens, quotes and ampersands with spaces if necessary based on
+ * the Relevanssi advanced indexing settings.
+ *
+ * @param string $string The string to check.
+ *
+ * @return boolean True if the string is a multiple-word phrase, false otherwise.
+ */
+function relevanssi_is_multiple_words( string $string ) : bool {
+	if ( empty( $string ) ) {
+		return false;
+	}
+	$punctuation = get_option( 'relevanssi_punctuation' );
+	if ( 'replace' === $punctuation['hyphens'] ) {
+		$string = str_replace(
+			array(
+				'-',
+				'–',
+				'—',
+			),
+			' ',
+			$string
+		);
+	}
+	if ( 'replace' === $punctuation['quotes'] ) {
+		$string = str_replace(
+			array(
+				'&#8217;',
+				"'",
+				'’',
+				'‘',
+				'”',
+				'“',
+				'„',
+				'´',
+				'″',
+			),
+			' ',
+			$string
+		);
+	}
+	if ( 'replace' === $punctuation['ampersands'] ) {
+		$string = str_replace(
+			array(
+				'&#038;',
+				'&amp;',
+				'&',
+			),
+			' ',
+			$string
+		);
+	}
+
+	if ( count( explode( ' ', $string ) ) > 1 ) {
+		return true;
+	}
+
+	return false;
 }
 
 /**
@@ -1007,9 +1149,10 @@ function relevanssi_strip_all_tags( $content ) : string {
 	if ( ! is_string( $content ) ) {
 		$content = '';
 	}
-	$content = preg_replace( '/<!--.*?-->/ms', '', $content );
-	$content = preg_replace( '/<[!a-zA-Z\/][^>].*?>/ms', ' ', $content );
-	return $content;
+	$content = preg_replace( '/<!--.*?-->/ums', '', $content );
+	$content = preg_replace( '/<[!a-zA-Z\/][^>].*?>/ums', ' ', $content );
+
+	return $content ?? '';
 }
 
 /**
@@ -1075,6 +1218,7 @@ function relevanssi_strip_tags( $content ) {
 		'/(<\/?hr.*?>)/',
 		'/(<\/?li.*?>)/',
 		'/(<img.*?>)/',
+		'/(<\/td>)/',
 	);
 
 	$content = preg_replace( $space_tags, '$1 ', $content );
@@ -1368,11 +1512,11 @@ function relevanssi_turn_off_options( array &$request, array $options ) {
  * @param array   $request  An array of option values.
  * @param string  $option   The key to check.
  * @param boolean $autoload Should the option autoload, default true.
- * @param int     $default  The default value if floatval() fails, default 0.
+ * @param float   $default  The default value if floatval() fails, default 0.
  * @param boolean $positive If true, replace negative values and zeroes with
  * $default.
  */
-function relevanssi_update_floatval( array $request, string $option, bool $autoload = true, int $default = 0, bool $positive = false ) {
+function relevanssi_update_floatval( array $request, string $option, bool $autoload = true, float $default = 0, bool $positive = false ) {
 	if ( isset( $request[ $option ] ) ) {
 		$value = floatval( $request[ $option ] );
 		if ( ! $value ) {

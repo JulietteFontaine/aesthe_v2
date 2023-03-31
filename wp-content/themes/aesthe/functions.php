@@ -5,13 +5,52 @@ TO DO
 Hide WP version strings from scripts and styles
 Hide WP version strings from generator meta tag 
 */
+flush_rewrite_rules( true );
 
-remove_filter('the_excerpt', 'wpautop');
-remove_filter('the_content', 'wpautop');
-remove_filter('the_sub_field', 'wpautop');
+function my_theme_setup(){
+  add_theme_support('post-thumbnails');
+  add_post_type_support('post', 'excerpt');
+  add_post_type_support('page', 'excerpt');
+  }
+  add_action('after_setup_theme', 'my_theme_setup');
+  
+function remove_wpauto() {
+  remove_filter('the_excerpt', 'wpautop');
+  remove_filter('the_content', 'wpautop');
+  remove_filter('the_sub_field', 'wpautop');
+  }
+  add_action('init', 'remove_wpauto');
+
+function add_categories_to_pages() {
+  register_taxonomy_for_object_type( 'category', 'page' );
+  }
+  add_action('init', 'add_categories_to_pages' );
+
+  // remove editor and excerpt in template pages
+  function remove_editor() {
+    if (isset($_GET['post'])) {
+        $id = $_GET['post'];
+        $template = get_post_meta($id, '_wp_page_template', true);
+        switch ($template) {
+            case 'page-presse.php':
+            case 'page-conseils.php':
+            case 'page-blog.php':
+
+            remove_post_type_support('page', 'editor');
+            remove_post_type_support('page', 'excerpt');
+
+            break;
+            default :
+            // Don't remove any other template.
+            break;
+        }
+    }
+}
+add_action('init', 'remove_editor');
+  
+add_theme_support('post-thumbnails');
 add_theme_support('align-wide');
 add_theme_support('menus');
-add_theme_support('post-thumbnails');
 remove_action('wp_head', 'wp_print_scripts');
 remove_action('wp_head', 'wp_print_head_scripts', 9);
 remove_action('wp_head', 'wp_enqueue_scripts', 1);
@@ -32,141 +71,46 @@ remove_action('wp_head', 'wp_generator'); // Display the XHTML generator that is
 remove_action('wp_head', 'print_emoji_detection_script', 7); // remove emojis
 remove_action('wp_print_styles', 'print_emoji_styles'); // remove emojis
 
-function remove_h1_from_editor($settings)
+/**************
+ **************
+ * CONCERN :
+ * POST TYPE
+ **************
+ **************
+ */
+
+// Delete default Post Types WP "commentaires"
+add_action('admin_menu', 'remove_links_tab_menu_pages');
+function remove_links_tab_menu_pages()
 {
-  $settings['block_formats'] = 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;Preformatted=pre;';
-  return $settings;
+  remove_menu_page('edit-comments.php');
 }
 
-function my_login_logo_one()
+// Delete default Post Types supports
+add_action('init', 'remove_supports_prestations');
+function remove_supports_prestations()
 {
-  echo "<style type=\"text/css\">";
-  echo "body.login div#login h1 a { background-image: url(" . get_template_directory_uri() . "/assets/img/pammngrmm.png);padding-bottom: 30px; }";
-  echo "</style>";
+  remove_post_type_support('prestations', 'editor');
+  remove_post_type_support('prestations', 'excerpt');
 }
 
-add_action('login_enqueue_scripts', 'my_login_logo_one');
-
-function my_admin_add_js()
-{
-  if (is_admin()) :
-    // hans yeah!
-    // aussi déterminable avec $screen = get_current_screen() puis screen->parent_file
-    global $pagenow;
-    if ($pagenow == "users.php") :
-?>
-      <script>
-        var dom_target = document.getElementsByClassName("wp-header-end");
-        var newElement = document.createElement('div');
-        newElement.innerHTML = "Il est important de garder un mot de passe complexe, ce qui renforce la sécurité et baisse le risque de piratage.<br />Le changement de mot de passe par un plus simple dégage la responsabilité du studio en cas de piratage du site.<br />Tout frais de correction sera donc à la charge du client.";
-        dom_target[0].parentNode.insertBefore(newElement, dom_target[0]);
-      </script>
-<?php
-    endif;
-  endif;
-}
-
-function add_mime_types($mimes)
-{
-  $mimes['svg'] = 'image/svg+xml';
-  return $mimes;
-}
-
-function hide_wp_update_nag()
-{
-  remove_action('admin_notices', 'update_nag', 3);
-}
-
-show_admin_bar(false); // masque admin bar
-
-if (is_admin()) {
-
-  // add_filter('the_content', 'filter_ptags_on_images'); // enleve <p> autour des images inserées avec wysiwyg
-
-  add_action('admin_menu', 'hide_wp_update_nag'); // hide message update mise à jour wp
-  add_filter('sanitize_file_name', 'remove_accents'); // SUPPRIME LES ACCENTS DES MEDIAS
-  add_filter('upload_mimes', 'add_mime_types'); // AUTORISE SVG EN BACKOFFICE
-
-  // Code utile uniquement dans l'administration
-  add_action('admin_footer', 'my_admin_add_js');
-  add_filter('tiny_mce_before_init', 'remove_h1_from_editor');
-
-  // Réglages permaliens
-  if (get_option('medium_size_w') == 300) update_option('medium_size_w', '1000');
-  if (get_option('medium_size_h') == 300) update_option('medium_size_h', '2500');
-  if (get_option('large_size_w') == 1024) update_option('large_size_w', '2000');
-  if (get_option('large_size_h') == 1024) update_option('large_size_h', '3500');
-  if (get_option('uploads_use_yearmonth_folders') != '') update_option('uploads_use_yearmonth_folders', '');
-} else {
-  // Code utile uniquement dans le front-end
-}
-
-function getPageIDbySlug($the_slug)
-{
-  if (get_page_by_path($the_slug)) return get_page_by_path($the_slug)->ID;
-}
-
-// Ajout tailles médias pour éviter background img ou object-fit
-// add_image_size( 'home-carousel', 1830, 645, true); // true = crop
-// add_image_size( 'home-bloc-trois', 570, 375, true); // true = crop
-// add_image_size( 'custom-size', 220, 220, array( 'left', 'top' ) );
-
-// wp_insert_post(array('post_title' => $title_tmp, 'post_content' => $content_tmp, 'post_type' => 'formulaire', 'post_status' => 'publish'));
-
-// $role->remove_cap('delete_published_pages');
-
-// ACTIVER SESSIONS
-/*
-add_action('init', 'monprefixe_session_start', 1);
-function monprefixe_session_start() {
-  if(!session_id())  @session_start();
-}
-*/
-
-// Delete default Post Types WP "articles"
-add_action('init', 'hwk_deregister_builtin_post_type');
-function hwk_deregister_builtin_post_type(){
-    global $wp_post_types;
-    
-    $unregister = array(
-        'post',
-          );
-    
-    foreach($unregister as $post_type){
-        if(!post_type_exists($post_type))
-            continue;
-        $post_type_object = get_post_type_object($post_type);
-        $post_type_object->remove_supports();
-        $post_type_object->remove_rewrite_rules();
-        $post_type_object->unregister_meta_boxes();
-        $post_type_object->remove_hooks();
-        $post_type_object->unregister_taxonomies();
-        unset($wp_post_types[$post_type]);
-        do_action('unregistered_post_type', $post_type);
-        
-        $wp_post_types[$post_type] = new stdClass();
-        $wp_post_types[$post_type]->show_in_menu = false;
-        $wp_post_types[$post_type]->publicly_queryable = false;
-        $wp_post_types[$post_type]->_builtin = false;
-        $wp_post_types[$post_type]->name = false;
-    
-    }
-}
-
+// Create new posttype
 add_action('init', 'create_post_type');
+
 function create_post_type()
 {
   register_post_type(
-    'centre',
+    'centres',
     array(
       'labels' => array(
         'name' => __('Centres'),
+        'singular_name' => __('Centre') 
       ),
       'public' => true,
       'supports' => array('title'),
       'show_in_rest' => false,
       'has_archive' => false,
-      'rewrite' => array('slug' => 'centre', 'with_front' => true),
+      'rewrite' => array('slug' => 'centres', 'with_front' => true),
       'menu_icon' => 'dashicons-admin-multisite',
     )
   );
@@ -176,10 +120,9 @@ function create_post_type()
     array(
       'labels' => array(
         'name' => __('Presse'),
-        'singular_name' => __('Presse')
       ),
       'public' => true,
-      'supports' => array('title', 'thumbnail', 'excerpt', 'editor'),
+      'supports' => array('title', 'thumbnail'),
       'show_in_rest' => false,
       'has_archive' => false,
       'rewrite' => array('slug' => 'presse', 'with_front' => true),
@@ -192,7 +135,7 @@ function create_post_type()
     array(
       'labels' => array(
         'name' => __('Tarifs'),
-        'singular_name' => __('Tarifs')
+        'singular_name' => __('Tarif')
       ),
       'public' => true,
       // 'supports' => array('title', 'thumbnail', 'excerpt', 'editor'),
@@ -208,47 +151,48 @@ function create_post_type()
     array(
       'labels' => array(
         'name' => __('Conseils'),
-        'singular_name' => __('Conseils')
+        'singular_name' => __('Conseil')
       ),
       'public' => true,
       'supports' => array('title', 'thumbnail', 'excerpt', 'editor'),
       'show_in_rest' => true,
       'has_archive' => false,
       'rewrite' => array('slug' => 'medecine-esthetique-visage/conseils-visage', 'with_front' => true),
-      'menu_icon' => 'dashicons-admin-post',
+      'menu_icon' => 'dashicons-admin-comments',
+      'taxonomies' => array( 'category' )
     )
   );
 
   register_post_type(
-    'offre',
+    'prestas',
     array(
       'labels' => array(
-        'name' => __('Offres'),
-        'singular_name' => __('Offre')
+        'name' => __('Prestations'),
+        'singular_name' => __('Prestation')
       ),
       'public' => true,
-      'supports' => array('title', 'thumbnail', 'excerpt', 'editor'),
+      // 'supports' => array('title', 'thumbnail', 'excerpt', 'editor'),
       'show_in_rest' => true,
       'has_archive' => false,
-      'rewrite' => array('slug' => 'offres', 'with_front' => true),
-      'menu_icon' => 'dashicons-store',
-      'taxonomies'  => array('post_tag', 'category'),
+      'rewrite' => array('slug' => 'prestation', 'with_front' => true),
+      'menu_icon' => 'dashicons-format-aside',
+      'taxonomies'  => array('category'),
     ),
   );
 
   register_post_type(
-    'soin',
+    'soins',
     array(
       'labels' => array(
         'name' => __('Soins'),
         'singular_name' => __('Soin')
       ),
       'public' => true,
-      'supports' => array('title', 'editor'),
+      'supports' => array('title', 'thumbnail', 'excerpt', 'editor'),
       'show_in_rest' => true,
       'has_archive' => false,
-      'rewrite' => array('slug' => 'soins', 'with_front' => true),
-      'menu_icon' => 'dashicons-list-view',
+      // 'rewrite' => array('slug' => 'soins', 'with_front' => true),
+      'menu_icon' => 'dashicons-image-filter',
       'taxonomies'  => array('category'),
     )
   );
@@ -269,17 +213,25 @@ function create_post_type()
       'taxonomies'  => array('category', 'post_tag'),
     )
   );
+
+
+  register_post_type(
+    'tarifs',
+    array(
+      'labels' => array(
+        'name' => __('Tarifs'),
+        'singular_name' => __('Tarifs')
+      ),
+      'public' => true,
+      // 'supports' => array('title', 'thumbnail', 'excerpt', 'editor'),
+      'show_in_rest' => false,
+      'has_archive' => false,
+      'rewrite' => array('slug' => 'tarifs', 'with_front' => true),
+      'menu_icon' => 'dashicons-money-alt',
+    )
+  );
 }
-
-// with_front  à false n'utilise pas le “Structure personnalisée” des Permaliens
-// cf https://www.quemalabs.com/blog/how-to-add-blog-in-front-of-your-url/
-// cf http://www.ecap-partner.com/
-
-
-// Ajout de tailles d'images
-add_image_size('blogThumb', 820, 570, true);
-add_image_size('card', 600, 360, true);
-add_image_size('cardMini', 410, 220, true);
+// * END CONCERN : POST TYPE
 
 /**************
  **************
@@ -327,171 +279,284 @@ function my_acf_json_load_point($paths)
 // AJOUTER UN NOUVEAU ACF
 function register_acf_blocks()
 {
+  // block Top Offre
+  acf_register_block(array(
+    'name'              => 'Top Offre',
+    'title'             => __('Top Offre'),
+    'render_template'   => '/template-parts/block/top-offre.php',
+    'icon' => 'dashicons-ellipsis',
+    'keywords'          => array('Top Offre'),
+    'mode'              => 'auto',
+    'category'          => 'formatting',
+  ));
 
+  // block Avant apres
+  acf_register_block(array(
+    'name'              => 'Avant apres',
+    'title'             => __('Avant apres'),
+    'render_template'   => '/template-parts/block/before-after.php',
+    'icon' => 'dashicons-ellipsis',
+    'mode'              => 'auto',
+    'category'          => 'formatting',
+  ));
+  
+    // block Presentation
+    acf_register_block(array(
+      'name'              => 'Presentation',
+      'title'             => __('Presentation'),
+      'render_template'   => '/template-parts/block/presentation.php',
+      'icon' => 'dashicons-ellipsis',
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+    // block FAQ
+    acf_register_block(array(
+      'name'              => 'FAQ',
+      'title'             => __('FAQ'),
+      'render_template'   => '/template-parts/block/faq.php',
+      'icon' => 'dashicons-ellipsis',
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+    // block Onglets Questions
+    acf_register_block(array(
+      'name'              => 'Onglets Questions',
+      'title'             => __('Onglets Questions'),
+      'render_template'   => '/template-parts/block/questions-tabs.php',
+      'icon' => 'dashicons-ellipsis',
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+    // block Mosaique
+    acf_register_block(array(
+      'name'              => 'Mosaique',
+      'title'             => __('Mosaique'),
+      'render_template'   => '/template-parts/block/mosaic.php',
+      'icon' => 'dashicons-ellipsis',
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+    // block Slides de cartes
+    acf_register_block(array(
+    'name'              => 'slider-cards',
+    'title'             => __('Slider de cartes'),
+    'description'       => __('Slider de cartes'),
+    'render_template'   => '/template-parts/block/slider-cards.php',
+    'category'          => 'formatting',
+    'icon'              => 'image-filter',
+    'mode'              => 'auto',
+    'keywords'          => array('tech', 'médical', 'cartes', 'card', 'slide'),
+    ));
+
+    // block centre
+    acf_register_block(array(
+      'name'              => 'centre',
+      'title'             => __('Centre'),
+      'description'       => __('centre'),
+      'render_template'   => '/template-parts/block/center.php',
+      'category'          => 'formatting',
+      'icon'              => 'admin-home',
+      'mode'              => 'auto',
+      'keywords'          => array('centre', 'shop', 'retail'),
+    ));
+
+    // block des sources
+    acf_register_block(array(
+      'name'              => 'Sources',
+      'title'             => __('Sources'),
+      'render_template'   => '/template-parts/block/sources.php',
+      'icon'              => 'dashicons-media-default',
+      'keywords'          => array('sources'),
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+    // block siblings
+    acf_register_block(array(
+      'name'              => 'Siblings',
+      'title'             => __('Siblings'),
+      'render_template'   => '/template-parts/block/siblings.php',
+      'icon'              => 'dashicons-media-default',
+      'keywords'          => array('Siblings'),
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+     // block gutenberg : Image, title & text
+    acf_register_block(array(
+      'name'              => 'Bloc gutenberg',
+      'title'             => __('Bloc gutenberg'),
+      'render_template'   => '/template-parts/block/guntenberg.php',
+      'icon'              => 'dashicons-media-default',
+      'keywords'          => array('Bloc gutenberg'),
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+     // block cards tarifs
+    acf_register_block(array(
+      'name'              => 'Cartes tarifs',
+      'title'             => __('Cartes tarifs'),
+      'render_template'   => '/template-parts/block/tarifs-cards.php',
+      'icon'              => 'dashicons-money-alt',
+      'keywords'          => array('Cartes tarifs', 'tarfisCards'),
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+     // block top SEO
+     acf_register_block(array(
+      'name'              => 'Top SEO',
+      'title'             => __('Top SEO'),
+      'render_template'   => '/template-parts/block/top-seo.php',
+      'icon'              => 'dashicons-money-alt',
+      'keywords'          => array('Top SEO', 'TopSEO'),
+      'mode'              => 'auto',
+      'category'          => 'formatting',
+    ));
+
+    // block sub menu
+    acf_register_block(array(
+      'name'              => 'submenu',
+      'title'             => __('Sous menu'),
+      'description'       => __('Sous menu'),
+      'render_template'   => '/template-parts/block/submenu.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+      'keywords'          => array('submenu', 'menu'),
+    ));
+
+    // block top Home
+    acf_register_block(array(
+      'name'              => 'Top Accueil',
+      'title'             => __('Top Accueil'),
+      'description'       => __('Top Accueil'),
+      'render_template'   => '/template-parts/block/top-home.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+      'keywords'          => array('tophome'),
+    ));
+
+    // bloc button
+    acf_register_block(array(
+      'name'              => 'Bouton',
+      'title'             => __('Bouton Aesthe'),
+      'description'       => __('Bouton'),
+      'render_template'   => '/template-parts/block/bouton.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+      'keywords'          => array('bouton'),
+    ));
+
+    // block univers scrolling
+    acf_register_block(array(
+      'name'              => 'Univers scrolling',
+      'title'             => __('Univers scrolling'),
+      'description'       => __('Univers scrolling'),
+      'render_template'   => '/template-parts/block/univers-scrolling.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+      'keywords'          => array('univers-scrolling'),
+    ));
+
+    
+    // block univers horizontal scroll
+    acf_register_block(array(
+      'name'              => 'Univers horizontal scroll',
+      'title'             => __('Univers horizontal scroll'),
+      'description'       => __('Univers horizontal scroll'),
+      'render_template'   => '/template-parts/block/univers-horizontal-scroll.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+      'keywords'          => array('univers-horizontal-scroll'),
+    ));
+
+    // block univers image parallax
+    acf_register_block(array(
+      'name'              => 'Univers image parallax',
+      'title'             => __('Univers image parallax'),
+      'description'       => __('Univers image parallax'),
+      'render_template'   => '/template-parts/block/univers-image-parallax.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+      'keywords'          => array('univers-image-parallax'),
+    ));
+
+    // block Cartes presentation accueil
+    acf_register_block(array(
+      'name'              => 'Cartes presentation accueil',
+      'title'             => __('Cartes presentation'),
+      'description'       => __('Cartes presentation'),
+      'render_template'   => '/template-parts/block/presentation-cards.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+    ));
+
+    // block Badges de confiance
+    acf_register_block(array(
+      'name'              => 'Badges de confiance',
+      'title'             => __('Badges de confiance'),
+      'description'       => __('Badges de confiance'),
+      'render_template'   => '/template-parts/block/trust-badges.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+    ));
+
+    // block Articles Summary
+    acf_register_block(array(
+      'name'              => 'Sommaire',
+      'title'             => __('Sommaire'),
+      'description'       => __('Sommaire'),
+      'render_template'   => '/template-parts/block/article-summary.php',
+      'category'          => 'formatting',
+      'icon'              => 'list-view',
+      'mode'              => 'auto',
+    ));
+    
+}
+
+// AJOUTER UNE PAGE D'OPTION
+if( function_exists('acf_add_options_page') ) {
+    
+  acf_add_options_page(array(
+    'page_title'  => 'Options du thème',
+    'menu_title'  => 'Options du thème',
+    'menu_slug'   => 'theme-general-settings',
+    'capability'  => 'edit_posts',
+    'redirect'    => false
+  ));
+
+  acf_add_options_sub_page(array(
+    'page_title'  => 'Footer',
+    'menu_title'  => 'Footer',
+    'parent_slug' => 'theme-general-settings',
+  ));
+
+  acf_add_options_sub_page(array(
+    'page_title'  => 'Header',
+    'menu_title'  => 'Header',
+    'parent_slug' => 'theme-general-settings',
+  ));
+  
 }
 
 // Check if function exists and hook into setup.
 if (function_exists('acf_register_block')) {
   add_action('acf/init', 'register_acf_blocks');
 }
-
 // * END PLUGIN : ACF
-
-// // remove les {id} automatique des blocs
-// if(isMobile()){
-remove_filter('render_block', 'wp_render_layout_support_flag', 10, 2);
-remove_filter('render_block', 'gutenberg_render_layout_support_flag', 10, 2);
-// }
-
-
-
-/**
- * Adjust API endpoint availability to hide user info
- * masque author auteurs sur url headless
- */
-function my_api_endpoint_setup($endpoints)
-{
-  if (isset($endpoints['/wp/v2/users'])) {
-    unset($endpoints['/wp/v2/users']);
-  }
-  if (isset($endpoints['/wp/v2/users/(?P<id>[\d]+)'])) {
-    unset($endpoints['/wp/v2/users/(?P<id>[\d]+)']);
-  }
-  return $endpoints;
-}
-add_filter('rest_endpoints', 'my_api_endpoint_setup');
-
-function is_post_type($type)
-{
-  global $wp_query;
-  if ($type == get_post_type($wp_query->post->ID))
-    return true;
-  return false;
-}
-
-// Remove Gutenberg Block Library CSS from loading on the frontend
-function smartwp_remove_wp_block_library_css()
-{
-  wp_dequeue_style('wp-block-library');
-  wp_dequeue_style('wp-block-library-theme');
-  wp_dequeue_style('wc-block-style'); // Remove WooCommerce block CSS
-
-  wp_enqueue_script('salvattore', get_template_directory_uri() . '/assets/js/yeah/salvattore.min.js', array(), '', true);
-}
-add_action('wp_enqueue_scripts', 'smartwp_remove_wp_block_library_css', 100);
-
-
-//  Exemple Monnoyeur : disabling the Gutenberg editor according to POST id
-add_filter('use_block_editor_for_post_type', 'prefix_disable_gutenberg', 10, 2);
-function prefix_disable_gutenberg($current_status, $post_type)
-{
-  if ($post_type === 'soin') return false;
-  return $current_status;
-}
-
-/**
- * Filter the except length to 20 words.
- *
- * @param int $length Excerpt length.
- * @return int (Maybe) modified excerpt length.
- */
-function wpdocs_custom_excerpt_length($length)
-{
-  return 20;
-}
-add_filter('excerpt_length', 'wpdocs_custom_excerpt_length', 999);
-
-// add_theme_support('editor-color-palette', array(
-//   array(
-//     'name'  => __('Nude', 'aesthe'),
-//     'slug'  => 'aesthe-nude',
-//     'color' => '#FFF5ED',
-//   ),
-
-//   array(
-//     'name'  => __('Orange', 'aesthe'),
-//     'slug'  => 'aesthe-orange',
-//     'color' => '#FF8347',
-//   ),
-//   array(
-//     'name'  => __('Bleu', 'aesthe'),
-//     'slug'  => 'aesthe-blue',
-//     'color' => '#061CA6',
-//   ),
-//   array(
-//     'name'  => __('Bleu clair', 'aesthe'),
-//     'slug'  => 'aesthe-blueLight',
-//     'color' => '#B7E2FF',
-//   ),
-//   array(
-//     'name'  => __('Rouge', 'aesthe'),
-//     'slug'  => 'aesthe-coral',
-//     'color' => '#FF4750',
-//   ),
-//   array(
-//     'name'  => __('Jaune', 'aesthe'),
-//     'slug'  => 'aesthe-yellow',
-//     'color' => '#FFE140',
-//   ),
-//   array(
-//     'name'  => __('Violet', 'aesthe'),
-//     'slug'  => 'aesthe-purple',
-//     'color' => '#5D23D0',
-//   )
-// ));
-
-// add hook to retrieve submenu siblings
-// add_filter('wp_nav_menu_objects', 'my_wp_nav_menu_objects_sub_menu', 10, 2);
-
-// filter_hook function to react on sub_menu flag
-// function my_wp_nav_menu_objects_sub_menu($sorted_menu_items, $args)
-// {
-//   if (isset($args->sub_menu)) {
-//     $root_id = 0;
-
-//     // find the current menu item
-//     foreach ($sorted_menu_items as $menu_item) {
-//       if ($menu_item->current) {
-//         // set the root id based on whether the current menu item has a parent or not
-//         $root_id = ($menu_item->menu_item_parent) ? $menu_item->menu_item_parent : $menu_item->ID;
-//         break;
-//       }
-//     }
-
-//     // find the top level parent
-//     if (!isset($args->direct_parent)) {
-//       $prev_root_id = $root_id;
-//       while ($prev_root_id != 0) {
-//         foreach ($sorted_menu_items as $menu_item) {
-//           if ($menu_item->ID == $prev_root_id) {
-//             $prev_root_id = $menu_item->menu_item_parent;
-//             // don't set the root_id to 0 if we've reached the top of the menu
-//             if ($prev_root_id != 0) $root_id = $menu_item->menu_item_parent;
-//             break;
-//           }
-//         }
-//       }
-//     }
-
-//     $menu_item_parents = array();
-//     foreach ($sorted_menu_items as $key => $item) {
-//       // init menu_item_parents
-//       if ($item->ID == $root_id) $menu_item_parents[] = $item->ID;
-
-//       if (in_array($item->menu_item_parent, $menu_item_parents)) {
-//         // part of sub-tree: keep!
-//         $menu_item_parents[] = $item->ID;
-//       } else if (!(isset($args->show_parent) && in_array($item->ID, $menu_item_parents))) {
-//         // not part of sub-tree: away with it!
-//         unset($sorted_menu_items[$key]);
-//       }
-//     }
-
-//     return $sorted_menu_items;
-//   } else {
-//     return $sorted_menu_items;
-//   }
-// }
 
 /**************
  **************
@@ -631,6 +696,114 @@ add_filter('site-reviews/schema/Product', function ($schema) {
   return $schema;
 });
 
+// * END PLUGIN : REVIEWS SITE
+function remove_h1_from_editor($settings)
+{
+  $settings['block_formats'] = 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;Preformatted=pre;';
+  return $settings;
+}
+
+function my_login_logo_one()
+{
+  echo "<style type=\"text/css\">";
+  echo "body.login div#login h1 a { background-image: url(" . get_template_directory_uri() . "/assets/img/pammngrmm.png);padding-bottom: 30px; }";
+  echo "</style>";
+}
+
+add_action('login_enqueue_scripts', 'my_login_logo_one');
+
+
+function add_mime_types($mimes)
+{
+  $mimes['svg'] = 'image/svg+xml';
+  return $mimes;
+}
+
+function hide_wp_update_nag()
+{
+  remove_action('admin_notices', 'update_nag', 3);
+}
+
+show_admin_bar(false); // masque admin bar
+
+if (is_admin()) {
+
+  // add_filter('the_content', 'filter_ptags_on_images'); // enleve <p> autour des images inserées avec wysiwyg
+
+  add_action('admin_menu', 'hide_wp_update_nag'); // hide message update mise à jour wp
+  add_filter('sanitize_file_name', 'remove_accents'); // SUPPRIME LES ACCENTS DES MEDIAS
+  add_filter('upload_mimes', 'add_mime_types'); // AUTORISE SVG EN BACKOFFICE
+
+  // Code utile uniquement dans l'administration
+  add_filter('tiny_mce_before_init', 'remove_h1_from_editor');
+
+  // Réglages permaliens
+  if (get_option('medium_size_w') == 300) update_option('medium_size_w', '1000');
+  if (get_option('medium_size_h') == 300) update_option('medium_size_h', '2500');
+  if (get_option('large_size_w') == 1024) update_option('large_size_w', '2000');
+  if (get_option('large_size_h') == 1024) update_option('large_size_h', '3500');
+  if (get_option('uploads_use_yearmonth_folders') != '') update_option('uploads_use_yearmonth_folders', '');
+} else {
+  // Code utile uniquement dans le front-end
+}
+
+function getPageIDbySlug($the_slug)
+{
+  if (get_page_by_path($the_slug)) return get_page_by_path($the_slug)->ID;
+}
+
+// // remove les {id} automatique des blocs
+// if(isMobile()){
+remove_filter('render_block', 'wp_render_layout_support_flag', 10, 2);
+remove_filter('render_block', 'gutenberg_render_layout_support_flag', 10, 2);
+// }
+
+
+
+/**
+ * Adjust API endpoint availability to hide user info
+ * masque author auteurs sur url headless
+ */
+function my_api_endpoint_setup($endpoints)
+{
+  if (isset($endpoints['/wp/v2/users'])) {
+    unset($endpoints['/wp/v2/users']);
+  }
+  if (isset($endpoints['/wp/v2/users/(?P<id>[\d]+)'])) {
+    unset($endpoints['/wp/v2/users/(?P<id>[\d]+)']);
+  }
+  return $endpoints;
+}
+add_filter('rest_endpoints', 'my_api_endpoint_setup');
+
+function is_post_type($type)
+{
+  global $wp_query;
+  if ($type == get_post_type($wp_query->post->ID))
+    return true;
+  return false;
+}
+
+// Remove Gutenberg Block Library CSS from loading on the frontend
+function smartwp_remove_wp_block_library_css()
+{
+  wp_dequeue_style('wp-block-library');
+  wp_dequeue_style('wp-block-library-theme');
+  wp_dequeue_style('wc-block-style'); // Remove WooCommerce block CSS
+
+  wp_enqueue_script('salvattore', get_template_directory_uri() . '/assets/js/yeah/salvattore.min.js', array(), '', true);
+}
+add_action('wp_enqueue_scripts', 'smartwp_remove_wp_block_library_css', 100);
+
+
+//  Exemple Monnoyeur : disabling the Gutenberg editor according to POST id
+add_filter('use_block_editor_for_post_type', 'prefix_disable_gutenberg', 10, 2);
+function prefix_disable_gutenberg($current_status, $post_type)
+{
+  if ($post_type === 'soin') return false;
+  return $current_status;
+}
+
 /**
  * Reusable Blocks accessible in backend
  * @link https://www.billerickson.net/reusable-blocks-accessible-in-wordpress-admin-area
@@ -687,18 +860,18 @@ add_filter('pll_the_languages_args', function ($args) {
   return $args;
 });
 
-//Register Navigations
-add_action('init', 'my_custom_menus');
-function my_custom_menus()
-{
-  register_nav_menus(
-    array(
-      'mobile-h'=> __('Mobile header'),
-      'left-h' => __('Left header'),
-      'right-h' => __('Right header')
-    )
-  );
-}
+// Register Navigations
+// add_action('init', 'my_custom_menus');
+// function my_custom_menus()
+// {
+//   register_nav_menus(
+//     array(
+//       'mobile-h'=> __('Mobile header'),
+//       'left-h' => __('Left header'),
+//       'right-h' => __('Right header')
+//     )
+//   );
+// }
 
 // Microdonnée avec RANK MATH
 add_filter('rank_math/json_ld', function ($data, $jsonld) {
@@ -729,3 +902,101 @@ function pr($data)
   print_r($data);
   echo "</pre>";
 }
+
+function vd($data)
+{
+  var_dump($data);
+}
+
+add_theme_support('editor-color-palette', array(
+  array(
+    'name'  => __('Nude', 'aesthe'),
+    'slug'  => 'aesthe-nude',
+    'color' => '#FFF5ED',
+  ),
+
+  array(
+    'name'  => __('Orange', 'aesthe'),
+    'slug'  => 'aesthe-orange',
+    'color' => '#FF8347',
+  ),
+  array(
+    'name'  => __('Café', 'aesthe'),
+    'slug'  => 'aesthe-coffee',
+    'color' => '#9E8174',
+  ),
+  array(
+    'name'  => __('Gris', 'aesthe'),
+    'slug'  => 'aesthe-grey',
+    'color' => '#707070',
+  ),
+  array(
+    'name'  => __('Rouge', 'aesthe'),
+    'slug'  => 'aesthe-red',
+    'color' => '#C53E23',
+  ),
+  array(
+    'name'  => __('Violet', 'aesthe'),
+    'slug'  => 'aesthe-purple',
+    'color' => '#5D23D0',
+  )
+));
+
+/* CALCUL TEMPS ESTIME LECTURE ARTICLES */
+function temps_lecture() {
+  global $post;
+  $content = get_post_field( 'post_content', $post->ID );
+  $word_count = str_word_count( strip_tags( $content ) );
+  $readingtime = ceil($word_count / 200);
+  if ($readingtime == 1) {
+    $timer = " minute de lecture";
+  } else {
+    $timer = " minutes de lecture";
+  }
+  $totalreadingtime = $readingtime . $timer;
+  return $totalreadingtime;
+}
+
+add_theme_support('editor-color-palette', array(
+  array(
+    'name'  => __('Nude', 'aesthe'),
+    'slug'  => 'aesthe-nude',
+    'color' => '#E9CCB7',
+  ),
+
+  array(
+    'name'  => __('Coffee', 'aesthe'),
+    'slug'  => 'aesthe-coffee',
+    'color' => '#9E8174',
+  ),
+
+  array(
+    'name'  => __('Orange', 'aesthe'),
+    'slug'  => 'aesthe-orange',
+    'color' => '#FF8040',
+  ),
+  array(
+    'name'  => __('Grey', 'aesthe'),
+    'slug'  => 'aesthe-grey',
+    'color' => '#707070',
+  ),
+  array(
+    'name'  => __('Rouge', 'aesthe'),
+    'slug'  => 'aesthe-coral',
+    'color' => '#C53E23',
+  ),
+  array(
+    'name'  => __('Violet', 'aesthe'),
+    'slug'  => 'aesthe-purple',
+    'color' => '#5D23D0',
+  )
+));
+
+function add_blockquote_quicktag() {
+  ?>
+      <script type="text/javascript">
+      QTags.addButton( 'my_blockquote', 'B', '[my_blockquote]', '[/my_blockquote]', 'B', 'My blockquote', 1 );
+      </script>
+  <?php
+  }
+  add_action( 'admin_print_footer_scripts', 'add_blockquote_quicktag' );

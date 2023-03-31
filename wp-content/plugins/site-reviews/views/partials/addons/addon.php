@@ -1,7 +1,7 @@
 <?php defined('ABSPATH') || exit; ?>
 
 <div class="glsr-addon">
-    <a href="{{ link }}" class="glsr-addon-screenshot" data-slug="{{ slug }}">
+    <a href="{{ link }}" class="glsr-addon-screenshot" data-id="{{ id }}" style="{{ style }}">
         <span class="screen-reader-text">{{ title }}</span>
     </a>
     <div class="glsr-addon-description">
@@ -25,7 +25,7 @@
             </a>
         <?php endif; ?>
     <?php else: ?>
-        <a href="{{ link }}" class="glsr-addon-link glsr-external button button-secondary">
+        <a href="{{ url }}" class="glsr-addon-link glsr-external button button-secondary">
             {{ link_text }}
         </a>
     <?php endif; ?>

@@ -22,9 +22,8 @@ class Migrate_6_0_0 implements MigrateContract
             delete_option(OptionManager::databaseKey($version--));
         }
         $this->migrateAddonBlocks();
-        $this->migrateAddonImages();
+        $this->migrateAddonReviewImages();
         $this->migrateDatabase();
-        $this->migrateDatabaseSchema();
         $this->migrateRoles();
         $this->migrateSettings();
         return true;
@@ -42,7 +41,7 @@ class Migrate_6_0_0 implements MigrateContract
         }
     }
 
-    public function migrateAddonImages(): void
+    public function migrateAddonReviewImages(): void
     {
         if (glsr()->addon('site-reviews-images')) {
             global $wpdb;
@@ -74,42 +73,6 @@ class Migrate_6_0_0 implements MigrateContract
         }
     }
 
-    public function migrateDatabaseSchema(): void
-    {
-        global $wpdb;
-        $indexes = [
-            'assigned_posts' => 'post_id',
-            'assigned_terms' => 'term_id',
-            'assigned_users' => 'user_id',
-        ];
-        foreach ($indexes as $assignedTable => $columnName) {
-            if (!glsr(Tables::class)->isInnodb($assignedTable)) {
-                continue;
-            }
-            $table = glsr(Tables::class)->table($assignedTable);
-            $uniqueIndex = "glsr_{$assignedTable}_rating_id_{$columnName}_unique";
-            $constraints = glsr(Database::class)->dbGetCol("
-                SELECT CONSTRAINT_NAME
-                FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                WHERE CONSTRAINT_SCHEMA = '{$wpdb->dbname}' AND TABLE_NAME = '{$table}'
-            ");
-            // add primary key first!
-            if (!in_array('PRIMARY', $constraints)) {
-                glsr(Database::class)->dbQuery("
-                    ALTER TABLE {$table}
-                    ADD PRIMARY KEY (rating_id,{$columnName})
-                ");
-            }
-            // remove unique key
-            if (in_array($uniqueIndex, $constraints)) {
-                glsr(Database::class)->dbQuery("
-                    ALTER TABLE {$table}
-                    DROP INDEX {$uniqueIndex}
-                ");
-            }
-        }
-    }
-
     public function migrateRoles(): void
     {
         glsr(Role::class)->resetAll();
@@ -129,16 +92,21 @@ class Migrate_6_0_0 implements MigrateContract
 
     public function migrateSettings(): void
     {
-        if ($settings = get_option(OptionManager::databaseKey(5))) {
-            $forms = Arr::get($settings, 'settings.submissions');
-            $settings = Arr::set($settings, 'settings.forms', $forms);
-            unset($settings['settings']['submissions']);
-            update_option(OptionManager::databaseKey(6), $settings);
+        $oldSettings = Arr::consolidate(get_option(OptionManager::databaseKey(5)));
+        $newSettings = Arr::consolidate(get_option(OptionManager::databaseKey(6)));
+        if (empty($oldSettings)) {
+            return;
         }
-        $style = glsr(OptionManager::class)->get('settings.general.style');
+        if ($forms = Arr::get($newSettings, 'settings.submissions')) {
+            $newSettings = Arr::set($newSettings, 'settings.forms', $forms);
+        }
+        $style = Arr::get($newSettings, 'settings.general.style');
         if (in_array($style, ['bootstrap_4', 'bootstrap_4_custom'])) {
-            glsr(OptionManager::class)->set('settings.general.style', 'bootstrap');
+            $newSettings = Arr::set($newSettings, 'settings.general.style', 'bootstrap');
         }
+        unset($newSettings['settings']['submissions']);
+        update_option(OptionManager::databaseKey(6), $newSettings);
+        glsr(OptionManager::class)->reset();
     }
 
     protected function insertTableColumnIsVerified(): bool

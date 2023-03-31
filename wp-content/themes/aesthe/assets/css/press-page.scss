@@ -1,0 +1,66 @@
+.pressPage {
+    padding-bottom: 2rem;
+    justify-content: space-around;
+    padding-top: 80px;
+    @media (min-width : 1000px) {
+        padding-top: 150px;
+        display: flex;
+    }
+    &__title {
+        width: 265px;
+        h1 {
+            font-size: 2em;
+            color: $red;
+            border-bottom: solid 4px $red;  
+            padding-bottom: 1px;
+            padding-bottom: 6px;
+            // text-transform: lowercase;
+        }
+    }
+    
+    .pressPosts {
+        padding-top: 1rem;
+        @media (min-width : 1000px) {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 75%;
+            padding-top: 0;
+        }
+        &__post {
+            @media (min-width : 1000px) {
+            width: 25%;
+            }
+            box-shadow: 6px 6px 10px #b1b1b1;
+            border-radius: 5px;
+            background-color: white;
+            margin: 0 1rem;
+            margin-bottom: 1rem;
+            display: flow-root;
+        }
+        &__thumb {
+            width: 84%;
+            height: 40px;
+            background-size: cover;
+            background-position: center;
+            margin-left: 1rem;
+            margin-top: 1rem;
+        }
+        &__info {
+            margin: 1rem;
+            line-height: 1.2;
+            color: $grey02;
+            font-family: "Roboto";
+            font-weight: 300;
+            font-size: 0.9rem;
+            border-top: solid 1px $grey02;
+            @media (max-width: 1000px) {
+                padding-bottom: 1rem;
+            }
+          }
+        &__postTitleDate {
+             font-weight: 700;
+             padding: 10px 0 ;
+        }
+    }
+}

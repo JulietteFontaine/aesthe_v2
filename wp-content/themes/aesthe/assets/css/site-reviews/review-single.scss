@@ -1,0 +1,46 @@
+.custom-review {
+    display: flex;
+    flex-direction: column;
+    @media (min-width: 1000px) {
+        width: 30%;
+    }
+    p.glsr-no-margins {
+        padding-left: 0 !important;
+    }
+    .glsr-read-more {
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+    .glsr-review-title {
+        font-family: "Noto Serif";
+        color: $coffee;
+    }
+
+    &__bottom {
+        @media (max-width: 1000px) {
+            position: relative;
+        }
+        &__details {
+            display: flex;
+            flex-direction: row;
+            color: $coffee;
+        }
+    }
+}
+
+.glsr-review-content {
+    color: $grey02;
+    font-family: "Roboto";
+    font-weight: 300;
+    margin: 10px 0;
+}
+
+.glsr-review-date span {
+    font-style: italic;
+    font-family: 'Noto Serif';
+    font-weight: 300;
+}
+
+.glsr-review-author {
+    text-transform: uppercase;
+}

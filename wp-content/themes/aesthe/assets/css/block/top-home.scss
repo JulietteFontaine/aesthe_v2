@@ -1,0 +1,120 @@
+.homeTop--bg {
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100vw;
+    right: var(--leftMargin);
+    height: 100vh;
+
+    @media(max-width: 1000px) {
+        top: calc(100% - 20vw);
+        right: var(--leftMargin);
+        padding-top: 50px;
+    }
+}
+
+.homeTop__content {
+    display: flex;
+    flex-direction: column;
+
+    width: calc(100vw - (var(--leftMargin) * 2));
+    left: var(--leftMargin);
+
+    padding-top: 3rem;
+
+    &__form {
+        width: 100%;
+    }
+
+    @media(min-width: 1000px) {
+        flex-direction: row;
+        height: 100vh;
+        padding-top: inherit;
+        &__form {
+            padding-left: 75px;
+            padding-right: 75px;
+        }    
+    }
+
+    h1 {
+        color : white;
+        padding-bottom: 2rem;
+        font-size: 3rem;
+        text-transform: uppercase;
+
+        @media(min-width: 1000px) {
+            padding-left: $ptr;
+            padding-right: 75px;
+            font-size: 3.3rem;
+        }
+
+    }
+
+    &__left {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 3rem 0;
+
+        @media(min-width: 1000px) {
+            width: 50%;
+            padding-top: 155px;
+        }
+    }
+
+    &__catchphrase {
+        width: 150px;
+        transform-origin: center center;
+        animation: anim-texte 25s infinite;
+        @media (max-width: 1000px) {
+            width: 200px;
+            padding-top: 3rem;
+        }
+    }
+
+    &__right {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        @media(min-width: 1000px) {
+            width: 50%;
+        }
+
+    }
+}
+
+.site-search-form {
+    width: 100%;
+    border: solid 2px white;
+    border-radius: 5px;
+    padding: 4px 5px;
+    display: flex;
+    justify-content: space-between;
+    button,
+    input {
+        color: white;
+    }
+    input {
+        padding-left: 10px;
+    }
+    .input {
+        display: flex;
+        svg {
+            padding: 4px;
+        }
+    }
+    button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 20px;
+        svg {
+            width: 14px;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            left: -19px;
+            top: 0px;
+        }
+    }
+}

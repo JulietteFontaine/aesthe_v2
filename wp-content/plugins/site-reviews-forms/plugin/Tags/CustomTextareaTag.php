@@ -79,6 +79,7 @@ class CustomTextareaTag extends Tag
     {
         $text = $this->normalizeText($value);
         $values = explode("\n", $text);
+        $values = array_filter($values);
         return array_reduce($values, function ($carry, $val) {
             return $carry.glsr(Builder::class)->li(trim($val));
         });

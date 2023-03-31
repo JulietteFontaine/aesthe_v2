@@ -5,6 +5,7 @@ namespace GeminiLabs\SiteReviews\Commands;
 use GeminiLabs\SiteReviews\Contracts\CommandContract as Contract;
 use GeminiLabs\SiteReviews\Database\OptionManager;
 use GeminiLabs\SiteReviews\Defaults\ValidationStringsDefaults;
+use GeminiLabs\SiteReviews\Helpers\Str;
 use GeminiLabs\SiteReviews\Modules\Assets\AssetCss;
 use GeminiLabs\SiteReviews\Modules\Assets\AssetJs;
 use GeminiLabs\SiteReviews\Modules\Captcha;
@@ -18,7 +19,6 @@ class EnqueuePublicAssets implements Contract
     public function handle()
     {
         $this->enqueueAssets();
-        $this->enqueueCaptcha();
     }
 
     /**
@@ -30,10 +30,12 @@ class EnqueuePublicAssets implements Contract
             // ensure block styles are loaded on post types with blocks disabled
             $blocks = \WP_Block_Type_Registry::get_instance();
             if ($blocks->is_registered('core/button')) {
-                wp_enqueue_style($blocks->get_registered('core/button')->style);
+                // $blocks->get_registered('core/button')->style_handles;
+                wp_enqueue_style('wp-block-button');
             }
             if ($blocks->is_registered('core/search')) {
-                wp_enqueue_style($blocks->get_registered('core/search')->style);
+                // $blocks->get_registered('core/search')->style_handles;
+                wp_enqueue_style('wp-block-search');
             }
             wp_enqueue_style(glsr()->id, glsr(AssetCss::class)->url(), [], glsr(AssetCss::class)->version());
             wp_add_inline_style(glsr()->id, $this->inlineStyles());
@@ -45,35 +47,6 @@ class EnqueuePublicAssets implements Contract
             wp_add_inline_script(glsr()->id, $this->inlineScript(), 'before');
             wp_add_inline_script(glsr()->id, glsr()->filterString('enqueue/public/inline-script/after', ''));
             glsr(AssetJs::class)->optimize();
-        }
-    }
-
-    /**
-     * wpforms-recaptcha
-     * google-recaptcha
-     * nf-google-recaptcha.
-     * @return void
-     */
-    public function enqueueCaptcha()
-    {
-        if (!glsr(Captcha::class)->isEnabled()) {
-            return;
-        }
-        $integration = glsr_get_option('forms.captcha.integration');
-        $language = glsr()->filterString('captcha/language', get_locale());
-        $apiUrl = 'https://www.google.com/recaptcha/api.js';
-        $handle = glsr()->id.'/google-recaptcha';
-        if ('hcaptcha' === $integration) {
-            $apiUrl = 'https://js.hcaptcha.com/1/api.js';
-            $handle = glsr()->id.'/hcaptcha';
-        }
-        if ('friendlycaptcha' === $integration) {
-            $moduleUrl = 'https://unpkg.com/friendly-challenge@0.9.4/widget.module.min.js';
-            $nomoduleUrl = 'https://unpkg.com/friendly-challenge@0.9.4/widget.min.js';
-            wp_enqueue_script(glsr()->id.'/friendlycaptcha-module', $moduleUrl);
-            wp_enqueue_script(glsr()->id.'/friendlycaptcha-nomodule', $nomoduleUrl);
-        } else {
-            wp_enqueue_script($handle, add_query_arg(['hl' => $language, 'render' => 'explicit'], $apiUrl));
         }
     }
 
@@ -93,7 +66,7 @@ class EnqueuePublicAssets implements Contract
             'nameprefix' => glsr()->id,
             'starsconfig' => [
                 'clearable' => false,
-                'tooltip' => false,
+                'tooltip' => false, // 'Select a Rating'
             ],
             'state' => [
                 'popstate' => false,
@@ -140,7 +113,7 @@ class EnqueuePublicAssets implements Contract
      */
     protected function buildInlineScript(array $variables)
     {
-        $script = 'window.hasOwnProperty("GLSR")||(window.GLSR={});';
+        $script = 'window.hasOwnProperty("GLSR")||(window.GLSR={Event:{on:()=>{}}});';
         foreach ($variables as $key => $value) {
             $script .= sprintf('GLSR.%s=%s;', $key, json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
         }

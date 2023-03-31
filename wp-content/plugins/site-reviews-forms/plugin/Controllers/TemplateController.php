@@ -62,12 +62,8 @@ class TemplateController
             $value = Helper::ifEmpty($review->custom[$name], '');
             if (Helper::isNotEmpty($value) && !$field->isEmpty()) {
                 $type = $field->type;
-                if (is_array($value)) { // @todo refactor this mess!
-                    $type = 'multi';
-                    $list = array_reduce($value, function ($result, $item) {
-                        return $result.'<li>'.$item.'</li>';
-                    });
-                    $value = '<ul>'.$list.'</ul>';
+                if (is_array($value)) {
+                    $value = implode(',', $value);
                 }
                 $className = Helper::buildClassName(['custom', $type, 'tag'], 'Addon\Forms\Tags');
                 $className = glsr(Application::class)->filterString('custom/tag/'.$type, $className, $reviewHtml);

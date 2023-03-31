@@ -14,7 +14,7 @@ class TemplateMetabox implements MetaboxContract
     public function register($post)
     {
         $id = Application::POST_TYPE.'-templatediv';
-        $title = _x('Review Template', 'admin-text', 'site-reviews');
+        $title = _x('Review Template', 'admin-text', 'site-reviews-forms');
         add_meta_box($id, $title, [$this, 'render'], Application::POST_TYPE, 'normal', 'high');
     }
 

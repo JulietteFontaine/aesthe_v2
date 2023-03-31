@@ -1,0 +1,105 @@
+.faq {
+		color : $coffee;
+        @media (max-width: 1000px) {
+        width: calc(100vw - var(--leftMargin));
+        right: calc(var(--leftMargin)/2);
+    }
+    p {
+        padding-bottom: 1rem;
+    }
+    .question {
+        font-family: "Roboto";
+        // text-transform: lowercase;
+        font-size: 1.5rem;
+        line-height: 1;
+        font-weight: 400;
+        @media (max-width:1000px) {
+            line-height: 1.2;
+            font-weight: 500;
+            overflow-wrap: break-word;
+        }
+    }
+    a:not(.cta) {
+        text-decoration: underline ;
+    }
+    li {
+    // padding-bottom: 1rem;
+    padding-right: 20px;
+    &:not(:last-child) {
+        border-bottom: 2px solid $coffee;
+        &:after {
+            top: 6px;
+        }
+    }
+    &:not(:first-child) {
+        padding-top: 1rem;
+        &:after {
+            top: calc(6px + 1rem);
+        }
+    }
+    &:after {
+        content: "";
+        display: block;
+        background: url("assets/img/fleche-coffee.svg");
+        height: 31px;
+        width: 13px;
+        position: absolute;
+        left: calc(100% - 15px);
+        transform-origin: center;
+        transition: 0.6s;
+    }}
+
+    .answer {
+        max-height: 0px;
+        opacity: 0;
+        padding-top: 0.5rem;
+        overflow: hidden;
+        padding-right: 15px;
+        padding-left: calc(var(--leftMargin)/2);
+        @media (min-width: 1000px) {
+            width: 75%;
+            padding-top: 1rem;
+        }
+    }
+}
+
+$timing : 0.6s;
+
+.faq li.close .answer {
+    animation-direction: normal; 
+    animation : closed-faq ease-in-out $timing forwards;
+}
+.faq li.on .answer {
+    animation-direction: normal;
+    animation : opened-faq ease-in-out $timing forwards;
+}
+
+.faq li.on {
+	&:after {
+        transform: rotate(180deg);
+	}
+}
+
+@keyframes opened-faq {
+    0% {
+    max-height: 0px;
+    opacity: 0;
+    }
+  
+    100% {
+      max-height: 1000px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes closed-faq {
+    0% {
+        max-height: 1000px;
+        opacity: 1;
+    }
+    
+    100% {
+        max-height: 0px;
+        opacity: 0;
+    }
+  }

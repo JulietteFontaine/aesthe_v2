@@ -2,15 +2,15 @@
 
 namespace GeminiLabs\SiteReviews\Addon\Forms;
 
-use GeminiLabs\SiteReviews\Addon\Forms\Controllers\ApiController;
 use GeminiLabs\SiteReviews\Addon\Forms\Controllers\Controller;
 use GeminiLabs\SiteReviews\Addon\Forms\Controllers\FieldController;
+use GeminiLabs\SiteReviews\Addon\Forms\Controllers\RestApiController;
 use GeminiLabs\SiteReviews\Addon\Forms\Controllers\TemplateController;
 use GeminiLabs\SiteReviews\Addons\Hooks as AddonHooks;
 
 class Hooks extends AddonHooks
 {
-    protected $api;
+    protected $restapi;
     protected $fields;
     protected $template;
 
@@ -20,9 +20,8 @@ class Hooks extends AddonHooks
     public function run()
     {
         parent::run();
-        add_filter('site-reviews/api/reviews/parameters', [$this->api, 'filterApiReviewsParameters']);
-        add_filter('site-reviews/api/summary/parameters', [$this->api, 'filterApiSummaryParameters']);
         add_filter('site-reviews/block/form/attributes', [$this->controller, 'filterBlockAttributes']);
+        add_filter('site-reviews/block/review/attributes', [$this->controller, 'filterBlockAttributes']);
         add_filter('site-reviews/block/reviews/attributes', [$this->controller, 'filterBlockAttributes']);
         add_filter('site-reviews-images/block/images/attributes', [$this->controller, 'filterBlockAttributes']);
         add_filter('use_block_editor_for_post_type', [$this->controller, 'filterBlockEditor'], 999, 2); // run late
@@ -30,10 +29,11 @@ class Hooks extends AddonHooks
         add_action('pre_get_posts', [$this->controller, 'filterColumnFilterQuery'], 10, 3);
         add_filter('manage_'.Application::POST_TYPE.'_posts_columns', [$this->controller, 'filterColumnsForPostType']);
         add_filter('site-reviews/documentation/faq', [$this->controller, 'filterDocumentationFaq']);
-        add_filter('site-reviews/integration/elementor/register/controls', [$this->controller, 'filterElementorWidgetControls'], 10, 2);
+        add_filter('site-reviews/elementor/register/controls', [$this->controller, 'filterElementorWidgetControls'], 10, 2);
         add_action('site-reviews/defaults/listtable-filters', [$this->controller, 'filterListtableFilters']);
         add_filter('site-reviews/enqueue/public/localize', [$this->controller, 'filterLocalizedPublicVariables']);
         add_filter('post_row_actions', [$this->controller, 'filterRowActions'], 100, 2);
+        add_filter('site-reviews/defaults/site-review/defaults', [$this->controller, 'filterShortcodeDefaults']);
         add_filter('site-reviews/defaults/site-reviews/defaults', [$this->controller, 'filterShortcodeDefaults']);
         add_filter('site-reviews/defaults/site-reviews-form/defaults', [$this->controller, 'filterShortcodeDefaults']);
         add_filter('site-reviews-images/defaults/site-reviews-images/defaults', [$this->controller, 'filterShortcodeDefaults']);
@@ -60,6 +60,8 @@ class Hooks extends AddonHooks
         add_action('admin_footer-post.php', [$this->fields, 'renderFieldTemplates']);
         add_action('admin_footer-post-new.php', [$this->fields, 'renderFieldTemplates']);
         add_action('site-reviews/defaults', [$this->fields, 'setFieldSanitizers'], 10, 4);
+        add_filter('site-reviews/rest-api/reviews/parameters', [$this->restapi, 'filterReviewsParameters']);
+        add_filter('site-reviews/rest-api/summary/parameters', [$this->restapi, 'filterSummaryParameters']);
         add_filter('site-reviews/enqueue/public/inline-styles', [$this->template, 'filterInlineStyles']);
         add_filter('site-reviews/build/template/review', [$this->template, 'filterReviewTemplate'], 99, 2);
         add_filter('site-reviews/review/build/after', [$this->template, 'filterReviewTemplateTags'], 10, 3);
@@ -80,8 +82,8 @@ class Hooks extends AddonHooks
      */
     protected function controller()
     {
-        $this->api = glsr(ApiController::class);
         $this->fields = glsr(FieldController::class);
+        $this->restapi = glsr(RestApiController::class);
         $this->template = glsr(TemplateController::class);
         return glsr(Controller::class);
     }

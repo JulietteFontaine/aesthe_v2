@@ -202,7 +202,7 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		$current_user = wp_get_current_user();
 		if ( ! $post_ok && $current_user->ID > 0 ) {
 			$post = relevanssi_get_post( $post_id );
-			if ( $current_user->ID === (int) $post->post_author ) {
+			if ( ! is_wp_error( $post ) && $current_user->ID === (int) $post->post_author ) {
 				// Allow authors to see their own private posts.
 				$post_ok = true;
 			}
@@ -224,7 +224,7 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		apply_filters( 'relevanssi_valid_admin_status', array( 'draft', 'pending', 'future' ) ),
 		true
 	)
-	&& is_admin() ) {
+	&& is_admin() && ! relevanssi_is_live_search() ) {
 		// Only show drafts, pending and future posts in admin search.
 		$post_ok = true;
 	}
@@ -535,7 +535,8 @@ function relevanssi_prevent_default_request( $request, $query ) {
 
 		if ( ! is_admin() && $prevent ) {
 			$request = "SELECT * FROM $wpdb->posts WHERE 1=2";
-		} elseif ( 'on' === get_option( 'relevanssi_admin_search' ) && $admin_search_ok ) {
+		}
+		if ( is_admin() && 'on' === get_option( 'relevanssi_admin_search' ) && $admin_search_ok ) {
 			$request = "SELECT * FROM $wpdb->posts WHERE 1=2";
 		}
 	}
@@ -981,7 +982,11 @@ function relevanssi_add_highlight( $permalink, $link_post = null ) {
 	$highlight_docs = get_option( 'relevanssi_highlight_docs', 'off' );
 	$query          = get_search_query();
 	if ( isset( $highlight_docs ) && 'off' !== $highlight_docs && ! empty( $query ) ) {
-		if ( ! relevanssi_is_front_page_id( isset( $link_post->ID ) ?? null ) ) {
+		if ( ! relevanssi_is_front_page_id( $link_post->ID ?? null ) ) {
+			global $wp_query;
+			if ( ! empty( $wp_query->query_vars['sentence'] ) && '&quot;' !== substr( $query, 0, 6 ) ) {
+				$query = relevanssi_add_quotes( $query );
+			}
 			$query     = str_replace( '&quot;', '"', $query );
 			$permalink = esc_attr( add_query_arg( array( 'highlight' => rawurlencode( $query ) ), $permalink ) );
 		}
@@ -1036,8 +1041,14 @@ function relevanssi_permalink( $link, $link_post = null ) {
 		global $post;
 		$link_post = $post;
 	} elseif ( is_int( $link_post ) ) {
-		$link_post = get_post( $link_post );
+		$link_post = relevanssi_get_post( $link_post );
 	}
+	if ( is_object( $link_post ) && ! property_exists( $link_post, 'relevance_score' ) ) {
+		// get_permalink( $post_id ) uses get_post() which eliminates Relevanssi
+		// data from the post, thus we use relevanssi_get_post() to get it.
+		$link_post = relevanssi_get_post( $link_post->ID );
+	}
+
 	// Using property_exists() to avoid troubles from magic variables.
 	if ( is_object( $link_post ) && property_exists( $link_post, 'relevanssi_link' ) ) {
 		// $link_post->relevanssi_link can still be false.
@@ -1046,11 +1057,40 @@ function relevanssi_permalink( $link, $link_post = null ) {
 		}
 	}
 
-	if ( is_search() && is_object( $link_post ) && property_exists( $link_post, 'relevance_score' ) ) {
+	global $wp_query;
+
+	$add_highlight_and_tracking = false;
+	if ( is_search() && ! is_admin() ) {
+		$add_highlight_and_tracking = true;
+	}
+	if ( is_search() && is_admin() &&
+		( isset( $wp_query->query_vars['relevanssi'] ) || isset( $wp_query->query_vars['rlvquery'] ) )
+		) {
+		$add_highlight_and_tracking = true;
+	}
+
+	if ( is_object( $link_post ) && ! property_exists( $link_post, 'relevance_score' ) ) {
+		$add_highlight_and_tracking = false;
+	}
+
+	/**
+	 * Filters whether to add the highlight and tracking parameters to the link.
+	 *
+	 * @param boolean $add_highlight_and_tracking Whether to add the highlight
+	 * and tracking parameters to the link.
+	 * @param object $link_post                   The post object.
+	 */
+	$add_highlight_and_tracking = apply_filters(
+		'relevanssi_add_highlight_and_tracking',
+		$add_highlight_and_tracking,
+		$link_post
+	);
+
+	if ( $add_highlight_and_tracking ) {
 		$link = relevanssi_add_highlight( $link, $link_post );
 	}
 
-	if ( function_exists( 'relevanssi_add_tracking' ) ) {
+	if ( $add_highlight_and_tracking && function_exists( 'relevanssi_add_tracking' ) ) {
 		$link = relevanssi_add_tracking( $link, $link_post );
 	}
 
@@ -1226,6 +1266,16 @@ function relevanssi_get_forbidden_post_types() {
 		'astra_adv_header',     // Astra.
 		'udb_widgets',          // Ultimate Dashboard.
 		'udb_admin_page',       // Ultimate Dashboard.
+		'oxy_user_library',     // Oxygen.
+		'aw_workflow',          // AutomateWoo.
+		'paypal_transaction',   // PayPal for WooCommerce.
+		'scheduled-action',
+		'divi_bars',            // Divi Bars.
+		'br_product_filter',    // BeRocket Product Filters.
+		'br_filters_group',     // BeRocket Product Filters.
+		'wfob_bump',            // WooFunnel.
+		'wfocu_funnel',         // WooFunnel.
+		'wfocu_offer',          // WooFunnel.
 	);
 }
 
@@ -1730,6 +1780,9 @@ function relevanssi_replace_synonyms_in_terms( array $terms ) : array {
 		function ( $term ) use ( $synonyms ) {
 			$new_term = array();
 			foreach ( $synonyms as $pair ) {
+				if ( empty( $pair ) ) {
+					continue;
+				}
 				list( $key, $value ) = explode( '=', $pair );
 				if ( $value === $term ) {
 					$new_term[] = $key;

@@ -1,0 +1,47 @@
+{
+    "key": "group_63d93c0a4af83",
+    "title": "Siblings",
+    "fields": [
+        {
+            "key": "field_63d93c1576622",
+            "label": "Siblings",
+            "name": "siblings",
+            "type": "post_object",
+            "instructions": "Ajouter les pages sœurs à afficher dans \"Découvrir aussi\"",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "page",
+                "epilation"
+            ],
+            "taxonomy": "",
+            "allow_null": 1,
+            "multiple": 1,
+            "return_format": "object",
+            "ui": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "acf\/siblings"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1676559238
+}

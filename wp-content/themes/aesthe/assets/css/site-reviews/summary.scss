@@ -1,0 +1,174 @@
+.customised-reviews-summary {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    .pretext {
+        text-align: center;
+    }
+    .glsr-bar-label {
+        padding: 0.25rem 1rem 0.25rem 0 !important;
+    }
+    .glsr-bar-percent {
+        padding-left: 1rem !important;
+    }
+    &.wrapper {
+        @media (min-width: 800px) {
+            width: calc(100vw - 300px);
+            // height: calc(100vh - 106px);
+        }
+    }
+    &__avis {
+        display: flex;
+        flex-direction: column;
+        .glsr-summary-text {
+            text-align: center;
+            .glsr-tag-value {
+                font-family: inherit;
+                font-weight: 100;
+            }
+            span {
+                font-size: 2rem;
+            }
+        }
+        .glsr-star-rating.glsr-stars {
+            justify-content: center;
+        }
+        &__bottom {
+            @media (min-width: 800px) {
+                display: flex;
+                padding-top: 2rem;
+            }
+            &__percentages {
+                @media (min-width: 800px) {
+                    width: 50%;
+                }
+                .glsr-summary-percentages {
+                    .glsr-bar-background-percent {
+                        height: 12px;
+                    }
+                    .glsr-bar-background:before {
+                        opacity: 0.3;
+                        height: 12px;
+                        top: 57%;
+                    }
+                }
+            }
+            &__button {
+                width: 100%;
+                border: 2px solid #424eb1;
+                border-radius: 5px;
+                background-color: #424eb1;
+                color: #fff;
+                padding: 8px 18px;
+                font-size: initial;
+                text-align: center;
+                margin-top: 1rem;
+                @media (min-width: 800px) {
+                    width: fit-content;
+                }
+
+                &:hover {
+                    background-color: #fff;
+                    color: #424eb1;
+                }
+            }
+            &__rating {
+                @media (min-width: 800px) {
+                    margin-left: 12rem;
+                    width: 50%;
+                }
+                p {
+                    @media (max-width: 800px) {
+                        text-align: center;
+                        margin-top: -10px;
+                    }
+                }
+                &__rate {
+                    font-family: fleya;
+                    @media (max-width: 800px) {
+                        display: flex;
+                        justify-content: center;
+                        padding-top: 2rem;
+                    }
+                    .glsr-tag-value {
+                        font-size: 4rem;
+                        font-weight: 100;
+                        @media (min-width: 800px) {
+                            margin-left: 2rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &__verifiedAvis {
+        margin: 1rem 0;
+        display: flex;
+        justify-content: center;
+        // @media (min-width: 800px) {
+        // }
+        img {
+            width: 15px;
+            height: 15px;
+            margin: 4px;
+            @media (max-width: 1000px) {
+                width: 14px;
+                height: 14px;
+                margin-top: 3px;
+                margin-right: 4px;
+            }
+        }
+    }
+    &__verifiedAvisTexte {
+        text-align: center;
+        margin-bottom: 3rem;
+        @media (min-width: 800px) {
+            margin: 0 11rem;
+        }
+    }
+}
+
+.customised-reviews-summary-posts {
+    &__avis {
+        font-family: fleya;
+        font-size: 1.8rem;
+        text-align: center;
+    }
+    &__rate {
+        color: gray;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        .glsr-summary-stars {
+            text-align: end;
+        }
+        .glsr-summary-text {
+            width: auto !important;
+            margin: 0 !important;
+            font-size: 19px;
+        }
+    }
+    &__verifiedAvisTexte {
+        text-align: center;
+        @media (min-width: 1000px) {
+            width: 50%;
+            margin: auto;
+        }
+    }
+}
+
+.customised-reviews-summary__button {
+    display: flex;
+    &__otherPages {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+span.onFive {
+    font-size: 4rem;
+    position: relative;
+    top: -11px;
+    font-weight: 100;
+}

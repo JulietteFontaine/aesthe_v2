@@ -20,6 +20,7 @@ abstract class Hooks
      */
     public function run()
     {
+        $this->runIntegrations();
         add_action('admin_enqueue_scripts', [$this->controller, 'enqueueAdminAssets']);
         add_action('enqueue_block_editor_assets', [$this->controller, 'enqueueBlockAssets']);
         add_action('wp_enqueue_scripts', [$this->controller, 'enqueuePublicAssets']);
@@ -36,16 +37,43 @@ abstract class Hooks
         add_filter('site-reviews/roles', [$this->controller, 'filterRoles']);
         add_filter('site-reviews/defer-scripts', [$this->controller, 'filterScriptsDefer']);
         add_filter('site-reviews/addon/settings', [$this->controller, 'filterSettings']);
+        add_filter('site-reviews/addon/subsubsub', [$this->controller, 'filterSubsubsub']);
         add_filter('site-reviews/translation/entries', [$this->controller, 'filterTranslationEntries']);
         add_filter('site-reviews/translator/domains', [$this->controller, 'filterTranslatorDomains']);
         add_filter($this->addon->id.'/activate', [$this->controller, 'install']);
         add_action('admin_init', [$this->controller, 'onActivation']);
         add_action('init', [$this->controller, 'registerBlocks'], 9);
-        add_action('plugins_loaded', [$this->controller, 'registerLanguages']);
+        add_action('init', [$this->controller, 'registerLanguages'], -10);
         add_action('init', [$this->controller, 'registerShortcodes']);
         add_action('init', [$this->controller, 'registerTinymcePopups']);
         add_action('widgets_init', [$this->controller, 'registerWidgets']);
         add_action('site-reviews/addon/settings/'.$this->addon->slug, [$this->controller, 'renderSettings']);
+    }
+
+    /**
+     * @return void
+     */
+    public function runIntegrations()
+    {
+        $dir = $this->addon->path('plugin/Integrations');
+        if (!is_dir($dir)) {
+            return;
+        }
+        $iterator = new \DirectoryIterator($dir);
+        $namespace = (new \ReflectionClass($this->addon))->getNamespaceName();
+        foreach ($iterator as $fileinfo) {
+            if (!$fileinfo->isDir() || $fileinfo->isDot()) {
+                continue;
+            }
+            $basename = $namespace.'\Integrations\\'.$fileinfo->getBasename();
+            $controller = $basename.'\Controller';
+            $hooks = $basename.'\Hooks';
+            if (class_exists($controller) && class_exists($hooks)) {
+                glsr()->singleton($controller);
+                glsr()->singleton($hooks);
+                glsr($hooks)->run();
+            }
+        }
     }
 
     /**

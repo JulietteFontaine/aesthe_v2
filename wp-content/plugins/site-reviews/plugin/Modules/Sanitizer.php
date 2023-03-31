@@ -6,6 +6,7 @@ use GeminiLabs\SiteReviews\Helper;
 use GeminiLabs\SiteReviews\Helpers\Arr;
 use GeminiLabs\SiteReviews\Helpers\Cast;
 use GeminiLabs\SiteReviews\Helpers\Str;
+use GeminiLabs\SiteReviews\Modules\Rating;
 
 class Sanitizer
 {
@@ -43,13 +44,19 @@ class Sanitizer
      */
     public function run()
     {
-        $result = $this->values;
+        $results = $this->values;
         foreach ($this->values as $key => $value) {
-            if (array_key_exists($key, $this->sanitizers)) {
-                $result[$key] = call_user_func([$this, $this->sanitizers[$key]], $value);
+            if (!array_key_exists($key, $this->sanitizers)) {
+                continue;
             }
+            foreach ($this->sanitizers[$key] as $sanitizer) {
+                $args = $sanitizer['args'];
+                $method = $sanitizer['method'];
+                $value = call_user_func([$this, $method], $value, ...$args);
+            }
+            $results[$key] = $value;
         }
-        return $result;
+        return $results;
     }
 
     /**
@@ -67,7 +74,7 @@ class Sanitizer
      */
     public function sanitizeArrayInt($value)
     {
-        return Arr::uniqueInt(Cast::toArray($value));
+        return Arr::uniqueInt(Cast::toArray($value), true); // use absint
     }
 
     /**
@@ -100,11 +107,21 @@ class Sanitizer
      */
     public function sanitizeDate($value, $fallback = '')
     {
-        $date = strtotime(trim(Cast::toString($value)));
-        if (false !== $date) {
-            return wp_date('Y-m-d H:i:s', $date);
+        $date = trim(Cast::toString($value));
+        $format = 'Y-m-d H:i:s';
+        $formattedDate = \DateTime::createFromFormat($format, $date);
+        if ($formattedDate && $formattedDate->format($format) === $date) {
+            return $date;
         }
-        return $fallback;
+        $timestamp = strtotime($date);
+        if (false === $timestamp) {
+            return $fallback;
+        }
+        $date = wp_date('Y-m-d H:i:s', $timestamp);
+        if (false === $date) {
+            return $fallback;
+        }
+        return $date;
     }
 
     /**
@@ -138,6 +155,30 @@ class Sanitizer
     public function sanitizeInt($value)
     {
         return Cast::toInt($value);
+    }
+
+    /**
+     * @param mixed $value
+     * @param mixed $max
+     * @return int
+     */
+    public function sanitizeMax($value, $max = 0)
+    {
+        $max = Cast::toInt($max);
+        $value = Cast::toInt($value);
+        return $max > 0
+            ? min($max, $value)
+            : $value;
+    }
+
+    /**
+     * @param mixed $value
+     * @param mixed $min
+     * @return int
+     */
+    public function sanitizeMin($value, $min = 0)
+    {
+        return max(Cast::toInt($min), Cast::toInt($value));
     }
 
     /**
@@ -207,6 +248,17 @@ class Sanitizer
 
     /**
      * @param mixed $value
+     * @return int
+     */
+    public function sanitizeRating($value)
+    {
+        $max = max(1, (int) glsr()->constant('MAX_RATING', Rating::class));
+        $min = max(0, (int) glsr()->constant('MIN_RATING', Rating::class));
+        return max($min, min($max, Cast::toInt($value)));
+    }
+
+    /**
+     * @param mixed $value
      * @return string
      */
     public function sanitizeSlug($value)
@@ -251,7 +303,7 @@ class Sanitizer
             'strong' => glsr_get($allowedHtmlPost, 'strong'),
         ];
         $allowedHtml = glsr()->filterArray('sanitize/allowed-html', $allowedHtml, $this);
-        return wp_kses(trim(Cast::toString($value)), $allowedHtml);
+        return wp_kses($this->sanitizeTextMultiline($value), $allowedHtml);
     }
 
     /**
@@ -298,7 +350,7 @@ class Sanitizer
     {
         $user = wp_get_current_user();
         $value = $this->sanitizeEmail($value);
-        if ($user->exists() && !glsr()->retrieveAs('bool', 'import', false)) {
+        if (!defined('WP_IMPORTING') && $user->exists()) {
             return Helper::ifEmpty($value, $user->user_email);
         }
         return $value;
@@ -306,18 +358,26 @@ class Sanitizer
 
     /**
      * @param mixed $value
+     * @param mixed $fallbackUserId
      * @return int
      */
-    public function sanitizeUserId($value)
+    public function sanitizeUserId($value, $fallbackUserId = null)
     {
         $user = get_user_by('ID', Cast::toInt($value));
         if (false !== $user) {
             return (int) $user->ID;
         }
-        if (glsr()->retrieveAs('bool', 'import', false)) {
+        if (defined('WP_IMPORTING')) {
             return 0;
         }
-        return get_current_user_id();
+        if (is_null($fallbackUserId)) {
+            return get_current_user_id();
+        }
+        $fallbackUser = get_user_by('ID', Cast::toInt($fallbackUserId));
+        if (false !== $fallbackUser) {
+            return (int) $fallbackUser->ID;
+        }
+        return 0;
     }
 
     /**
@@ -343,10 +403,22 @@ class Sanitizer
     {
         $user = wp_get_current_user();
         $value = $this->sanitizeText($value);
-        if ($user->exists() && !glsr()->retrieveAs('bool', 'import', false)) {
+        if (!defined('WP_IMPORTING') && $user->exists()) {
             return Helper::ifEmpty($value, $user->display_name);
         }
         return $value;
+    }
+
+    /**
+     * @param mixed $value
+     * @return string
+     */
+    public function sanitizeVersion($value)
+    {
+        if (1 === preg_match('/^(\d+\.)?(\d+\.)?(\d+)(-[a-z0-9]+)?$/i', $value)) {
+            return $value;
+        }
+        return '';
     }
 
     /**
@@ -354,11 +426,27 @@ class Sanitizer
      */
     protected function buildSanitizers(array $sanitizers)
     {
-        foreach ($sanitizers as $key => &$type) {
-            $method = Helper::buildMethodName($type, 'sanitize');
-            $type = method_exists($this, $method)
-                ? $method
-                : 'sanitizeText';
+        $fallback = [ // fallback to this
+            'args' => [],
+            'method' => 'sanitizeText',
+        ];
+        foreach ($sanitizers as $key => $value) {
+            $methods = Arr::consolidate(preg_split('/\|/', $value, -1, PREG_SPLIT_NO_EMPTY));
+            $sanitizers[$key] = [];
+            if (empty($methods)) {
+                $sanitizers[$key][] = $fallback;
+                continue;
+            }
+            foreach ($methods as $method) {
+                $parts = preg_split('/:/', $method, 2, PREG_SPLIT_NO_EMPTY);
+                $args = trim(Arr::get($parts, 1));
+                $name = trim(Arr::get($parts, 0));
+                $sanitizer = [
+                    'args' => explode(',', $args),
+                    'method' => Helper::buildMethodName($name, 'sanitize'),
+                ];
+                $sanitizers[$key][] = $sanitizer;
+            }
         }
         return $sanitizers;
     }

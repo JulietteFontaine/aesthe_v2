@@ -4,6 +4,7 @@ namespace GeminiLabs\SiteReviews\Integrations\Elementor;
 
 use Elementor\Widget_Base;
 use GeminiLabs\SiteReviews\Database;
+use GeminiLabs\SiteReviews\Helpers\Arr;
 use GeminiLabs\SiteReviews\Helpers\Str;
 
 abstract class ElementorWidget extends Widget_Base
@@ -38,10 +39,10 @@ abstract class ElementorWidget extends Widget_Base
     }
 
     /**
-     * @param string $setting_key
+     * @param string $settingKey
      * @return mixed
      */
-    public function get_settings_for_display($setting_key = null)
+    public function get_settings_for_display($settingKey = null)
     {
         $settings = parent::get_settings_for_display();
         $settings['class'] = $settings['shortcode_class']; // @compat
@@ -56,7 +57,11 @@ abstract class ElementorWidget extends Widget_Base
             }
         }
         $settings['hide'] = array_filter($hide);
-        return glsr()->filterArray('integration/elementor/display/settings', $settings, $this);
+        $settings = glsr()->filterArray('elementor/display/settings', $settings, $this);
+        if ($settingKey) {
+            return Arr::get($settings, $settingKey);
+        }
+        return $settings;
     }
 
     /**
@@ -69,7 +74,7 @@ abstract class ElementorWidget extends Widget_Base
      */
     public function get_shortcode_instance()
     {
-        if (is_null($this->_shortcode_instance)) {
+        if (is_null($this->_shortcode_instance)) { // @phpstan-ignore-line
             $this->_shortcode_instance = glsr($this->get_shortcode());
         }
         return $this->_shortcode_instance;
@@ -141,7 +146,7 @@ abstract class ElementorWidget extends Widget_Base
                 'options' => $this->settings_advanced(),
             ],
         ];
-        $controls = glsr()->filterArray('integration/elementor/register/controls', $controls, $this);
+        $controls = glsr()->filterArray('elementor/register/controls', $controls, $this);
         array_walk($controls, function ($control, $key) {
             $options = array_filter($control['options']);
             if (!empty($options)) {

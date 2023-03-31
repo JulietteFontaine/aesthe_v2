@@ -10,6 +10,18 @@ use GeminiLabs\SiteReviews\Helpers\Str;
 abstract class AbstractTable
 {
     /**
+     * @var \wpdb
+     */
+    public $db;
+    /**
+     * @var string
+     */
+    public $dbname;
+    /**
+     * @var string
+     */
+    public $dbprefix;
+    /**
      * @var string
      */
     public $name = '';
@@ -17,18 +29,6 @@ abstract class AbstractTable
      * @var string
      */
     public $tablename = '';
-    /**
-     * @var \wpdb
-     */
-    protected $db;
-    /**
-     * @var string
-     */
-    protected $dbname;
-    /**
-     * @var string
-     */
-    protected $dbprefix;
 
     abstract public function addForeignConstraints(): void;
 
@@ -52,16 +52,13 @@ abstract class AbstractTable
 
     public function addForeignConstraint(string $column, string $foreignTable, string $foreignColumn): bool
     {
-        if (defined('GLSR_UNIT_TESTS')) {
-            return true;
-        }
         $constraint = $this->foreignConstraint($column);
         if ($this->foreignConstraintExists($constraint, $foreignTable)) {
             return false;
         }
         $this->deleteOrphanedRows($column, $foreignTable, $foreignColumn);
         return (bool) glsr(Database::class)->dbQuery(glsr(Query::class)->sql("
-            ALTER TABLE {$this->table()}
+            ALTER TABLE {$this->tablename}
             ADD CONSTRAINT {$constraint}
             FOREIGN KEY ({$column})
             REFERENCES {$foreignTable} ({$foreignColumn})
@@ -83,7 +80,7 @@ abstract class AbstractTable
     {
         glsr(Database::class)->dbQuery(glsr(Query::class)->sql("
             DELETE t
-            FROM {$this->table()} AS t
+            FROM {$this->tablename} AS t
             LEFT JOIN {$foreignTable} AS ft ON t.{$column} = ft.{$foreignColumn}
             WHERE ft.{$foreignColumn} IS NULL
         "));
@@ -95,16 +92,15 @@ abstract class AbstractTable
         if (!$this->foreignConstraintExists($constraint, $foreignTable)) {
             return false;
         }
-        return (bool) glsr(Database::class)->dbQuery(glsr(Query::class)->sql("
-            ALTER TABLE {$this->table()} DROP FOREIGN KEY {$constraint};
-        "));
+        return (bool) glsr(Database::class)->dbQuery("
+            ALTER TABLE {$this->tablename} DROP FOREIGN KEY {$constraint};
+        ");
     }
 
     public function exists(): bool
     {
-        $table = $this->table();
-        $query = $this->db->prepare('SHOW TABLES LIKE %s', $this->db->esc_like($table));
-        return $table === $this->db->get_var($query);
+        $query = $this->db->prepare('SHOW TABLES LIKE %s', $this->db->esc_like($this->tablename));
+        return $this->tablename === $this->db->get_var($query);
     }
 
     public function foreignConstraint(string $column): string

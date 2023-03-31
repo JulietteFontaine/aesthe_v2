@@ -7,10 +7,13 @@ use GeminiLabs\SiteReviews\Helpers\Cast;
 
 /**
  * If this is a form submission, the following fields are overridden:
+ * - author_id
  * - ip_address
  * - is_approved
  * - is_pinned
  * - is_verified
+ * - response
+ * - response_by
  */
 class CreateReviewDefaults extends Defaults
 {
@@ -37,6 +40,7 @@ class CreateReviewDefaults extends Defaults
         'content' => 'text-multiline',
         'custom' => 'array',
         'date' => 'date',
+        'date_gmt' => 'date',
         'email' => 'user-email',
         'form_id' => 'key',
         'ip_address' => 'text',
@@ -45,9 +49,10 @@ class CreateReviewDefaults extends Defaults
         'is_verified' => 'bool',
         'name' => 'user-name',
         'post_id' => 'int',
-        'rating' => 'int',
+        'rating' => 'rating',
         'referer' => 'text',
-        'response' => 'text',
+        'response' => 'text-html',
+        'response_by' => 'user-id:0',
         'terms' => 'bool',
         'terms_exist' => 'bool',
         'title' => 'text',
@@ -69,6 +74,7 @@ class CreateReviewDefaults extends Defaults
             'content' => '',
             'custom' => [],
             'date' => '',
+            'date_gmt' => '',
             'email' => '',
             'form_id' => '',
             'ip_address' => '',
@@ -80,6 +86,7 @@ class CreateReviewDefaults extends Defaults
             'rating' => '',
             'referer' => '',
             'response' => '',
+            'response_by' => 0,
             'terms' => false,
             'terms_exist' => false,
             'title' => '',

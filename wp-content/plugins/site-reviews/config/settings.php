@@ -122,7 +122,7 @@ return [ // order is intentional
             'admin' => _x('Send to administrator', 'admin-text', 'site-reviews').' <code>'.(string) get_option('admin_email').'</code>',
             'author' => _x('Send to author of the page that the review is assigned to', 'admin-text', 'site-reviews'),
             'custom' => _x('Send to one or more email addresses', 'admin-text', 'site-reviews'),
-            'slack' => _x('Send to <a href="https://slack.com/">Slack</a>', 'admin-text', 'site-reviews'),
+            'slack' => _x('Send to <a href="https://slack.com/" target="_blank">Slack</a>', 'admin-text', 'site-reviews'),
         ],
         'tooltip' => _x('Select the notification recipients.', 'admin-text', 'site-reviews'),
         'type' => 'checkbox',
@@ -154,7 +154,7 @@ return [ // order is intentional
         ],
         'label' => _x('Slack Webhook URL', 'admin-text', 'site-reviews'),
         'tooltip' => sprintf(_x('To send notifications to Slack, create a new %s and then paste the provided Webhook URL in the field above.', 'admin-text', 'site-reviews'),
-            '<a href="https://api.slack.com/incoming-webhooks">'._x('Incoming WebHook', 'admin-text', 'site-reviews').'</a>'
+            '<a href="https://api.slack.com/incoming-webhooks" target="_blank">'._x('Incoming WebHook', 'admin-text', 'site-reviews').'</a>'
         ),
         'type' => 'text',
     ],
@@ -166,7 +166,7 @@ return [ // order is intentional
         'description' => glsr('Modules\Html\TemplateTags')->description(['exclude' => ['admin_email']]),
         'label' => _x('Notification Template', 'admin-text', 'site-reviews'),
         'rows' => 10,
-        'tooltip' => _x('To restore the default text, save an empty template. If you are sending notifications to Slack then this template will only be used as a fallback in the event that <a href="https://api.slack.com/docs/attachments">Message Attachments</a> have been disabled.', 'admin-text', 'site-reviews'),
+        'tooltip' => _x('To restore the default text, save an empty template. If you are sending notifications to Slack then this template will only be used as a fallback in the event that <a href="https://api.slack.com/docs/attachments" target="_blank">Message Attachments</a> have been disabled.', 'admin-text', 'site-reviews'),
         'type' => 'code',
     ],
     'settings.reviews.date.format' => [
@@ -189,7 +189,7 @@ return [ // order is intentional
             'settings.reviews.date.format' => 'custom',
         ],
         'label' => _x('Custom Date Format', 'admin-text', 'site-reviews'),
-        'tooltip' => _x('Enter a custom date format (<a href="https://wordpress.org/support/article/formatting-date-and-time/">documentation on date and time formatting</a>).', 'admin-text', 'site-reviews'),
+        'tooltip' => _x('Enter a custom date format (<a href="https://wordpress.org/support/article/formatting-date-and-time/" target="_blank">documentation on date and time formatting</a>).', 'admin-text', 'site-reviews'),
         'type' => 'text',
     ],
     'settings.reviews.name.format' => [
@@ -245,7 +245,7 @@ return [ // order is intentional
     'settings.reviews.avatars' => [
         'default' => 'no',
         'label' => _x('Enable Avatars', 'admin-text', 'site-reviews'),
-        'tooltip' => _x('The avatars are generated from the email address of the reviewer using <a href="https://gravatar.com">Gravatar</a>.', 'admin-text', 'site-reviews'),
+        'tooltip' => _x('The avatars are generated from the email address of the reviewer using <a href="https://gravatar.com" target="_blank">Gravatar</a>.', 'admin-text', 'site-reviews'),
         'type' => 'yes_no',
     ],
     'settings.reviews.avatars_fallback' => [
@@ -344,7 +344,7 @@ return [ // order is intentional
         'default' => 'yes',
         'description' => sprintf(
             _x('If you would like to keep the pagination links but prevent search engines from indexing them, add the following lines to your %s file: %s', 'admin-text', 'site-reviews'),
-            '<a href="https://www.robotstxt.org/">robots.txt</a>',
+            '<a href="https://www.robotstxt.org/" target="_blank">robots.txt</a>',
             '<br><code>user-agent: *</code>'.
             '<br><code>Disallow: /*?'.glsr()->constant('PAGED_QUERY_VAR').'=*</code>'.
             '<br><code>Disallow: /*?*'.glsr()->constant('PAGED_QUERY_VAR').'=*</code>'
@@ -355,9 +355,44 @@ return [ // order is intentional
         ),
         'type' => 'yes_no',
     ],
+    'settings.schema.integration.plugin' => [
+        'class' => 'regular-text',
+        'default' => '',
+        'label' => _x('Integrate with plugin', 'admin-text', 'site-reviews'),
+        'options' => [
+            '' => _x('No Integration', 'admin-text', 'site-reviews'),
+            'rankmath' => _x('RankMath Pro', 'plugin name (admin-text)', 'site-reviews'),
+            'saswp' => _x('Schema & Structured Data for WP & AMP', 'plugin name (admin-text)', 'site-reviews'),
+            'schema_pro' => _x('Schema Pro', 'plugin name (admin-text)', 'site-reviews'),
+        ],
+        'tooltip' => _x('Integrate Site Reviews with a third-party schema plugin?', 'admin-text', 'site-reviews'),
+        'type' => 'select',
+    ],
+    'settings.schema.integration.types' => [
+        'default' => 'LocalBusiness',
+        'depends_on' => [
+            'settings.schema.integration.plugin' => ['rankmath', 'saswp', 'schema_pro'],
+        ],
+        'label' => _x('Schema Types', 'admin-text', 'site-reviews'),
+        'options' => [
+            'Book' => _x('Book', 'schema type (admin-text)', 'site-reviews'),
+            'Course' => _x('Course', 'schema type (admin-text)', 'site-reviews'),
+            'Event' => _x('Event', 'schema type (admin-text)', 'site-reviews'),
+            'HowTo' => _x('How-To', 'schema type (admin-text)', 'site-reviews'),
+            'LocalBusiness' => _x('Local Business', 'schema type (admin-text)', 'site-reviews'),
+            'Product' => _x('Product', 'schema type (admin-text)', 'site-reviews'),
+            'Recipe' => _x('Recipe', 'schema type (admin-text)', 'site-reviews'),
+            'SoftwareApplication' => _x('Software Application', 'schema type (admin-text)', 'site-reviews'),
+        ],
+        'tooltip' => _x('Select the schema types that you want to integrate with.', 'admin-text', 'site-reviews'),
+        'type' => 'checkbox',
+    ],
     'settings.schema.type.default' => [
         'class' => 'regular-text',
         'default' => 'LocalBusiness',
+        'depends_on' => [
+            'settings.schema.integration.plugin' => '',
+        ],
         'label' => _x('Default Schema Type', 'admin-text', 'site-reviews'),
         'options' => [
             'LocalBusiness' => _x('Local Business', 'admin-text', 'site-reviews'),
@@ -365,37 +400,43 @@ return [ // order is intentional
             'custom' => _x('Custom', 'admin-text', 'site-reviews'),
         ],
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_type</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'select',
     ],
     'settings.schema.type.custom' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'custom',
         ],
         'label' => _x('Custom Schema Type', 'admin-text', 'site-reviews'),
-        'tooltip' => sprintf(_x('Google limits the schema types that can potentially trigger review rich results in search. To learn which schema types can be used, please %s.', 'read this (admin-text)', 'site-reviews'),
-            '<a href="https://developers.google.com/search/blog/2019/09/making-review-rich-results-more-helpful">'._x('read this', 'admin-text', 'site-reviews').'</a>'
+        'tooltip' => sprintf(_x('Google limits the schema types that can trigger review rich results in search. To learn more, please %sread this%s.', 'admin-text', 'site-reviews'),
+            '<a href="https://developers.google.com/search/blog/2019/09/making-review-rich-results-more-helpful" target="_blank">',
+            '</a>'
         ),
         'type' => 'text',
     ],
     'settings.schema.name.default' => [
         'class' => 'regular-text',
         'default' => 'post',
+        'depends_on' => [
+            'settings.schema.integration.plugin' => '',
+        ],
         'label' => _x('Default Name', 'admin-text', 'site-reviews'),
         'options' => [
             'post' => _x('Use the assigned or current page title', 'admin-text', 'site-reviews'),
             'custom' => _x('Enter a custom title', 'admin-text', 'site-reviews'),
         ],
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_name</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'select',
     ],
     'settings.schema.name.custom' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.name.default' => 'custom',
         ],
         'label' => _x('Custom Name', 'admin-text', 'site-reviews'),
@@ -405,19 +446,23 @@ return [ // order is intentional
     'settings.schema.description.default' => [
         'class' => 'regular-text',
         'default' => 'post',
+        'depends_on' => [
+            'settings.schema.integration.plugin' => '',
+        ],
         'label' => _x('Default Description', 'admin-text', 'site-reviews'),
         'options' => [
             'post' => _x('Use the assigned or current page excerpt', 'admin-text', 'site-reviews'),
             'custom' => _x('Enter a custom description', 'admin-text', 'site-reviews'),
         ],
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_description</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'select',
     ],
     'settings.schema.description.custom' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.description.default' => 'custom',
         ],
         'label' => _x('Custom Description', 'admin-text', 'site-reviews'),
@@ -427,19 +472,23 @@ return [ // order is intentional
     'settings.schema.url.default' => [
         'class' => 'regular-text',
         'default' => 'post',
+        'depends_on' => [
+            'settings.schema.integration.plugin' => '',
+        ],
         'label' => _x('Default URL', 'admin-text', 'site-reviews'),
         'options' => [
             'post' => _x('Use the assigned or current page URL', 'admin-text', 'site-reviews'),
             'custom' => _x('Enter a custom URL', 'admin-text', 'site-reviews'),
         ],
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_url</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'select',
     ],
     'settings.schema.url.custom' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.url.default' => 'custom',
         ],
         'label' => _x('Custom URL', 'admin-text', 'site-reviews'),
@@ -449,19 +498,23 @@ return [ // order is intentional
     'settings.schema.image.default' => [
         'class' => 'regular-text',
         'default' => 'post',
+        'depends_on' => [
+            'settings.schema.integration.plugin' => '',
+        ],
         'label' => _x('Default Image', 'admin-text', 'site-reviews'),
         'options' => [
             'post' => _x('Use the featured image of the assigned or current page', 'admin-text', 'site-reviews'),
             'custom' => _x('Enter a custom image URL', 'admin-text', 'site-reviews'),
         ],
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_image</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'select',
     ],
     'settings.schema.image.custom' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.image.default' => 'custom',
         ],
         'label' => _x('Custom Image URL', 'admin-text', 'site-reviews'),
@@ -471,36 +524,39 @@ return [ // order is intentional
     'settings.schema.address' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'LocalBusiness',
         ],
         'label' => _x('Address', 'admin-text', 'site-reviews'),
         'placeholder' => esc_attr_x('60 29th Street #343, San Francisco, CA 94110, US', 'admin-text', 'site-reviews'),
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_address</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'text',
     ],
     'settings.schema.telephone' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'LocalBusiness',
         ],
         'label' => _x('Telephone Number', 'admin-text', 'site-reviews'),
         'placeholder' => esc_attr_x('+1 (877) 273-3049', 'admin-text', 'site-reviews'),
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_telephone</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'text',
     ],
     'settings.schema.pricerange' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'LocalBusiness',
         ],
         'label' => _x('Price Range', 'admin-text', 'site-reviews'),
         'placeholder' => esc_attr_x('$$-$$$', 'admin-text', 'site-reviews'),
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_pricerange</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'text',
     ],
@@ -508,6 +564,7 @@ return [ // order is intentional
         'class' => 'regular-text',
         'default' => 'AggregateOffer',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'Product',
         ],
         'label' => _x('Offer Type', 'admin-text', 'site-reviews'),
@@ -516,58 +573,62 @@ return [ // order is intentional
             'Offer' => _x('Offer', 'admin-text', 'site-reviews'),
         ],
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_offertype</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'select',
     ],
     'settings.schema.price' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'Product',
             'settings.schema.offertype' => 'Offer',
         ],
         'label' => _x('Price', 'admin-text', 'site-reviews'),
         'placeholder' => '50.00',
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_price</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'text',
     ],
     'settings.schema.lowprice' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'Product',
             'settings.schema.offertype' => 'AggregateOffer',
         ],
         'label' => _x('Low Price', 'admin-text', 'site-reviews'),
         'placeholder' => '10.00',
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_lowprice</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'text',
     ],
     'settings.schema.highprice' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'Product',
             'settings.schema.offertype' => 'AggregateOffer',
         ],
         'label' => _x('High Price', 'admin-text', 'site-reviews'),
         'placeholder' => '100.00',
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_highprice</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'text',
     ],
     'settings.schema.pricecurrency' => [
         'default' => '',
         'depends_on' => [
+            'settings.schema.integration.plugin' => '',
             'settings.schema.type.default' => 'Product',
         ],
         'label' => _x('Price Currency', 'admin-text', 'site-reviews'),
         'placeholder' => esc_attr_x('USD', 'admin-text', 'site-reviews'),
         'tooltip' => sprintf(_x('You can use the %s to override this value on your page. The Custom Field name to use is:', 'admin-text', 'site-reviews').' <code>schema_pricecurrency</code>',
-            sprintf('<a href="https://wordpress.org/support/article/custom-fields/">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
+            sprintf('<a href="https://wordpress.org/support/article/custom-fields/" target="_blank">%s</a>', _x('Custom Fields metabox', 'admin-text', 'site-reviews'))
         ),
         'type' => 'text',
     ],
@@ -660,8 +721,9 @@ return [ // order is intentional
         'class' => 'regular-text',
         'default' => '',
         'label' => _x('CAPTCHA', 'admin-text', 'site-reviews'),
-        'options' => [
+        'options' => [ // order is intentional
             '' => _x('Do not use', 'admin-text', 'site-reviews'),
+            'turnstile' => _x('Use Cloudflare Turnstile', 'admin-text', 'site-reviews'),
             'friendlycaptcha' => _x('Use Friendly Captcha', 'admin-text', 'site-reviews'),
             'hcaptcha' => _x('Use hCaptcha', 'admin-text', 'site-reviews'),
             'recaptcha_v2_invisible' => _x('Use reCAPTCHA v2 Invisible', 'admin-text', 'site-reviews'),
@@ -755,6 +817,24 @@ return [ // order is intentional
         'tooltip' => _x('Where 0 is a robot and 1 is a human', 'admin-text', 'site-reviews'),
         'type' => 'number',
     ],
+    'settings.forms.turnstile.key' => [
+        'default' => '',
+        'depends_on' => [
+            'settings.forms.captcha.integration' => ['turnstile'],
+        ],
+        'label' => _x('Site Key', 'admin-text', 'site-reviews'),
+        'tooltip' => _x('Turnstile is Cloudflare’s privacy-first CAPTCHA alternative. To use it, you will need to <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank">obtain</a> a site key and a secret key.', 'admin-text', 'site-reviews'),
+        'type' => 'text',
+    ],
+    'settings.forms.turnstile.secret' => [
+        'default' => '',
+        'depends_on' => [
+            'settings.forms.captcha.integration' => ['turnstile'],
+        ],
+        'label' => _x('Secret Key', 'admin-text', 'site-reviews'),
+        'tooltip' => _x('Turnstile is Cloudflare’s privacy-first CAPTCHA alternative. To use it, you will need to <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank">obtain</a> a site key and a secret key.', 'admin-text', 'site-reviews'),
+        'type' => 'text',
+    ],
     'settings.forms.captcha.position' => [
         'class' => 'regular-text',
         'default' => 'bottomleft',
@@ -774,7 +854,13 @@ return [ // order is intentional
         'class' => 'regular-text',
         'default' => 'light',
         'depends_on' => [
-            'settings.forms.captcha.integration' => ['friendlycaptcha', 'hcaptcha', 'recaptcha_v2_invisible', 'recaptcha_v3'],
+            'settings.forms.captcha.integration' => [
+                'friendlycaptcha',
+                'hcaptcha',
+                'recaptcha_v2_invisible',
+                'recaptcha_v3',
+                'turnstile',
+            ],
         ],
         'label' => _x('CAPTCHA Theme', 'admin-text', 'site-reviews'),
         'options' => [
@@ -788,7 +874,13 @@ return [ // order is intentional
         'class' => 'regular-text',
         'default' => 'all',
         'depends_on' => [
-            'settings.forms.captcha.integration' => ['friendlycaptcha', 'hcaptcha', 'recaptcha_v2_invisible', 'recaptcha_v3'],
+            'settings.forms.captcha.integration' => [
+                'friendlycaptcha',
+                'hcaptcha',
+                'recaptcha_v2_invisible',
+                'recaptcha_v3',
+                'turnstile',
+            ],
         ],
         'label' => _x('CAPTCHA Usage', 'admin-text', 'site-reviews'),
         'options' => [
@@ -802,6 +894,13 @@ return [ // order is intentional
         'default' => 'no',
         'label' => _x('Enable Akismet', 'admin-text', 'site-reviews'),
         'tooltip' => _x('The <a href="https://akismet.com" target="_blank">Akismet plugin</a> integration provides spam-filtering for your reviews. In order for this setting to have any affect, you will need to first install and activate the Akismet plugin and set up a WordPress.com API key.', 'admin-text', 'site-reviews'),
+        'type' => 'yes_no',
+    ],
+    'settings.forms.prevent_duplicates' => [
+        'class' => 'regular-text',
+        'default' => 'no',
+        'label' => _x('Prevent Duplicates', 'admin-text', 'site-reviews'),
+        'tooltip' => _x('This will prevent people from submitting multiple reviews with the same content.', 'admin-text', 'site-reviews'),
         'type' => 'yes_no',
     ],
     'settings.forms.blacklist.integration' => [

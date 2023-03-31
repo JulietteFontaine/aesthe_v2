@@ -127,6 +127,10 @@ function relevanssi_truncate_logs( $verbose = true ) {
 	global $wpdb, $relevanssi_variables;
 
 	$result = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['log_table'] ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	if ( isset( $relevanssi_variables['tracking_table'] ) ) {
+		$tracking_result = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['tracking_table'] ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$results         = $result && $tracking_result;
+	}
 
 	if ( $verbose ) {
 		if ( false !== $result ) {
@@ -236,7 +240,7 @@ function relevanssi_options_form() {
 			'name'     => __( 'Debugging', 'relevanssi' ),
 			'require'  => 'tabs/debugging-tab.php',
 			'callback' => 'relevanssi_debugging_tab',
-			'save'     => false,
+			'save'     => true,
 		),
 	);
 

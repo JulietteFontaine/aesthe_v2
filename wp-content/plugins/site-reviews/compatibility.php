@@ -103,6 +103,7 @@ add_filter('sbp_exclude_defer_scripts', function ($scriptHandles) {
     $scriptHandles[] = glsr()->id.'/friendlycaptcha-module';
     $scriptHandles[] = glsr()->id.'/friendlycaptcha-nomodule';
     $scriptHandles[] = glsr()->id.'/google-recaptcha';
+    $scriptHandles[] = glsr()->id.'/turnstile';
     return array_keys(array_flip($scriptHandles));
 });
 
@@ -153,150 +154,6 @@ add_action('site-reviews/customize/ninja_forms', function () {
 });
 
 /**
- * Purge the LiteSpeed Cache after plugin migrations.
- * @return void
- * @see https://wordpress.org/plugins/litespeed-cache/
- */
-add_action('site-reviews/migration/end', function () {
-    do_action('litespeed_purge_all');
-});
-
-/**
- * Purge the Endurance Page Cache after plugin migrations.
- * @return void
- * @see https://github.com/bluehost/endurance-page-cache/
- */
-add_action('site-reviews/migration/end', function () {
-    do_action('epc_purge');
-});
-
-/**
- * Purge the W3 Total Cache database and object caches after plugin migrations.
- * @return void
- * @see https://wordpress.org/plugins/w3-total-cache/
- */
-add_action('site-reviews/migration/end', function () {
-    if (function_exists('w3tc_dbcache_flush')) {
-        w3tc_dbcache_flush();
-    }
-    if (function_exists('w3tc_objectcache_flush')) {
-        w3tc_objectcache_flush();
-    }
-});
-
-/**
- * Purge the WP Rocket Cache after plugin migrations.
- * @return void
- * @see https://wp-rocket.me/
- */
-add_action('site-reviews/migration/end', function () {
-    if (function_exists('rocket_clean_home')) {
-        rocket_clean_home();
-    }
-});
-
-/**
- * Purge the Endurance Page Cache plugin cache of assigned posts after a review has been created.
- * @param \GeminiLabs\SiteReviews\Review $review
- * @param \GeminiLabs\SiteReviews\Commands\CreateReview $command
- * @return void
- * @see https://github.com/bluehost/endurance-page-cache/
- */
-add_action('site-reviews/review/created', function () {
-    do_action('epc_purge');
-});
-
-/**
- * Purge the WP Rocket plugin cache of assigned posts after a review has been created.
- * @param \GeminiLabs\SiteReviews\Review $review
- * @param \GeminiLabs\SiteReviews\Commands\CreateReview $command
- * @return void
- * @see https://docs.wp-rocket.me/article/93-rocketcleanpost
- */
-add_action('site-reviews/review/created', function ($review, $command) {
-    if (!function_exists('rocket_clean_post')) {
-        return;
-    }
-    rocket_clean_post($command->post_id); // The page the review was submitted on
-    foreach ($command->assigned_posts as $postId) {
-        if ($postId != $command->post_id) {
-            rocket_clean_post($postId);
-        }
-    }
-}, 10, 2);
-
-/**
- * Purge the WP-Super-Cache plugin cache after a review has been created.
- * @param \GeminiLabs\SiteReviews\Review $review
- * @param \GeminiLabs\SiteReviews\Commands\CreateReview $command
- * @return void
- * @see https://wordpress.org/plugins/wp-super-cache/
- */
-add_action('site-reviews/review/created', function ($review, $command) {
-    if (!function_exists('wp_cache_post_change')) {
-        return;
-    }
-    wp_cache_post_change($command->post_id);
-    foreach ($review->assigned_posts as $postId) {
-        if ($postId != $command->post_id) {
-            wp_cache_post_change($postId);
-        }
-    }
-}, 10, 2);
-
-/**
- * Purge the Hummingbird page cache after a review has been created.
- * @param \GeminiLabs\SiteReviews\Review $review
- * @param \GeminiLabs\SiteReviews\Commands\CreateReview $command
- * @return void
- * @see https://premium.wpmudev.org/docs/api-plugin-development/hummingbird-api-docs/#action-wphb_clear_page_cache
- */
-add_action('site-reviews/review/created', function ($review, $command) {
-    do_action('wphb_clear_page_cache', $command->post_id);
-}, 10, 2);
-
-/**
- * Purge the SiteGround page cache after a review has been created.
- * @param \GeminiLabs\SiteReviews\Review $review
- * @param \GeminiLabs\SiteReviews\Commands\CreateReview $command
- * @return void
- * @see https://wordpress.org/plugins/sg-cachepress/
- */
-add_action('site-reviews/review/created', function ($review, $command) {
-    if (empty($review->images)) { // Review Images compatibility
-        if (function_exists('sg_cachepress_purge_cache')) {
-            sg_cachepress_purge_cache(get_permalink($command->post_id));
-        }
-    } elseif (function_exists('sg_cachepress_purge_everything')) {
-        sg_cachepress_purge_everything();
-    }
-}, 10, 2);
-
-/**
- * Purge the WP Fastest Cache page cache after a review has been created.
- * @param \GeminiLabs\SiteReviews\Review $review
- * @param \GeminiLabs\SiteReviews\Commands\CreateReview $command
- * @return void
- * @see https://www.wpfastestcache.com/
- */
-add_action('site-reviews/review/created', function ($review, $command) {
-    do_action('wpfc_clear_post_cache_by_id', false, $command->post_id);
-}, 10, 2);
-
-/**
- * Purge the WP-Optimize page cache after a review has been created.
- * @param \GeminiLabs\SiteReviews\Review $review
- * @param \GeminiLabs\SiteReviews\Commands\CreateReview $command
- * @return void
- * @see https://getwpo.com/documentation/#Purging-the-cache-from-an-other-plugin-or-theme
- */
-add_action('site-reviews/review/created', function ($review, $command) {
-    if (class_exists('WPO_Page_Cache')) {
-        WPO_Page_Cache::delete_single_post_cache($command->post_id);
-    }
-}, 10, 2);
-
-/**
  * Load the WPForms stylesheet when using the WPForms plugin style
  * @param string $template
  * @return string
@@ -321,7 +178,7 @@ add_filter('tcb_post_types', function ($blacklist) {
 });
 
 /**
- * This will check updates for any add-ons which do not yet use the "site-reviews/addon/update" hook
+ * This will check updates for any addons which do not yet use the "site-reviews/addon/update" hook
  * @param \GeminiLabs\SiteReviews\Application $app
  */
 add_action('site-reviews/addon/update', function ($app) {
@@ -331,7 +188,6 @@ add_action('site-reviews/addon/update', function ($app) {
         'site-reviews-images/site-reviews-images.php' => 'GeminiLabs\SiteReviews\Addon\Images\Application',
         'site-reviews-notifications/site-reviews-notifications.php' => 'GeminiLabs\SiteReviews\Addon\Notifications\Application',
         'site-reviews-themes/site-reviews-themes.php' => 'GeminiLabs\SiteReviews\Addon\Themes\Application',
-        'site-reviews-woocommerce/site-reviews-woocommerce.php' => 'GeminiLabs\SiteReviews\Addon\Woocommerce\Application',
     ];
     foreach ($addons as $basename => $addon) {
         $file = trailingslashit(WP_PLUGIN_DIR).$basename;

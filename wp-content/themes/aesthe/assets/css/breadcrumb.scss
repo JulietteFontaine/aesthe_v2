@@ -1,0 +1,70 @@
+.breadcrumbs {
+ 
+  &.accueil {
+    display: none;
+  }
+
+  z-index: 10;
+  position: absolute;
+  top: 93px;
+  @media (max-width : 1000px ) {
+    top: 51px;
+  }
+  svg {
+    margin-right: 10px;
+  }
+
+  span, a {
+    font-family: 'Noto Serif';
+    // text-transform: lowercase;
+  }
+  
+  // @media (max-width: 1000px) {
+  //   display: none;
+  // }
+
+  @media (max-width: 600px) {}
+
+  nav {
+    &.bread-centered {
+      justify-content: center;
+
+      // @media (max-width: 1000px) {
+      //   display: none;
+      // }
+    }
+
+    @media (max-width: 1200px) {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+  }
+}
+
+.breadcrumb {
+  font-family: "Noto";
+  padding: 1rem 0 0 0;
+  flex: 0 0 auto;
+  @media (max-width: 1000px) {
+    // display: none;
+  }
+  a {
+    padding: 0 10px;
+    padding-left: 0 !important;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .searchPage .breadcrumb {
+    display: block;
+    color: black;
+  }
+
+  .breadcrumb {
+    display: none;
+  }
+}

@@ -1,0 +1,49 @@
+.customised-reviews-wrap {
+    .glsr-pagination {
+        .nav-links {
+            margin-top: 10px;
+            font-size: 25px;
+            a.page-numbers {
+                font-family: 'Montserrat';
+                font-weight: 500;
+                color: $grey01;
+                margin: 0 2px;
+                &.next {
+                    font-family: 'Montserrat';
+                    color: $red;
+                    font-size: 20px;
+                    margin-right: 10px;
+                    @media (max-width: 1000px) {
+                    }
+                }
+                &.prev {
+                    font-family: 'Montserrat';
+                    color: $red;
+                    font-size: 20px;
+                    @media (max-width: 1000px) {
+                    }
+                }
+            }
+            span.current {
+                color: $red;
+                @media (max-width: 1000px) {
+                }
+            }
+        }
+    }
+}
+
+span.page-numbers.dots {
+    color: $grey01;
+}
+.meta-nav.screen-reader-text {
+    display: inline-block;
+    width: 1px;
+    overflow: hidden;
+}
+
+@media (max-width : 1000px) {
+    .pagination {
+        text-align: center;
+    }
+}

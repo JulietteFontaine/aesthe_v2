@@ -1,32 +1,8 @@
-/*--------- Bandeau fil d'ariane / Top Banner ---------*/
-.breadcrumb {
-  font-size: 16px;
-  font-family: "Fleya";
-  padding: 15px 0px;
-  flex: 0 0 auto;
-  @media (max-width: 1000px) {
-    display: none;
-  }
-  a {
-    padding: 0 10px;
-    padding-left: 0 !important;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-@media (max-width: 600px) {
-  .breadcrumb {
-    display: none;
-  }
-}
-
 /*-----------------   tns nav   -------------------*/
 
 .tns-nav {
   display: flex;
-  margin: 0 0 30px;
+  margin: 0;
   justify-content: center;
 }
 .tns-nav button {
@@ -50,9 +26,74 @@
   display: inline-block;
 }
 
+.card.tns-item {
+	// display: flex !important;
+	// justify-content: center !important;
+}
 
 /*-----------------   activ campain   -------------------*/
 .widget_welcome_message_dismiss {
   opacity: 1 !important;
   visibility: inherit !important;
 }
+
+/*--------- CTA ---------*/
+div.bouton-aesthe.is-centered {
+	display: flex;
+	justify-content: center;
+	left: -55px;
+}
+
+div.cta,
+a.cta {
+	color: $purple;
+	display: flex;	
+	padding: 1rem 0;
+}
+
+button.cta {
+	display: flex;
+	flex-direction: column;
+	span:not(:last-child) {
+		text-decoration: none;
+		text-transform: uppercase;
+	}
+	span:first-child {
+		font-family: "Roboto";
+		font-family: "Montserrat";
+		font-weight: 400;
+	}
+	a span {
+		text-transform: capitalize;
+	}
+	span:last-child {
+		font-family: "Roboto";
+		border-bottom: solid 2px #5D23D0;
+		width: fit-content;
+		font-weight: 400;
+		// text-transform: lowercase;
+	}
+}
+
+button.cta span:last-child:hover {
+	border-bottom: solid 2px rgba($color: white, $alpha: 0);
+}
+
+.picto-cta {
+	width: 55px;
+	display: flex;
+	align-items: end;
+	margin-bottom: 8px;
+}
+
+.fixed-position {
+    overflow: hidden;
+	height:100vh;
+ }
+
+ button[data-action="stop"]
+//  button[data-controls="prev"],
+//  button[data-controls="next"]
+  {
+	display: none;
+ }

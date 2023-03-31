@@ -9,16 +9,18 @@
     </h3>
     <div id="welcome-v5_3_0" class="inside">
         <p><em>Initial Release Date &mdash; December 13th, 2020</em></p>
+
         <h4>✨ New Features</h4>
         <ul>
             <li>Added <a href="<?= glsr_admin_url('addons'); ?>">Site Reviews Premium</a></li>
-            <li>Added the <a href="<?= glsr_admin_url('addons'); ?>">Review Forms</a> add-on</li>
+            <li>Added the <a href="<?= glsr_admin_url('addons'); ?>">Review Forms</a> addon</li>
             <li>Added debug logging for validation errors</li>
             <li>Added error logging for database table creation errors</li>
             <li>Added support for PHP 8</li>
             <li>Added the Category and Review IDs to the action row in the admin tables</li>
             <li>Added the <code>{{ assigned_posts }}</code>, <code>{{ assigned_users }}</code>, and <code>{{ assigned_terms }}</code> template tags</li>
         </ul>
+
         <h4>🐞 Bugs Fixed</h4>
         <ul>
             <li>Fixed block attributes</li>

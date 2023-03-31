@@ -3,6 +3,7 @@
 namespace GeminiLabs\SiteReviews\Commands;
 
 use GeminiLabs\SiteReviews\Contracts\CommandContract as Contract;
+use GeminiLabs\SiteReviews\Database\DefaultsManager;
 use GeminiLabs\SiteReviews\Database\ReviewManager;
 use GeminiLabs\SiteReviews\Defaults\CreateReviewDefaults;
 use GeminiLabs\SiteReviews\Defaults\CustomFieldsDefaults;
@@ -10,7 +11,9 @@ use GeminiLabs\SiteReviews\Helper;
 use GeminiLabs\SiteReviews\Helpers\Cast;
 use GeminiLabs\SiteReviews\Helpers\Url;
 use GeminiLabs\SiteReviews\Modules\Avatar;
+use GeminiLabs\SiteReviews\Modules\Validator\CustomValidator;
 use GeminiLabs\SiteReviews\Modules\Validator\DefaultValidator;
+use GeminiLabs\SiteReviews\Modules\Validator\DuplicateValidator;
 use GeminiLabs\SiteReviews\Modules\Validator\ValidateReview;
 use GeminiLabs\SiteReviews\Request;
 use GeminiLabs\SiteReviews\Review;
@@ -40,6 +43,7 @@ class CreateReview implements Contract
     public $referer;
     public $request;
     public $response;
+    public $response_by;
     public $terms;
     public $terms_exist;
     public $title;
@@ -52,7 +56,7 @@ class CreateReview implements Contract
 
     public function __construct(Request $request)
     {
-        $request = $this->normalize($request);
+        $request = $this->normalize($request); // IP address is set here
         $this->setProperties($request->toArray());
         $this->request = $request;
         $this->review = new Review($this->toArray(), $init = false);
@@ -78,7 +82,21 @@ class CreateReview implements Contract
      */
     public function isValid()
     {
-        return glsr(DefaultValidator::class, ['request' => $this->request])->isValidRequest();
+        $options = glsr(DefaultsManager::class)->pluck('settings.forms.required.options');
+        $request = clone $this->request;
+        $request->merge([
+            'excluded' => array_keys(array_diff_key($options, $this->request->toArray())),
+        ]);
+        $validator = glsr(ValidateReview::class)->validate($request, [ // order is intentional
+            DefaultValidator::class,
+            DuplicateValidator::class,
+            CustomValidator::class,
+        ]);
+        if (!$validator->isValid()) {
+            glsr_log()->warning($validator->errors);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -161,7 +179,7 @@ class CreateReview implements Contract
      */
     protected function avatar()
     {
-        if (empty($this->avatar) && !glsr()->retrieveAs('bool', 'import')) {
+        if (!defined('WP_IMPORTING') && empty($this->avatar)) {
             return glsr(Avatar::class)->generate($this->review);
         }
         return $this->avatar;
@@ -175,12 +193,12 @@ class CreateReview implements Contract
         if ($review = glsr(ReviewManager::class)->create($this)) {
             $this->message = $review->is_approved
                 ? __('Your review has been submitted!', 'site-reviews')
-                : __('Your review has been submitted and is pending approval.', 'site-reviews');
+                : __('Your review has been submitted, and is pending approval.', 'site-reviews');
             $this->review = $review; // overwrite the dummy review with the submitted review
             return;
         }
         $this->errors = [];
-        $this->message = __('Your review could not be submitted and the error has been logged. Please notify the site administrator.', 'site-reviews');
+        $this->message = __('Your review could not be submitted, and the error has been logged. Please notify the site administrator.', 'site-reviews');
     }
 
     /**
@@ -201,9 +219,12 @@ class CreateReview implements Contract
             $request->set('ip_address', Helper::getIpAddress()); // required for Akismet and Blacklist validation
         }
         if ($isFormSubmission) {
-            // is_approved is verified when the review is created
+            // is_approved is set when the review is created
+            $request->set('author_id', get_current_user_id());
             $request->set('is_pinned', false);
             $request->set('is_verified', false);
+            $request->set('response', '');
+            $request->set('response_by', 0);
         }
         glsr()->action('review/request', $request);
         return $request;
@@ -233,7 +254,7 @@ class CreateReview implements Contract
                 $this->{$key} = $value;
             }
         }
-        if (!empty($this->date)) {
+        if (!empty($this->date) && empty($this->date_gmt)) {
             $this->date_gmt = get_gmt_from_date($this->date); // set the GMT date
         }
     }

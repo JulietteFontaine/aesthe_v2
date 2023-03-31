@@ -1,0 +1,238 @@
+.presentationCards {
+
+    width: calc(100vw - var(--leftMargin));
+    right: calc(var(--leftMargin)/2);
+    
+    &__title {
+        padding-bottom: 1rem;
+        p {
+            color: black;
+            margin-bottom: 1rem;
+        }
+    }
+
+    &__card{
+        color: white;
+        padding: 2rem 3rem;
+        border-radius: 5px;
+        min-height: 400px;
+        background-size: cover;
+        background-position: center;    
+        
+        .text {
+            text-transform: uppercase;
+            font-family: "Montserrat";
+            font-weight: 700;
+            font-size: 1.3rem;
+            z-index: 2;
+            line-height: 1;
+
+        }
+        .nbr {
+            font-size: 1rem;
+            font-weight: initial;
+            z-index: 2;
+        }
+        .bille {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            border-radius: 50%;
+            left: 11px;
+            top: -12px;
+            z-index: 1;
+        }
+        p {
+            border-radius: 5px;
+            padding: 1rem 0.5rem;
+            margin: 7px 0;
+        }
+
+        a {
+            display: flex;
+            padding-left: 1rem;
+            align-items: center;
+            padding-top: 1rem;
+            svg {
+                display: inline-block;
+                transform: rotate(-90deg);
+                width: 13px;
+                transform-origin: center;
+            }
+            span {
+                margin-left: 1rem;
+                text-decoration: underline;
+            }
+        }
+
+        &__focus {
+            &__tab {
+                p {
+                    color: black;
+                    margin: 0;
+                    }
+
+                span {
+                    &:before {
+                        content: "";
+                        background-image: url("assets/img/pointe-blanc.svg");
+                        width: 12px;
+                        height: 7px;
+                        transform: rotate(-90deg);
+                        display: inline-block;
+                        top: -2px;
+                        position: relative;
+                        margin-right: 8px;
+                        margin-left: 0.5rem;
+                    }
+                }
+
+                &.close p {
+                    animation-direction: normal; 
+                    animation : closed ease-in-out $timing forwards;
+                }
+                &.on p {
+                    animation-direction: normal;
+                    animation : opened ease-in-out $timing forwards;
+                }
+
+                &.on span{
+                    &:before {
+                        transform: rotate(-180deg);
+                        transition-duration: $timing
+                    }
+                }
+                
+
+                
+    }
+    }
+
+    }
+
+    &__controls{
+        position: absolute;
+        &.--prev {
+        width: 45px;
+        z-index: 2;
+        transform: rotate(90deg);
+        left: -9px;
+        top: 85px;
+        transform-origin: center;
+
+      }
+      &.--next {
+        width: 45px;
+        z-index: 2;
+        -webkit-transform: rotate(90deg);
+        transform: rotate(-90deg);
+        left: calc(100vw - 65px);
+        top: 85px;
+        transform-origin: center;
+      }
+    }
+
+    $timing : 0.6s;
+
+    @keyframes opened {
+        0% {
+        max-height: 0px;
+        opacity: 0;
+        padding: 0rem 0.5rem  
+        }
+      
+        100% {
+          max-height: 500px;
+          opacity: 1;
+          padding: 1rem 0.5rem;  
+        }
+      }
+    
+      @keyframes closed {
+        0% {
+            max-height: 500px;
+            opacity: 1;
+            padding: 1rem 0.5rem;  
+        }
+        
+        100% {
+            max-height: 0px;
+            opacity: 0;
+            padding: 0rem 0.5rem   
+        }
+      }
+
+}
+
+@media (min-width:1000px) {
+
+    .presentationCards {
+
+        flex-direction: column;
+
+        width: initial;
+        right: initial;
+        display: flex;
+
+        &__title {
+            align-self: center;
+            display: block;
+        }
+        &__cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+        }
+        &__controls{
+            display: none;
+        }
+        &__card {
+            width: 30%;
+            margin-left: 1rem;
+            margin-bottom: 1rem;
+            padding: 2rem;
+        }
+    }
+}
+
+.presentationCards__card.Sans {
+    background-image: none !important;
+    color: black;
+    @media (min-width:1000px) {
+        box-shadow: 6px 6px 10px #b1b1b1;
+    }
+    .p-pres p {
+        background-color: white;
+    }
+    .presentationCards__card__focus__tab.on p {
+        box-shadow: 1px 1px 7px #b1b1b173;
+    }
+    .presentationCards__card__focus__tab span::before{
+        background-image: url("assets/img/pointe-noir.svg");
+    }
+    .presentationCards__card__focus__tab span,
+    button {
+        color: black;
+    }
+    .presentationCards__card__focus__tab p {
+        color: white;
+    }
+    p {
+        box-shadow: 1px 1px 7px #b1b1b173;
+    }
+    div {
+        border-radius: 5px;
+    }
+
+}
+
+.presentationCards__card.Avec {
+p {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.presentationCards__card__focus__tab p {
+background-color: rgba(255, 255, 255, 0.4);
+
+}  
+}

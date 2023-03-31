@@ -1,0 +1,107 @@
+.card {
+  h3 {
+    text-transform: uppercase;
+    color: $coffee;
+    font-size: 20px;
+    font-family: "montserrat";
+    padding: 10px 0px;
+    font-weight: 600;
+    line-height: 1;
+  } 
+  p {
+    color: $grey02;
+    padding-top: 35px;
+  }
+  &__single {
+    // Iphone SE
+    @media (max-width : 380px) {
+      width: 275px;
+    }
+    //
+    width: 300px;
+    box-shadow: 6px 6px 10px #b1b1b1;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: 0.8s;
+    background: white;
+    margin-bottom: 1rem;
+    &.show {
+      height: 347px;
+      max-height: 347px;
+      transition: 0.8s;
+    }
+  }
+  &__btn-more {
+    height: 28px;
+    width: 28px;
+    background-color: $red;
+    border-radius: 50px;
+    left: 134px;
+    top: 190px;
+    cursor: pointer;
+    z-index: 1;
+    transform-origin: center;
+    transition: 0.6s;
+    &.on {
+      transform: rotate(180deg);
+    }
+
+    svg {
+      height: 28px;
+      width: 28px;
+      position: relative;
+      top: -7px;
+    }
+  }
+  &__top {
+    background-size: cover;
+    height: 100px;
+    transition: 0.8s;
+    &.show {
+      transition: 0.8s;
+      transform: translateY(-100px);
+    }
+  }
+  &__title {
+    display: flex;
+    justify-content: center;
+    padding: 0 20px;
+    height: 75px;
+    align-items: center;
+  }
+
+  &__bottom {
+    min-height: 75px;
+  }
+
+  &__content {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 0px;
+    max-height: 0px;
+    opacity: 0;
+    transition: all 0.6s ease-out;
+    &.show {
+      // padding-top: 35px;
+      max-height: 600px;
+      opacity: 1;
+      transition: all 0.6s ease-out;
+    }
+  }
+
+  &__circle {
+    width: 55px;
+    height: 55px;
+    position: absolute;
+    background: $red;
+    z-index: 2;
+    right: -23px;
+    bottom: -27px;
+    border-radius: 50px 50px 50px 50px;
+    transition: 0.6s;
+    &.show {
+      transition: 0.6s;
+      transform: translateX(40px);
+    }
+  }
+  }

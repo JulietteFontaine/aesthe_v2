@@ -1,0 +1,214 @@
+$ptr : 75px;
+.offreTop  {
+    z-index : 3;
+}
+.offreTop--bg {
+    // position: absolute;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100vw;
+    right: var(--leftMargin);
+    @media(max-width: 1000px) {
+        top: calc(100% - 20vw);
+        right: var(--leftMargin);
+    }
+}
+
+.offreTop__content {
+    display: flex;
+    padding-top: 8rem;
+    min-height: 100vh;
+
+    @media(max-width: 1000px) {
+        flex-direction: column;
+        padding-top: 120px;
+    }
+
+    &__left {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        @media(min-width: 1000px) {
+            width: 50%;
+        }
+    }
+
+    &__catchphrase {
+        width: 150px;
+        transform-origin: center center;
+        animation: anim-texte 25s infinite;
+    }
+
+    &__right {
+        @media(min-width: 1000px) {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+        }
+
+        h1 {
+            color: white;
+            @media(min-width: 1000px) {
+                padding-left: $ptr;
+                padding-right: 75px;
+                font-size: 40px;
+            }
+        }
+
+        .selec {
+            font-family: noto;
+            font-style: italic;
+            color: white;
+            font-size: 16px;
+
+            @media(min-width: 1000px) {
+                padding-left: $ptr;
+            }
+        }
+
+    }
+}
+
+.offreTop__controls {
+    padding-top: 1rem;
+
+    @media(min-width: 1000px) {
+        padding-left: $ptr;
+    }
+
+    li {
+        border: 2px solid white;
+        border-radius: 5px;
+        padding: 0 12px;
+        color: white;
+        text-transform: uppercase;
+        font-family: Roboto;
+        font-weight: 400;
+        text-align: center;
+        font-size: 20px;
+
+        @media(min-width: 1000px) {
+            width: fit-content;
+        }
+
+        &:hover {
+            color: $coffee;
+        }
+    }
+
+    li.active {
+        color: $coffee;
+        background-color: white;
+    }
+
+    li:not(:last-of-type) {
+        margin-bottom: 7px;
+    }
+}
+
+.offreTop__informations {
+
+    .price {
+        color: white;
+        padding-left: $ptr;        
+        font-family: "Roboto" Light;
+        font-weight: 300;
+        font-size: 20px;
+        font-weight: bold;
+
+        @media(max-width:1000px) {
+            padding-top: 1rem;
+            padding-left: 0;
+        }
+    }
+
+    .rate {
+        display: flex;
+        padding-left: $ptr;
+        padding-bottom: 1rem;
+        line-height: 1;
+
+        @media(max-width:1000px) {
+            padding-left: 0;
+        }
+
+        svg {
+            width: 20px;
+            @media(max-width: 1000px) {
+                width: 25px;
+            }
+        }
+
+        a {
+            padding-left: 12px;
+            color: white;
+            text-decoration: underline;
+            @media(max-width: 1000px) {
+                font-size: 19px;
+            }
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+
+    .description {
+        font-family: "roboto";
+        color: $coffee;
+        background-color: rgba(255, 245, 237, 0.95);
+        width: 100vw;
+        right: 30px;
+        padding: 29px 30px;
+        line-height: 1.4;
+        @media(min-width:1000px) {
+            padding: 40px 75px 20px;
+            width: 50vw;
+            line-height: 1.2;
+            font-weight: 300;
+            margin-top: 2rem;
+            right: 0px;
+        }
+
+        &:before {
+            content: "";
+            background-color: $nude01;
+            opacity: 0.6;
+            width: 100vw;
+            height: 100%;
+        }
+    }
+}
+
+@keyframes anim-texte {
+    50% {
+        transform: rotate(1turn)
+    }
+}
+
+.cta-onscroll {
+    position: fixed;
+    z-index: 3;
+    top: 9px;
+    background-color: rgba(255, 255, 255, 0.93);
+    padding-left: var(--leftMargin);
+    left: 0px;
+    padding-right: 15px;
+    border-radius: 0px 5px 5px 0px;
+
+    &.-translate-x-full {
+        transform: translateX(-120%);
+        transition: all 1s ease-in-out;
+    }
+
+    &.-translate-x-0 {
+        transform: translateX(0%);
+        transition: all 1s ease-in-out;
+    }
+    @media (min-width : 1000px) {
+        display: none;
+    }
+}

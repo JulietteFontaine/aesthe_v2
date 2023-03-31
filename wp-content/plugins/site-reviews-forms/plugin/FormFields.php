@@ -106,9 +106,9 @@ class FormFields
     public function metaboxConfig($formId, array $config)
     {
         $config['form'] = [
-            'label' => _x('Custom Form', 'admin-text', 'site-reviews'),
+            'label' => _x('Custom Form', 'admin-text', 'site-reviews-forms'),
             'type' => 'select',
-            'options' => glsr(Application::class)->forms('&mdash; '._x('Default Form', 'admin-text', 'site-reviews').' &mdash;'),
+            'options' => glsr(Application::class)->forms('&mdash; '._x('Default Form', 'admin-text', 'site-reviews-forms').' &mdash;'),
         ];
         if ($fields = $this->normalizedFieldsKeyed($formId)) {
             $fields = array_merge($fields, array_diff_key($config, $fields));

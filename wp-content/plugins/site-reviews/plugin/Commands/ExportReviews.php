@@ -2,6 +2,7 @@
 
 namespace GeminiLabs\SiteReviews\Commands;
 
+use GeminiLabs\League\Csv\EscapeFormula;
 use GeminiLabs\League\Csv\Exceptions\CannotInsertRecord;
 use GeminiLabs\League\Csv\Writer;
 use GeminiLabs\SiteReviews\Contracts\CommandContract as Contract;
@@ -12,13 +13,13 @@ use GeminiLabs\SiteReviews\Request;
 class ExportReviews implements Contract
 {
     /**
-     * @var string
+     * @var Request
      */
-    protected $assigned_posts;
+    protected $request;
 
     public function __construct(Request $request)
     {
-        $this->assigned_posts = $request->assigned_posts;
+        $this->request = $request;
     }
 
     /**
@@ -34,6 +35,7 @@ class ExportReviews implements Contract
         try {
             $filename = sprintf('%s_%s.csv', date('YmdHi'), glsr()->id);
             $writer = Writer::createFromString('');
+            $writer->addFormatter(new EscapeFormula());
             $writer->insertOne(array_keys($reviews[0]));
             $writer->insertAll($reviews);
             nocache_headers();
@@ -52,11 +54,11 @@ class ExportReviews implements Contract
      */
     public function results()
     {
-        if ('id' === $this->assigned_posts) {
-            $results = glsr(Export::class)->export();
+        if ('id' === $this->request->assigned_posts) {
+            $results = glsr(Export::class)->export($this->request->toArray());
         }
-        if ('slug' === $this->assigned_posts) {
-            $results = glsr(Export::class)->exportWithSlugs();
+        if ('slug' === $this->request->assigned_posts) {
+            $results = glsr(Export::class)->exportWithSlugs($this->request->toArray());
         }
         if (empty($results)) {
             return [];

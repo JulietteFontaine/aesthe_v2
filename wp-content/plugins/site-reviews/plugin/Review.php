@@ -336,9 +336,9 @@ class Review extends Arguments
     /**
      * @return void
      */
-    public function render()
+    public function render(array $args = [])
     {
-        echo $this->build();
+        echo $this->build($args);
     }
 
     /**
@@ -357,6 +357,14 @@ class Review extends Arguments
         $type = $this->get('type');
         $reviewTypes = glsr()->retrieveAs('array', 'review_types');
         return Arr::get($reviewTypes, $type, _x('Unknown', 'admin-text', 'site-reviews'));
+    }
+
+    /**
+     * @return \WP_User|false
+     */
+    public function user()
+    {
+        return get_user_by('ID', $this->get('author_id'));
     }
 
     /**
